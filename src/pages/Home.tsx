@@ -8,6 +8,7 @@ import {
   Search,
   TrendingUp,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -75,21 +76,21 @@ const articles = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-muted/30">
+    <main id="portal-noticias" className="min-h-screen bg-muted/30">
       <header className="border-b bg-background">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5 lg:px-8">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menu">
               <Menu className="h-5 w-5" />
             </Button>
-            <div>
-              <p className="font-display text-2xl font-bold tracking-tight text-primary">
+            <Link to="/home" className="group">
+              <p className="font-display text-2xl font-bold tracking-tight text-primary transition-opacity group-hover:opacity-80">
                 Zenith
               </p>
               <p className="hidden text-xs text-muted-foreground sm:block">
-                Informação que acompanha você
+                Portal de notícias
               </p>
-            </div>
+            </Link>
           </div>
 
           <div className="hidden items-center gap-1 lg:flex">
@@ -130,11 +131,14 @@ export default function Home() {
                 <TrendingUp className="h-3.5 w-3.5" />
                 Em destaque
               </Badge>
+              <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-primary">
+                Portal Zenith
+              </p>
               <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
                 As notícias mais importantes do dia
               </h1>
               <p className="mt-2 max-w-2xl text-muted-foreground">
-                Uma seleção das histórias que estão movimentando o Brasil e o mundo.
+                Informação, contexto e análise para você acompanhar o que está movimentando o Brasil e o mundo.
               </p>
             </div>
             <Button variant="ghost" className="hidden gap-2 sm:inline-flex">
