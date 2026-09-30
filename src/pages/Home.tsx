@@ -11,19 +11,51 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Separator } from "@/components/ui/separator";
 
 const categories = ["Política", "Economia", "Tecnologia", "Cultura", "Esportes"];
 
-const articles = [
+const featuredArticles = [
   {
     category: "Tecnologia",
-    title: "Como a inteligência artificial está mudando a rotina das empresas",
+    title: "Como a tecnologia está transformando a forma de acompanhar as notícias",
     description:
-      "Novas ferramentas prometem ampliar a produtividade e transformar a forma como equipes trabalham.",
+      "Novas plataformas digitais aproximam informação, análise e participação em tempo real.",
     time: "Há 32 min",
-    featured: true,
+    image:
+      "https://images.pexels.com/photos/106341/pexels-photo-106341.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "AS Photography",
   },
+  {
+    category: "Jornalismo",
+    title: "A informação que ajuda a entender o mundo todos os dias",
+    description:
+      "Em meio ao excesso de conteúdo, curadoria e contexto se tornam essenciais para formar opinião.",
+    time: "Há 1 hora",
+    image:
+      "https://images.pexels.com/photos/7596907/pexels-photo-7596907.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "cottonbro studio",
+  },
+  {
+    category: "Atualidades",
+    title: "As principais histórias e tendências que movimentam o dia",
+    description:
+      "Uma seleção das notícias mais relevantes para você começar o dia bem informado.",
+    time: "Há 2 horas",
+    image:
+      "https://images.pexels.com/photos/10464798/pexels-photo-10464798.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "cottonbro studio",
+  },
+];
+
+const articles = [
   {
     category: "Economia",
     title: "Mercado acompanha novas oportunidades para pequenos negócios",
@@ -110,49 +142,41 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-[1.35fr_1fr]">
-            <Card className="overflow-hidden border-0 shadow-sm">
-              <div className="flex min-h-72 items-end bg-primary p-7 text-primary-foreground sm:min-h-96 sm:p-10">
-                <div className="max-w-2xl">
-                  <Badge className="mb-4 border-primary-foreground/20 bg-primary-foreground/15 text-primary-foreground hover:bg-primary-foreground/20">
-                    {articles[0].category}
-                  </Badge>
-                  <h2 className="font-display text-3xl font-bold leading-tight sm:text-4xl">
-                    {articles[0].title}
-                  </h2>
-                  <p className="mt-4 max-w-xl text-sm leading-relaxed text-primary-foreground/80 sm:text-base">
-                    {articles[0].description}
-                  </p>
-                  <div className="mt-6 flex items-center gap-2 text-xs text-primary-foreground/70">
-                    <Clock3 className="h-3.5 w-3.5" />
-                    {articles[0].time}
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            <div className="grid gap-4">
-              {articles.slice(1).map((article) => (
-                <Card key={article.title} className="border-0 shadow-sm transition-shadow hover:shadow-md">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between gap-4">
-                      <Badge variant="outline">{article.category}</Badge>
-                      <Button variant="ghost" size="icon-sm" aria-label="Salvar notícia">
-                        <Bookmark className="h-4 w-4" />
-                      </Button>
+          <Carousel className="mx-auto w-full">
+            <CarouselContent>
+              {featuredArticles.map((article) => (
+                <CarouselItem key={article.title}>
+                  <Card className="overflow-hidden border-0 shadow-sm">
+                    <div className="relative h-[25rem] sm:h-[ thirtyrem]">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/30 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-6 text-background sm:p-10">
+                        <Badge className="mb-4 border-background/20 bg-background/15 text-background backdrop-blur-sm hover:bg-background/20">
+                          {article.category}
+                        </Badge>
+                        <h2 className="max-w-3xl font-display text-3xl font-bold leading-tight sm:text-5xl">
+                          {article.title}
+                        </h2>
+                        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-background/80 sm:text-base">
+                          {article.description}
+                        </p>
+                        <div className="mt-5 flex items-center gap-2 text-xs text-background/70">
+                          <Clock3 className="h-3.5 w-3.5" />
+                          {article.time}
+                        </div>
+                      </div>
                     </div>
-                    <h3 className="mt-4 font-display text-xl font-semibold leading-snug">
-                      {article.title}
-                    </h3>
-                    <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-                      <Clock3 className="h-3.5 w-3.5" />
-                      {article.time}
-                    </div>
-                  </CardContent>
-                </Card>
+                  </Card>
+                </CarouselItem>
               ))}
-            </div>
-          </div>
+            </CarouselContent>
+            <CarouselPrevious className="left-4" />
+            <CarouselNext className="right-4" />
+          </Carousel>
         </section>
 
         <Separator />
@@ -194,6 +218,12 @@ export default function Home() {
           </div>
         </section>
       </div>
+
+      <footer className="border-t bg-background">
+        <div className="mx-auto max-w-7xl px-6 py-6 text-xs text-muted-foreground lg:px-8">
+          Imagens por AS Photography e cottonbro studio via Pexels.
+        </div>
+      </footer>
     </main>
   );
 }
