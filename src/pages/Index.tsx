@@ -1,27 +1,55 @@
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ShieldCheck } from "lucide-react";
+import LoginForm from "@/components/LoginForm";
 
 export default function Index() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6">
-      <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">
-        Projeto pronto para começar
-      </h1>
-      <p className="mt-4 text-pretty text-base text-muted-foreground sm:text-lg">
-        Este template já vem com Vite, React, TypeScript, Tailwind e a biblioteca
-        de componentes. Agora a IA pode focar no que você pediu, sem boilerplate.
-      </p>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Button asChild>
-          <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-            Docs do Vite <ArrowRight className="h-4 w-4" />
-          </a>
-        </Button>
-        <Button asChild variant="outline">
-          <a href="https://tailwindcss.com" target="_blank" rel="noreferrer">
-            Docs do Tailwind <ArrowRight className="h-4 w-4" />
-          </a>
-        </Button>
+    <main className="grid min-h-screen lg:grid-cols-2">
+      {/* Left — form */}
+      <div className="flex flex-col justify-center px-6 py-16 sm:px-12 lg:px-20">
+        <div className="mx-auto w-full max-w-sm">
+          <div className="mb-10 flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <ShieldCheck className="h-5 w-5 text-primary-foreground" />
+            </div>
+            <span className="font-display text-lg font-semibold tracking-tight">
+              Zenith
+            </span>
+          </div>
+
+          <LoginForm />
+        </div>
+      </div>
+
+      {/* Right — image bleed */}
+      <div className="relative hidden overflow-hidden lg:block">
+        <img
+          src="https://images.pexels.com/photos/4973899/pexels-photo-4973899.jpeg?auto=compress&cs=tinysrgb&w=1600"
+          alt="Laptop exibindo um ícone de cadeado de segurança sobre uma mesa"
+          className="h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-foreground/85 via-foreground/25 to-transparent" />
+
+        <div className="absolute inset-x-0 top-10 flex justify-end px-10">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-background/15 px-3 py-1.5 text-xs font-medium text-background backdrop-blur-sm">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Autenticação protegida
+          </span>
+        </div>
+
+        <div className="absolute inset-x-0 bottom-0 p-10">
+          <blockquote className="max-w-md rounded-xl border border-background/15 bg-background/10 p-6 backdrop-blur-md">
+            <p className="text-pretty font-display text-xl leading-snug text-background">
+              "Trocamos três fornecedores por um único login. Simples de configurar,
+              impossível de burlar."
+            </p>
+            <footer className="mt-4 text-sm text-background/70">
+              Marina Alves · Head de Segurança, Fluxo
+            </footer>
+          </blockquote>
+          <p className="mt-6 text-xs text-background/50">
+            Foto: Dan Nelson / Pexels
+          </p>
+        </div>
       </div>
     </main>
   );
