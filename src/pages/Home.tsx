@@ -78,6 +78,19 @@ export default function Home() {
   return (
     <main id="portal-noticias" className="min-h-screen bg-muted/30">
       <header className="border-b bg-background">
+        <div className="border-b bg-primary text-primary-foreground">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-2 text-xs lg:px-8">
+            <div className="flex items-center gap-2">
+              <span className="flex h-2 w-2 animate-pulse rounded-full bg-primary-foreground" />
+              <span className="font-semibold uppercase tracking-wider">Ao vivo</span>
+              <span className="hidden opacity-80 sm:inline">
+                Acompanhe as principais notícias do momento
+              </span>
+            </div>
+            <span className="hidden opacity-80 sm:inline">Quarta-feira, 18 de junho</span>
+          </div>
+        </div>
+
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5 lg:px-8">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menu">
@@ -135,10 +148,10 @@ export default function Home() {
                 Portal Zenith
               </p>
               <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                As notícias mais importantes do dia
+                O mundo em foco, todos os dias
               </h1>
               <p className="mt-2 max-w-2xl text-muted-foreground">
-                Informação, contexto e análise para você acompanhar o que está movimentando o Brasil e o mundo.
+                Notícias, contexto e análise para você acompanhar o que está movimentando o Brasil e o mundo.
               </p>
             </div>
             <Button variant="ghost" className="hidden gap-2 sm:inline-flex">
