@@ -30,8 +30,8 @@ const featuredArticles = [
       "Novas plataformas digitais aproximam informação, análise e participação em tempo real.",
     time: "Há 32 min",
     image:
-      "https://images.pexels.com/photos/106341/pexels-photo-106341.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "AS Photography",
+      "https://images.pexels.com/photos/19813735/pexels-photo-19813735.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Markus Winkler",
   },
   {
     category: "Jornalismo",
@@ -40,8 +40,8 @@ const featuredArticles = [
       "Em meio ao excesso de conteúdo, curadoria e contexto se tornam essenciais para formar opinião.",
     time: "Há 1 hora",
     image:
-      "https://images.pexels.com/photos/7596907/pexels-photo-7596907.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "cottonbro studio",
+      "https://images.pexels.com/photos/35831908/pexels-photo-35831908.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Alex Dos Santos",
   },
   {
     category: "Atualidades",
@@ -50,8 +50,8 @@ const featuredArticles = [
       "Uma seleção das notícias mais relevantes para você começar o dia bem informado.",
     time: "Há 2 horas",
     image:
-      "https://images.pexels.com/photos/10464798/pexels-photo-10464798.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "cottonbro studio",
+      "https://images.pexels.com/photos/35484952/pexels-photo-35484952.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Ensiha Digital",
   },
 ];
 
@@ -147,7 +147,7 @@ export default function Home() {
               {featuredArticles.map((article) => (
                 <CarouselItem key={article.title}>
                   <Card className="overflow-hidden border-0 shadow-sm">
-                    <div className="relative h-[25rem] sm:h-[ thirtyrem]">
+                    <div className="relative h-[25rem] sm:h-[30rem]">
                       <img
                         src={article.image}
                         alt={article.title}
@@ -221,7 +221,7 @@ export default function Home() {
 
       <footer className="border-t bg-background">
         <div className="mx-auto max-w-7xl px-6 py-6 text-xs text-muted-foreground lg:px-8">
-          Imagens por AS Photography e cottonbro studio via Pexels.
+          Imagens por Markus Winkler, Alex Dos Santos e Ensiha Digital via Pexels.
         </div>
       </footer>
     </main>
