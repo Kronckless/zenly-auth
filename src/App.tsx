@@ -4,7 +4,7 @@ import Login from "@/pages/Login";
 export default function App() {
   return (
     <Routes>
-      <Route path="/cadastro-e-login" element={<Login />} />
+      <Route path="/cadastro-login" element={<Login />} />
     </Routes>
   );
 }
