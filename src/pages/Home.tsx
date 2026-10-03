@@ -260,6 +260,7 @@ const newsItems: Story[] = [
 ];
 
 export default function Home() {
+  // Standalone news portal: this route intentionally has no authentication UI.
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
