@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ArrowRight,
   Bell,
@@ -75,6 +76,13 @@ const articles = [
 ];
 
 export default function Home() {
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+
+  const visibleArticles =
+    selectedCategory === "Todos"
+      ? articles
+      : articles.filter((article) => article.category === selectedCategory);
+
   return (
     <main id="portal-noticias" className="min-h-screen bg-muted/30">
       <header className="border-b bg-background">
@@ -107,8 +115,20 @@ export default function Home() {
           </div>
 
           <div className="hidden items-center gap-1 lg:flex">
+            <Button
+              variant={selectedCategory === "Todos" ? "secondary" : "ghost"}
+              className="text-sm"
+              onClick={() => setSelectedCategory("Todos")}
+            >
+              Todos
+            </Button>
             {categories.map((category) => (
-              <Button key={category} variant="ghost" className="text-sm">
+              <Button
+                key={category}
+                variant={selectedCategory === category ? "secondary" : "ghost"}
+                className="text-sm"
+                onClick={() => setSelectedCategory(category)}
+              >
                 {category}
               </Button>
             ))}
@@ -208,31 +228,41 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            {[
-              ["Política", "Congresso debate novas medidas para os próximos meses"],
-              ["Economia", "Especialistas analisam cenário econômico para este ano"],
-              ["Tecnologia", "Pesquisa revela os hábitos digitais dos brasileiros"],
-            ].map(([category, title]) => (
-              <Card key={title} className="border-0 shadow-sm">
-                <CardContent className="p-6">
-                  <Badge variant="secondary">{category}</Badge>
-                  <h3 className="mt-4 font-display text-lg font-semibold leading-snug">
-                    {title}
-                  </h3>
-                  <p className="mt-4 text-sm text-muted-foreground">
-                    Confira os principais detalhes e tudo o que você precisa saber.
-                  </p>
-                  <div className="mt-5 flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">Há 4 horas</span>
-                    <Button variant="ghost" size="icon-sm" aria-label="Salvar notícia">
-                      <Bookmark className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {visibleArticles.length > 0 ? (
+            <div className="grid gap-5 md:grid-cols-3">
+              {visibleArticles.map((article) => (
+                <Card key={article.title} className="border-0 shadow-sm">
+                  <CardContent className="p-6">
+                    <Badge variant="secondary">{article.category}</Badge>
+                    <h3 className="mt-4 font-display text-lg font-semibold leading-snug">
+                      {article.title}
+                    </h3>
+                    <p className="mt-4 text-sm text-muted-foreground">
+                      Confira os principais detalhes e tudo o que você precisa saber.
+                    </p>
+                    <div className="mt-5 flex items-center justify-between">
+                      <span className="text-xs text-muted-foreground">
+                        {article.time}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label="Salvar notícia"
+                      >
+                        <Bookmark className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Card className="border-dashed shadow-none">
+              <CardContent className="p-8 text-center text-sm text-muted-foreground">
+                Nenhuma notícia encontrada nesta categoria.
+              </CardContent>
+            </Card>
+          )}
         </section>
       </div>
 
