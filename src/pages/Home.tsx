@@ -157,6 +157,23 @@ export default function Home() {
           ))}
         </nav>
 
+        <section className="border-b py-3">
+          <div className="flex items-center gap-3 overflow-x-auto text-sm">
+            <div className="flex shrink-0 items-center gap-2 font-semibold text-primary">
+              <TrendingUp className="h-4 w-4" />
+              Em alta agora
+            </div>
+            <Separator orientation="vertical" className="h-4" />
+            <p className="whitespace-nowrap text-muted-foreground">
+              Mercado acompanha novas oportunidades para pequenos negócios
+            </p>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <p className="whitespace-nowrap text-muted-foreground">
+              Exposição reúne artistas contemporâneos em mostra inédita
+            </p>
+          </div>
+        </section>
+
         <section className="py-10">
           <div className="mb-8 flex items-end justify-between gap-4">
             <div>
