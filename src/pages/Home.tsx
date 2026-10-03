@@ -26,44 +26,44 @@ const categories = ["Política", "Economia", "Tecnologia", "Cultura", "Esportes"
 
 const featuredArticles = [
   {
-    category: "Mundo",
-    title: "Arquitetura histórica revela a riqueza cultural de Diyarbakır",
+    category: "Tecnologia",
+    title: "O entretenimento digital ganha novos espaços na rotina",
     description:
-      "Uma jornada visual por construções que atravessam gerações e preservam a memória de uma cidade.",
+      "Plataformas de streaming transformam a forma como escolhemos filmes, séries e conteúdos para assistir.",
     time: "Há 32 min",
     image:
-      "https://images.pexels.com/photos/39722022/pexels-photo-39722022.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "HÜSEYİN AVCI",
-  },
-  {
-    category: "Tecnologia",
-    title: "Como o design está mudando a experiência nos produtos digitais",
-    description:
-      "Projetos mais humanos e intuitivos colocam as necessidades das pessoas no centro da inovação.",
-    time: "Há 1 hora",
-    image:
-      "https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "picjumbo.com",
-  },
-  {
-    category: "Cultura",
-    title: "Luzes, encontros e tradição movimentam os mercados de Natal",
-    description:
-      "Feiras iluminadas reúnem famílias, sabores e experiências que celebram a temporada.",
-    time: "Há 2 horas",
-    image:
-      "https://images.pexels.com/photos/29912749/pexels-photo-29912749.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "Ahmet Yüksek",
+      "https://images.pexels.com/photos/5082561/pexels-photo-5082561.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "cottonbro studio",
   },
   {
     category: "Comportamento",
-    title: "O ritual de começar o dia bem informado continua vivo",
+    title: "Como pequenos hábitos ajudam a começar o dia conectado",
     description:
-      "Entre o café e as manchetes, diferentes gerações encontram novas formas de acompanhar o mundo.",
+      "Mesas organizadas e ferramentas simples acompanham uma rotina cada vez mais digital e informada.",
+    time: "Há 1 hora",
+    image:
+      "https://images.pexels.com/photos/1420709/pexels-photo-1420709.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Lukas Blazek",
+  },
+  {
+    category: "Cultura",
+    title: "Luzes e tradição movimentam os mercados de Natal",
+    description:
+      "Carrosséis iluminados e decorações festivas reúnem famílias em experiências cheias de nostalgia.",
+    time: "Há 2 horas",
+    image:
+      "https://images.pexels.com/photos/5985844/pexels-photo-5985844.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Oriel Frankie Ashcroft",
+  },
+  {
+    category: "Mídia",
+    title: "A notícia impressa ainda ocupa um lugar especial",
+    description:
+      "Jornais empilhados revelam as texturas e camadas de uma linguagem que continua presente no cotidiano.",
     time: "Há 3 horas",
     image:
-      "https://images.pexels.com/photos/3944425/pexels-photo-3944425.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "cottonbro studio",
+      "https://images.pexels.com/photos/5505718/pexels-photo-5505718.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Mike van Schoonderwalt",
   },
 ];
 
@@ -105,8 +105,8 @@ export default function Home() {
       : articles.filter((article) => article.category === selectedCategory);
 
   return (
-    <main id="portal-noticias" className="min-h-screen bg-muted/30">
-      <header className="border-b bg-background">
+    <main id="portal-noticias" className="min-h-screen bg-muted/30 pt-28">
+      <header className="fixed inset-x-0 top-0 z-40 border-b bg-background">
         <div className="border-b bg-primary text-primary-foreground">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-2 text-xs lg:px-8">
             <div className="flex items-center gap-2">
@@ -306,7 +306,8 @@ export default function Home() {
 
       <footer className="border-t bg-background">
         <div className="mx-auto max-w-7xl px-6 py-6 text-xs text-muted-foreground lg:px-8">
-          Imagens por HÜSEYİN AVCI, picjumbo.com, Ahmet Yüksek e cottonbro studio via Pexels.
+          Imagens por cottonbro studio, Lukas Blazek, Oriel Frankie Ashcroft e
+          Mike van Schoonderwalt via Pexels.
         </div>
       </footer>
     </main>
