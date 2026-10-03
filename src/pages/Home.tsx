@@ -3,260 +3,259 @@ import {
   ArrowLeft,
   ArrowRight,
   Clock3,
-  Menu,
   Search,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-type NewsItem = {
+type Story = {
   image: string;
   category: string;
   title: string;
   description: string;
-  author: string;
+  photographer: string;
 };
 
-const heroStories: NewsItem[] = [
-  {
-    image:
-      "https://images.pexels.com/photos/10464798/pexels-photo-10464798.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Cobertura ao vivo",
-    title: "Repórteres ampliam a cobertura dos acontecimentos desta noite",
-    description:
-      "Equipes de jornalismo acompanham os principais fatos diretamente do local.",
-    author: "cottonbro studio",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/39722022/pexels-photo-39722022.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Mundo",
-    title: "Arquitetura histórica ganha destaque em novo roteiro cultural",
-    description:
-      "Monumentos e espaços históricos atraem visitantes interessados em preservar a memória.",
-    author: "HÜSEYİN AVCI",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/34804016/pexels-photo-34804016.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Tecnologia",
-    title: "Novas ferramentas digitais transformam a rotina de desenvolvimento",
-    description:
-      "Ambientes de trabalho mais conectados aproximam criatividade, código e colaboração.",
-    author: "Daniil Komov",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/7208320/pexels-photo-7208320.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Cidades",
-    title: "Edifícios históricos inspiram novos projetos urbanos",
-    description:
-      "A preservação de fachadas clássicas ganha espaço em discussões sobre o futuro das cidades.",
-    author: "Darya Sannikova",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/39825117/pexels-photo-39825117.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Cultura",
-    title: "Detalhes arquitetônicos revelam a riqueza cultural de Samarcanda",
-    description:
-      "Elementos geométricos e azulejos contam histórias de diferentes gerações.",
-    author: "Alexander Gluschenko",
-  },
-];
-
-const newsGrid: NewsItem[] = [
+const heroStories: Story[] = [
   {
     image:
       "https://images.pexels.com/photos/38862877/pexels-photo-38862877.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Mídia",
-    title: "Como acompanhar as notícias em um mundo cada vez mais veloz",
-    description: "Uma leitura sobre informação, contexto e responsabilidade editorial.",
-    author: "Ann H",
+    category: "Cobertura especial",
+    title: "As notícias do dia começam com informação clara e contexto",
+    description:
+      "Acompanhe os assuntos que estão movimentando o mundo, reunidos em uma leitura objetiva.",
+    photographer: "Ann H",
   },
   {
     image:
-      "https://images.pexels.com/photos/8247921/pexels-photo-8247921.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Segurança",
-    title: "Boas práticas ajudam a evitar falhas de autenticação",
-    description: "Especialistas explicam como proteger acessos digitais.",
-    author: "Markus Spiske",
+      "https://images.pexels.com/photos/28123668/pexels-photo-28123668.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Saúde",
+    title: "Profissionais de emergência reforçam a importância da resposta rápida",
+    description:
+      "Equipes preparadas fazem a diferença quando cada minuto pode transformar uma história.",
+    photographer: "Mikhail Nilov",
   },
+  {
+    image:
+      "https://images.pexels.com/photos/326514/pexels-photo-326514.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Tecnologia",
+    title: "Ferramentas digitais redesenham a forma como o trabalho acontece",
+    description:
+      "Novas experiências conectam criatividade, informação e produtividade em ambientes digitais.",
+    photographer: "Tranmautritam",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/20457113/pexels-photo-20457113.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Mídia",
+    title: "Combater a desinformação exige atenção aos detalhes",
+    description:
+      "Fontes confiáveis e leitura crítica ajudam a separar fatos de mensagens enganosas.",
+    photographer: "Insaanu Studio",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/5505718/pexels-photo-5505718.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Jornalismo",
+    title: "O papel do jornal impresso permanece vivo na rotina dos leitores",
+    description:
+      "A apuração cuidadosa continua sendo uma das bases para compreender o presente.",
+    photographer: "Mike van Schoonderwalt",
+  },
+];
+
+const newsItems: Story[] = [
   {
     image:
       "https://images.pexels.com/photos/38862878/pexels-photo-38862878.jpeg?auto=compress&cs=tinysrgb&w=1600",
     category: "Atualidade",
-    title: "A importância de separar notícia, opinião e análise",
-    description: "Clareza editorial é essencial para uma informação confiável.",
-    author: "Ann H",
+    title: "O que realmente importa nas notícias desta semana",
+    description: "Uma seleção dos temas que merecem atenção.",
+    photographer: "Ann H",
   },
   {
     image:
-      "https://images.pexels.com/photos/6502328/pexels-photo-6502328.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Tecnologia",
-    title: "Desenvolvedores buscam sistemas mais seguros e transparentes",
-    description: "Código bem estruturado é parte importante da segurança digital.",
-    author: "Markus Spiske",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/36706459/pexels-photo-36706459.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Inovação",
-    title: "Trabalho colaborativo acelera a criação de novos produtos",
-    description: "Equipes multidisciplinares compartilham ideias em ambientes modernos.",
-    author: "Zayed Hossain",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/30869078/pexels-photo-30869078.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Internacional",
-    title: "As palavras que dominam o debate global nesta semana",
-    description: "Termos recorrentes revelam os assuntos que movimentam o noticiário.",
-    author: "Markus Winkler",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/19107334/pexels-photo-19107334.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Sociedade",
-    title: "Jornais impressos ainda ocupam espaço na rotina urbana",
-    description: "O hábito de começar o dia com informação resiste à era digital.",
-    author: "Jan van der Wolf",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/38748859/pexels-photo-38748859.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Opinião",
-    title: "O papel do jornalismo em tempos de excesso de informação",
-    description: "Curadoria e contexto ajudam leitores a compreender os fatos.",
-    author: "Ann H",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/6212801/pexels-photo-6212801.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Ciência",
-    title: "Tecnologia exige atenção redobrada para evitar vulnerabilidades",
-    description: "A prevenção continua sendo o melhor caminho para sistemas confiáveis.",
-    author: "Markus Spiske",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/6804613/pexels-photo-6804613.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Mercado",
-    title: "Empresas reorganizam seus ambientes para uma nova fase digital",
-    description: "A infraestrutura acompanha a mudança nas formas de trabalhar.",
-    author: "cottonbro studio",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/10464785/pexels-photo-10464785.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Ao vivo",
-    title: "Bastidores mostram o trabalho por trás de uma transmissão",
-    description: "Repórteres e equipes técnicas trabalham juntos para levar informação ao público.",
-    author: "cottonbro studio",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/15779815/pexels-photo-15779815.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Design",
-    title: "Geometria e luz renovam a identidade de prédios contemporâneos",
-    description: "Fachadas modernas revelam novas possibilidades para a arquitetura.",
-    author: "Josh Withers",
+      "https://images.pexels.com/photos/2882634/pexels-photo-2882634.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Editorial",
+    title: "A linguagem das notícias também comunica prioridades",
+    description: "Como escolhas visuais ajudam a informar.",
+    photographer: "Miguel Á. Padriñán",
   },
   {
     image:
       "https://images.pexels.com/photos/3944425/pexels-photo-3944425.jpeg?auto=compress&cs=tinysrgb&w=1600",
     category: "Comportamento",
-    title: "A pausa para o café continua acompanhando a leitura diária",
-    description: "Pequenos rituais ajudam a criar espaço para informação e reflexão.",
-    author: "cottonbro studio",
+    title: "Café e jornal: pequenos rituais que atravessam gerações",
+    description: "A leitura como parte da rotina diária.",
+    photographer: "cottonbro studio",
   },
   {
     image:
-      "https://images.pexels.com/photos/4439425/pexels-photo-4439425.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Tecnologia",
-    title: "Quando uma mensagem de erro revela mais do que parece",
-    description: "Interfaces também comunicam problemas, riscos e oportunidades.",
-    author: "Vie Studio",
+      "https://images.pexels.com/photos/8941908/pexels-photo-8941908.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Sociedade",
+    title: "Preparação é essencial para profissionais de emergência",
+    description: "Bastidores de quem está pronto para ajudar.",
+    photographer: "Mikhail Nilov",
   },
   {
     image:
-      "https://images.pexels.com/photos/34803973/pexels-photo-34803973.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Trabalho",
-    title: "Produtividade nasce do equilíbrio entre foco e criatividade",
-    description: "Ambientes bem planejados apoiam profissionais em tarefas complexas.",
-    author: "Daniil Komov",
+      "https://images.pexels.com/photos/7191162/pexels-photo-7191162.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Economia",
+    title: "Compras digitais transformam a experiência do consumidor",
+    description: "Tecnologia aproxima negócios e pessoas.",
+    photographer: "Pavel Danilyuk",
   },
   {
     image:
-      "https://images.pexels.com/photos/29708154/pexels-photo-29708154.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Arquitetura",
-    title: "Skylights levam novas perspectivas para espaços internos",
-    description: "A luz natural muda a experiência em edifícios contemporâneos.",
-    author: "Almir reis",
+      "https://images.pexels.com/photos/6314973/pexels-photo-6314973.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Cultura",
+    title: "Lazer e convivência continuam criando novas memórias",
+    description: "Experiências compartilhadas aproximam comunidades.",
+    photographer: "Uriel Mont",
   },
   {
     image:
-      "https://images.pexels.com/photos/1888015/pexels-photo-1888015.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Cultura digital",
-    title: "Linguagem visual transforma mensagens simples em ideias marcantes",
-    description: "Cores e símbolos podem mudar a forma como uma informação é percebida.",
-    author: "Ann H",
+      "https://images.pexels.com/photos/8942071/pexels-photo-8942071.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Saúde",
+    title: "A rotina de atendimento exige foco e preparo",
+    description: "Conheça o trabalho de equipes especializadas.",
+    photographer: "Mikhail Nilov",
   },
   {
     image:
-      "https://images.pexels.com/photos/4218883/pexels-photo-4218883.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Carreira",
-    title: "Home offices evoluem para acompanhar profissionais híbridos",
-    description: "Conforto e estrutura se tornam prioridades na rotina de trabalho.",
-    author: "Paras Katwal",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/10464786/pexels-photo-10464786.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Reportagem",
-    title: "A notícia acontece onde as equipes estão presentes",
-    description: "O jornalismo de rua aproxima acontecimentos e comunidades.",
-    author: "cottonbro studio",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/39722022/pexels-photo-39722022.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Patrimônio",
-    title: "Monumentos preservam memórias que atravessam gerações",
-    description: "A arquitetura histórica continua inspirando novas narrativas.",
-    author: "HÜSEYİN AVCI",
-  },
-  {
-    image:
-      "https://images.pexels.com/photos/7208320/pexels-photo-7208320.jpeg?auto=compress&cs=tinysrgb&w=1600",
+      "https://images.pexels.com/photos/29858264/pexels-photo-29858264.jpeg?auto=compress&cs=tinysrgb&w=1600",
     category: "Cidades",
-    title: "Detalhes urbanos mostram a personalidade de cada bairro",
-    description: "Portas, fachadas e praças ajudam a contar a história local.",
-    author: "Darya Sannikova",
+    title: "Resíduos revelam desafios para o planejamento urbano",
+    description: "Pequenas mudanças podem melhorar os espaços públicos.",
+    photographer: "Toàn Văn",
   },
   {
     image:
-      "https://images.pexels.com/photos/34804016/pexels-photo-34804016.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Startups",
-    title: "Novas ideias ganham forma em espaços de criação compartilhada",
-    description: "A colaboração segue como motor de inovação no setor digital.",
-    author: "Daniil Komov",
+      "https://images.pexels.com/photos/15635401/pexels-photo-15635401.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Internet",
+    title: "Plataformas digitais aproximam marcas e comunidades",
+    description: "A comunicação online ganha novas possibilidades.",
+    photographer: "Walls.io",
   },
   {
     image:
-      "https://images.pexels.com/photos/10464798/pexels-photo-10464798.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Jornalismo",
-    title: "Repórteres conectam o público aos fatos mais importantes",
-    description: "Informação apurada chega de diferentes pontos da cidade.",
-    author: "cottonbro studio",
+      "https://images.pexels.com/photos/7568299/pexels-photo-7568299.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Mundo",
+    title: "O noticiário cabe na palma da mão",
+    description: "Aplicativos mudaram o hábito de acompanhar fatos.",
+    photographer: "Brett Jordan",
   },
   {
     image:
-      "https://images.pexels.com/photos/38862877/pexels-photo-38862877.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    category: "Editorial",
-    title: "As notícias do dia começam com uma boa pergunta",
-    description: "Investigar, contextualizar e informar são etapas de uma mesma missão.",
-    author: "Ann H",
+      "https://images.pexels.com/photos/30917907/pexels-photo-30917907.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Análise",
+    title: "Boas perguntas orientam uma investigação relevante",
+    description: "Curiosidade é parte da apuração jornalística.",
+    photographer: "Markus Winkler",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/7618405/pexels-photo-7618405.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Imprensa",
+    title: "Informação de qualidade pede tempo e responsabilidade",
+    description: "O trabalho por trás de uma boa reportagem.",
+    photographer: "cottonbro studio",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/6991796/pexels-photo-6991796.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Negócios",
+    title: "Organização visual ajuda equipes a tomar decisões",
+    description: "Ideias ficam mais claras quando são bem estruturadas.",
+    photographer: "DS stories",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/14553707/pexels-photo-14553707.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Programação",
+    title: "Código continua no centro da inovação digital",
+    description: "Desenvolvedores criam soluções para novos desafios.",
+    photographer: "Bibek ghosh",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/17609924/pexels-photo-17609924.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Leitura",
+    title: "Jornais ainda convidam o leitor a desacelerar",
+    description: "Uma pausa para acompanhar as histórias do mundo.",
+    photographer: "Beyzanur K.",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/29556471/pexels-photo-29556471.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Internacional",
+    title: "Diferentes vozes ajudam a ampliar a visão dos acontecimentos",
+    description: "A diversidade de fontes enriquece o debate.",
+    photographer: "Moussa Idrissi",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/6000150/pexels-photo-6000150.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Carreira",
+    title: "Profissionais acompanham as mudanças do mercado",
+    description: "Informação também apoia escolhas profissionais.",
+    photographer: "Ono Kosuki",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/5999982/pexels-photo-5999982.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Empreendedorismo",
+    title: "Novas lideranças constroem negócios mais conectados",
+    description: "Empreendedores buscam soluções para um novo cenário.",
+    photographer: "Ono Kosuki",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/6991380/pexels-photo-6991380.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Ideias",
+    title: "Mapear pensamentos facilita projetos mais criativos",
+    description: "Colaboração nasce de boas conexões.",
+    photographer: "DS stories",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/20457113/pexels-photo-20457113.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Verificação",
+    title: "Antes de compartilhar, é preciso conferir a informação",
+    description: "Responsabilidade digital começa com a checagem.",
+    photographer: "Insaanu Studio",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/326514/pexels-photo-326514.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Design",
+    title: "Interfaces mais humanas aproximam tecnologia e usuários",
+    description: "Clareza é uma qualidade essencial no digital.",
+    photographer: "Tranmautritam",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/5505718/pexels-photo-5505718.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Memória",
+    title: "A história também pode ser encontrada nas páginas de um jornal",
+    description: "Arquivos ajudam a entender o caminho até aqui.",
+    photographer: "Mike van Schoonderwalt",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/7568299/pexels-photo-7568299.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Tecnologia",
+    title: "Notificações mudam a velocidade da informação",
+    description: "O desafio é acompanhar sem perder o contexto.",
+    photographer: "Brett Jordan",
+  },
+  {
+    image:
+      "https://images.pexels.com/photos/28123668/pexels-photo-28123668.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    category: "Serviço",
+    title: "Cuidar de pessoas continua sendo uma notícia importante",
+    description: "Conheça histórias de dedicação e presença.",
+    photographer: "Mikhail Nilov",
   },
 ];
 
@@ -264,14 +263,12 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
-    const interval = window.setInterval(() => {
+    const timer = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % heroStories.length);
     }, 3000);
 
-    return () => window.clearInterval(interval);
+    return () => window.clearInterval(timer);
   }, []);
-
-  const currentStory = heroStories[activeSlide];
 
   const goToPrevious = () => {
     setActiveSlide(
@@ -283,45 +280,41 @@ export default function Home() {
     setActiveSlide((current) => (current + 1) % heroStories.length);
   };
 
+  const currentStory = heroStories[activeSlide];
+
   return (
     <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-background/95">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 sm:px-8">
+      <header className="border-b border-border bg-background">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Zap className="h-5 w-5 fill-current" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+              <Zap className="size-5 fill-current" />
             </div>
             <div>
               <p className="font-display text-xl font-bold tracking-tight">
                 Pulso
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 Notícias em movimento
               </p>
             </div>
           </div>
 
           <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex">
-            <a className="text-foreground" href="#urgentes">
+            <a href="#urgentes" className="hover:text-foreground">
               Urgentes
             </a>
-            <a className="transition-colors hover:text-foreground" href="#recentes">
+            <a href="#recentes" className="hover:text-foreground">
               Recentes
             </a>
-            <a className="transition-colors hover:text-foreground" href="#sobre">
+            <a href="#sobre" className="hover:text-foreground">
               Sobre o portal
             </a>
           </nav>
 
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Pesquisar notícias">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" className="md:hidden" aria-label="Abrir menu">
-              <Menu className="h-4 w-4" />
-            </Button>
-            <Button className="hidden sm:inline-flex">Assine agora</Button>
-          </div>
+          <Button variant="ghost" size="icon" aria-label="Pesquisar notícias">
+            <Search className="size-4" />
+          </Button>
         </div>
       </header>
 
@@ -330,21 +323,22 @@ export default function Home() {
           <div className="mb-5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full bg-destructive px-3 py-1.5 text-xs font-bold tracking-wide text-destructive-foreground">
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-current" />
+                <span className="size-1.5 animate-pulse rounded-full bg-current" />
                 NOTÍCIAS URGENTES
               </span>
               <span className="hidden text-sm text-muted-foreground sm:inline">
                 Atualizado agora
               </span>
             </div>
-            <div className="flex items-center gap-2">
+
+            <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={goToPrevious}
                 aria-label="Notícia anterior"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ArrowLeft className="size-4" />
               </Button>
               <Button
                 variant="outline"
@@ -352,26 +346,27 @@ export default function Home() {
                 onClick={goToNext}
                 aria-label="Próxima notícia"
               >
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="size-4" />
               </Button>
             </div>
           </div>
 
-          <div className="relative min-h-[490px] overflow-hidden rounded-2xl bg-foreground shadow-xl sm:min-h-[560px]">
+          <div className="relative min-h-[480px] overflow-hidden rounded-2xl bg-foreground shadow-xl sm:min-h-[560px]">
             {heroStories.map((story, index) => (
               <img
                 key={story.image}
                 src={story.image}
                 alt={story.title}
-                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                className={`absolute inset-0 size-full object-cover transition-opacity duration-700 ${
                   index === activeSlide ? "opacity-100" : "opacity-0"
                 }`}
               />
             ))}
-            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/45 to-transparent" />
 
-            <div className="absolute inset-x-0 bottom-0 p-6 sm:p-10 lg:max-w-3xl">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-primary-foreground/75">
+            <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/50 to-transparent" />
+
+            <div className="absolute inset-x-0 bottom-0 max-w-3xl p-6 sm:p-10">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-background/75">
                 {currentStory.category}
               </p>
               <h1
@@ -383,12 +378,12 @@ export default function Home() {
               <p className="mt-4 max-w-2xl text-pretty text-sm leading-relaxed text-background/75 sm:text-base">
                 {currentStory.description}
               </p>
-              <p className="mt-5 text-xs text-background/55">
-                Foto: {currentStory.author} / Pexels
+              <p className="mt-5 text-xs text-background/60">
+                Foto: {currentStory.photographer} / Pexels
               </p>
             </div>
 
-            <div className="absolute bottom-6 right-6 flex items-center gap-2 sm:bottom-10 sm:right-10">
+            <div className="absolute bottom-6 right-6 flex gap-2 sm:bottom-10 sm:right-10">
               {heroStories.map((story, index) => (
                 <button
                   key={story.title}
@@ -413,7 +408,10 @@ export default function Home() {
               <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-primary">
                 Em destaque
               </p>
-              <h2 id="recent-title" className="font-display text-3xl font-bold tracking-tight">
+              <h2
+                id="recent-title"
+                className="font-display text-3xl font-bold tracking-tight"
+              >
                 Notícias recentes
               </h2>
             </div>
@@ -423,31 +421,32 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-12">
-            {newsGrid.map((story) => (
+            {newsItems.map((story) => (
               <article
                 key={`${story.title}-${story.image}`}
-                className="group min-w-0 lg:col-span-2"
+                className="group min-w-0 lg:col-span-1"
               >
                 <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-muted">
                   <img
                     src={story.image}
                     alt={story.title}
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                    className="size-full object-cover transition duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/35 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
                 </div>
+
                 <div className="mt-3">
                   <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-primary">
                     {story.category}
                   </p>
-                  <h3 className="mt-1.5 line-clamp-3 font-display text-base font-bold leading-snug transition-colors group-hover:text-primary">
+                  <h3 className="mt-1.5 line-clamp-3 font-display text-sm font-bold leading-snug transition-colors group-hover:text-primary">
                     {story.title}
                   </h3>
                   <p className="mt-2 hidden text-xs leading-relaxed text-muted-foreground sm:block">
                     {story.description}
                   </p>
                   <div className="mt-3 flex items-center gap-1.5 text-[10px] text-muted-foreground">
-                    <Clock3 className="h-3 w-3" />
+                    <Clock3 className="size-3" />
                     <span>Leitura de 3 min</span>
                   </div>
                 </div>
@@ -457,11 +456,15 @@ export default function Home() {
         </section>
       </div>
 
-      <footer id="sobre" className="mt-8 border-t border-border bg-muted/40">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between sm:px-8">
+      <footer id="sobre" className="border-t border-border bg-muted/40">
+        <div className="mx-auto max-w-7xl px-5 py-8 text-xs leading-relaxed text-muted-foreground sm:px-8">
           <p>© 2025 Pulso. Informação clara para todos os dias.</p>
-          <p>
-            Fotografias: colaboradores creditados individualmente, via Pexels.
+          <p className="mt-2">
+            Fotografias: Ann H, Mikhail Nilov, Tranmautritam, Insaanu Studio,
+            Mike van Schoonderwalt, Miguel Á. Padriñán, cottonbro studio, Pavel
+            Danilyuk, Uriel Mont, Toàn Văn, Walls.io, Brett Jordan, Markus
+            Winkler, DS stories, Bibek ghosh, Beyzanur K., Moussa Idrissi e Ono
+            Kosuki via Pexels.
           </p>
         </div>
       </footer>
