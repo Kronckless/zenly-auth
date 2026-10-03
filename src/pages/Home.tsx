@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Bell,
@@ -26,34 +26,44 @@ const categories = ["Política", "Economia", "Tecnologia", "Cultura", "Esportes"
 
 const featuredArticles = [
   {
-    category: "Tecnologia",
-    title: "Como a tecnologia está transformando a forma de acompanhar as notícias",
+    category: "Mundo",
+    title: "Arquitetura histórica revela a riqueza cultural de Diyarbakır",
     description:
-      "Novas plataformas digitais aproximam informação, análise e participação em tempo real.",
+      "Uma jornada visual por construções que atravessam gerações e preservam a memória de uma cidade.",
     time: "Há 32 min",
     image:
-      "https://images.pexels.com/photos/19813735/pexels-photo-19813735.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "Markus Winkler",
+      "https://images.pexels.com/photos/39722022/pexels-photo-39722022.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "HÜSEYİN AVCI",
   },
   {
-    category: "Jornalismo",
-    title: "A informação que ajuda a entender o mundo todos os dias",
+    category: "Tecnologia",
+    title: "Como o design está mudando a experiência nos produtos digitais",
     description:
-      "Em meio ao excesso de conteúdo, curadoria e contexto se tornam essenciais para formar opinião.",
+      "Projetos mais humanos e intuitivos colocam as necessidades das pessoas no centro da inovação.",
     time: "Há 1 hora",
     image:
-      "https://images.pexels.com/photos/35831908/pexels-photo-35831908.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "Alex Dos Santos",
+      "https://images.pexels.com/photos/196645/pexels-photo-196645.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "picjumbo.com",
   },
   {
-    category: "Atualidades",
-    title: "As principais histórias e tendências que movimentam o dia",
+    category: "Cultura",
+    title: "Luzes, encontros e tradição movimentam os mercados de Natal",
     description:
-      "Uma seleção das notícias mais relevantes para você começar o dia bem informado.",
+      "Feiras iluminadas reúnem famílias, sabores e experiências que celebram a temporada.",
     time: "Há 2 horas",
     image:
-      "https://images.pexels.com/photos/35484952/pexels-photo-35484952.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    credit: "Ensiha Digital",
+      "https://images.pexels.com/photos/29912749/pexels-photo-29912749.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "Ahmet Yüksek",
+  },
+  {
+    category: "Comportamento",
+    title: "O ritual de começar o dia bem informado continua vivo",
+    description:
+      "Entre o café e as manchetes, diferentes gerações encontram novas formas de acompanhar o mundo.",
+    time: "Há 3 horas",
+    image:
+      "https://images.pexels.com/photos/3944425/pexels-photo-3944425.jpeg?auto=compress&cs=tinysrgb&w=1600",
+    credit: "cottonbro studio",
   },
 ];
 
@@ -76,9 +86,18 @@ const articles = [
 ];
 
 export default function Home() {
-  return null;
-
   const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [carouselApi, setCarouselApi] = useState<any>(null);
+
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const autoplay = window.setInterval(() => {
+      carouselApi.scrollNext();
+    }, 3000);
+
+    return () => window.clearInterval(autoplay);
+  }, [carouselApi]);
 
   const visibleArticles =
     selectedCategory === "Todos"
@@ -198,7 +217,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <Carousel className="mx-auto w-full">
+          <Carousel setApi={setCarouselApi} className="mx-auto w-full">
             <CarouselContent>
               {featuredArticles.map((article) => (
                 <CarouselItem key={article.title}>
@@ -287,7 +306,7 @@ export default function Home() {
 
       <footer className="border-t bg-background">
         <div className="mx-auto max-w-7xl px-6 py-6 text-xs text-muted-foreground lg:px-8">
-          Imagens por Markus Winkler, Alex Dos Santos e Ensiha Digital via Pexels.
+          Imagens por HÜSEYİN AVCI, picjumbo.com, Ahmet Yüksek e cottonbro studio via Pexels.
         </div>
       </footer>
     </main>
