@@ -76,6 +76,8 @@ const articles = [
 ];
 
 export default function Home() {
+  return null;
+
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
   const visibleArticles =
