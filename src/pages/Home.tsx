@@ -101,36 +101,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-background">
-      <header className="border-b border-border bg-background">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 lg:px-8">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-              <Radio className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-display text-xl font-bold tracking-tight">
-                Horizonte
-              </p>
-              <p className="text-xs text-muted-foreground">informação em movimento</p>
-            </div>
-          </div>
 
-          <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
-            <a className="text-foreground" href="#urgente">Agora</a>
-            <a href="#noticias">Notícias</a>
-            <a href="#rodape">Sobre nós</a>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" aria-label="Buscar">
-              <Search className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" aria-label="Abrir menu">
-              <Menu className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </header>
 
       <div className="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-12">
         <section id="urgente" aria-label="Notícias urgentes">
