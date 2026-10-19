@@ -146,6 +146,14 @@ export default function Home() {
   }, []);
 
   const story = carouselStories[activeSlide];
+  const noPontoMatches = newsItems.filter((item) =>
+    /no[\s-]+ponto/i.test(
+      `${item.title} ${item.sourceUrl} ${(item.categories || []).join(" ")}`,
+    ),
+  );
+  const integralNewsItems = (
+    noPontoMatches.length > 0 ? noPontoMatches : newsItems
+  ).slice(0, 4);
 
   return (
     <main className="min-h-screen bg-background">
@@ -239,7 +247,7 @@ export default function Home() {
             </p>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {newsItems.map((item) => (
+              {newsItems.slice(0, 6).map((item) => (
                 <Card
                   key={item.sourceUrl}
                   className="gap-0 overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
@@ -345,10 +353,9 @@ export default function Home() {
               </div>
             ) : (
               <p className="rounded-xl border border-background/20 p-4 text-sm text-background/75">
-                Ainda não há matérias da editoria No Ponto disponíveis no feed.
+                Ainda não há notícias disponíveis no feed.
               </p>
-            );
-          })()}
+            )}
         </section>
 
         <Dialog

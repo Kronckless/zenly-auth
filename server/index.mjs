@@ -138,7 +138,7 @@ function parseFeed(xml, sourceHost) {
           url.hostname === "revistaoeste.com" ||
           url.hostname.endsWith(".revistaoeste.com");
         if (url.protocol !== "https:" || !isRevistaOeste) return null;
-        if (!title || !description) return null;
+        if (!title) return null;
 
         return {
           title,
@@ -210,8 +210,12 @@ async function refreshNews() {
 
   const articlesByUrl = new Map();
 
-  // Reúne matérias dos feeds e páginas seguintes da editoria No Ponto.
-  // A deduplicação permite completar quatro notícias sem repetir cards.
+  const feedXml = await fetchFeedText(feedUrl.href);
+  const feedArticles = parseFeed(feedXml, feedUrl.hostname);
+  for (const article of feedArticles) {
+    articlesByUrl.set(article.sourceUrl, article);
+  }
+
   const categoryPaths = [
     "/category/no-ponto/feed/",
     "/no-ponto/feed/",
@@ -228,13 +232,19 @@ async function refreshNews() {
       console.info(`[notícias] ${path}: ${categoryArticles.length} matérias válidas`);
 
       for (const article of categoryArticles) {
+        const existing = articlesByUrl.get(article.sourceUrl);
         articlesByUrl.set(article.sourceUrl, {
+          ...(existing || article),
           ...article,
-          categories: [...new Set([...(article.categories || []), "No Ponto"])],
+          categories: [
+            ...new Set([
+              ...(existing?.categories || []),
+              ...(article.categories || []),
+              "No Ponto",
+            ]),
+          ],
         });
       }
-
-      if (articlesByUrl.size >= 4) break;
     } catch (error) {
       console.warn(
         `[notícias] Falha ao consultar ${path}:`,
@@ -243,26 +253,13 @@ async function refreshNews() {
     }
   }
 
-  const xml = await fetchFeedText(feedUrl.href);
-  const articles = parseFeed(xml, feedUrl.hostname);
-  for (const article of articles) {
-    if (
-      article.categories?.some(
-        (category) =>
-          category
-            .normalize("NFD")
-            .replace(/[\\u0300-\\u036f]/g, "")
-            .trim()
-            .toUpperCase() === "NO PONTO",
-      )
-    ) {
-      articlesByUrl.set(article.sourceUrl, article);
-    }
-  }
-
-  cachedNews = [...articlesByUrl.values()].slice(0, 4);
+  cachedNews = [...articlesByUrl.values()].sort((a, b) => {
+    const dateA = Date.parse(a.publishedAt || "") || 0;
+    const dateB = Date.parse(b.publishedAt || "") || 0;
+    return dateB - dateA;
+  });
   cachedAt = Date.now();
-  console.info(`[notícias] Resultado: ${cachedNews.length} de 4 matérias`);
+  console.info(`[notícias] Resultado: ${cachedNews.length} matérias recebidas`);
   return cachedNews;
 }
 
