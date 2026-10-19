@@ -92,7 +92,7 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
       alt={title}
       loading="lazy"
       onError={() => setImageFailed(true)}
-      className="h-44 w-full rounded-lg object-cover"
+      className="h-32 w-full rounded-lg object-cover"
     />
   );
 }
@@ -237,20 +237,20 @@ export default function Home() {
               Nenhuma notícia está disponível no feed no momento.
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {newsItems.map((item) => (
                 <Card
                   key={item.sourceUrl}
-                  className="overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
+                  className="gap-0 overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
                 >
-                  <div className="px-5 pt-5">
+                  <div className="px-3 pt-3">
                     <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                   </div>
-                  <CardHeader className="space-y-2 p-5">
+                  <CardHeader className="space-y-2 p-3">
                     <Badge variant="secondary" className="w-fit text-[10px]">
                       Revista Oeste
                     </Badge>
-                    <CardTitle className="text-base leading-snug">
+                    <CardTitle className="line-clamp-2 text-base leading-snug">
                       <button
                         type="button"
                         className="text-left hover:text-primary"
@@ -260,8 +260,8 @@ export default function Home() {
                       </button>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3 px-5 pb-5">
-                    <p className="line-clamp-3 text-sm text-muted-foreground">
+                  <CardContent className="space-y-2 px-3 pb-3">
+                    <p className="line-clamp-2 text-sm text-muted-foreground">
                       {item.content}
                     </p>
                     <div className="flex items-center justify-between gap-3">
