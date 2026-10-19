@@ -225,6 +225,7 @@ async function refreshNews() {
       const categoryUrl = new URL(path, "https://revistaoeste.com");
       const xml = await fetchFeedText(categoryUrl.href);
       const categoryArticles = parseFeed(xml, categoryUrl.hostname);
+      console.info(`[notícias] ${path}: ${categoryArticles.length} matérias válidas`);
 
       for (const article of categoryArticles) {
         articlesByUrl.set(article.sourceUrl, {
@@ -234,8 +235,11 @@ async function refreshNews() {
       }
 
       if (articlesByUrl.size >= 4) break;
-    } catch {
-      // Tenta a próxima página ou endereço de feed da editoria.
+    } catch (error) {
+      console.warn(
+        `[notícias] Falha ao consultar ${path}:`,
+        error instanceof Error ? error.message : error,
+      );
     }
   }
 
@@ -258,6 +262,7 @@ async function refreshNews() {
 
   cachedNews = [...articlesByUrl.values()].slice(0, 4);
   cachedAt = Date.now();
+  console.info(`[notícias] Resultado: ${cachedNews.length} de 4 matérias`);
   return cachedNews;
 }
 
