@@ -58,6 +58,15 @@ function parseFeed(xml, sourceHost) {
         readTag(item, "description") ||
         readTag(item, "summary") ||
         readTag(item, "content");
+      const imageUrl = [...item.matchAll(/<(?:media:content|media:thumbnail|enclosure)\b([^>]*?)\/?>/gi)]
+        .map(([, attributes]) => attributes.match(/\burl=["']([^"']+)["']/i)?.[1])
+        .find((url) => {
+          try {
+            return url && new URL(url).protocol === "https:";
+          } catch {
+            return false;
+          }
+        });
       const publishedAt =
         readTag(item, "pubDate") ||
         readTag(item, "published") ||
@@ -75,6 +84,7 @@ function parseFeed(xml, sourceHost) {
           title,
           content: description,
           sourceUrl: url.href,
+          imageUrl,
           publishedAt,
           rewritten: false,
         };

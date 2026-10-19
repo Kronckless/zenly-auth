@@ -58,6 +58,7 @@ type NewsItem = {
   title: string;
   content: string;
   sourceUrl: string;
+  imageUrl?: string;
   publishedAt?: string;
   rewritten?: boolean;
 };
@@ -275,17 +276,19 @@ export default function Home() {
                     {selectedNews.rewritten ? " · Texto reescrito" : ""}
                   </DialogDescription>
                 </DialogHeader>
+                {selectedNews.imageUrl && (
+                  <img
+                    src={selectedNews.imageUrl}
+                    alt={selectedNews.title}
+                    className="max-h-[55vh] w-full rounded-xl object-cover"
+                  />
+                )}
                 <div className="whitespace-pre-line text-sm leading-7 text-foreground">
                   {selectedNews.content}
                 </div>
-                <a
-                  href={selectedNews.sourceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
-                >
-                  Ver publicação original na Revista Oeste
-                </a>
+                <p className="border-t border-border pt-4 text-xs text-muted-foreground">
+                  Fonte: Revista Oeste. Conteúdo e imagem conforme disponibilizados pelo feed.
+                </p>
               </>
             )}
           </DialogContent>
