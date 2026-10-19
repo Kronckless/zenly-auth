@@ -22,6 +22,25 @@ function decodeXml(value = "") {
     .replace(/&#x([\da-f]+);/gi, (_, code) =>
       String.fromCodePoint(parseInt(code, 16)),
     )
+    .replace(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi, (anchor, attributes) => {
+      const href = attributes.match(/\bhref=["']([^"']+)["']/i)?.[1];
+      try {
+        const hostname = new URL(href).hostname.toLowerCase();
+        if (
+          hostname === "youtu.be" ||
+          hostname.endsWith(".youtu.be") ||
+          hostname === "youtube.com" ||
+          hostname.endsWith(".youtube.com") ||
+          hostname === "youtube-nocookie.com" ||
+          hostname.endsWith(".youtube-nocookie.com")
+        ) {
+          return " ";
+        }
+      } catch {
+        // Mantém links sem endereço reconhecível.
+      }
+      return anchor;
+    })
     .replace(/<br\b[^>]*\/?>/gi, "\n")
     .replace(/<\/(?:p|div|li|h[1-6]|blockquote|section|article)\s*>/gi, "\n")
     .replace(/<(?:p|div|li|h[1-6]|blockquote|section|article)\b[^>]*>/gi, "")
@@ -29,6 +48,24 @@ function decodeXml(value = "") {
     .replace(/[ \t]+/g, " ")
     .replace(/ *\n */g, "\n")
     .replace(/\n{2,}/g, "\n")
+    .trim();
+}
+
+function cleanNewsContent(value = "") {
+  return value
+    .replace(
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be|youtube-nocookie\.com)\S*/gi,
+      " ",
+    )
+    .replace(
+      /^\s*\+\s*Entenda como funciona a política brasileira no guia de Oeste\.?\s*$/gim,
+      "",
+    )
+    .replace(/^\s*Leia também\s*:\s*.*$/gim, "")
+    .replace(/\n?\s*O post\b[\s\S]*?\bapareceu primeiro em Revista Oeste\.?\s*$/i, "")
+    .replace(/[ \t]{2,}/g, " ")
+    .replace(/[ \t]*\n[ \t]*/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
 
@@ -88,7 +125,7 @@ function parseFeed(xml, sourceHost) {
 
         return {
           title,
-          content: description,
+          content: cleanNewsContent(description),
           sourceUrl: url.href,
           imageUrl,
           publishedAt,
