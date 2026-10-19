@@ -168,7 +168,7 @@ export default function Home() {
 
   const story = carouselStories[activeSlide];
   const editionBulletinPattern =
-    /\\b(?:jornal|noticiário)\\b.*\\b(?:edição|assista|acompanhe)\\b|\\b(?:assista|acompanhe)\\s+(?:ao\\s+)?(?:noticiário|jornal)\\b/i;
+    /\b(?:jornal|noticiário)\b.*\b(?:edição|assista|acompanhe)\b|\b(?:assista|acompanhe)\s+(?:ao\s+)?(?:noticiário|jornal)\b|\b(?:primeira|segunda|terceira|quarta|última)\s+edição\b/i;
   const feedNews = (Array.isArray(newsItems) ? newsItems : []).filter(
     (item) => !editionBulletinPattern.test(item.title || ""),
   );
