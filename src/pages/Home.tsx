@@ -167,9 +167,13 @@ export default function Home() {
   }, []);
 
   const story = carouselStories[activeSlide];
-  const availableNews = Array.isArray(newsItems) ? newsItems : [];
-  const latestNewsItems = availableNews.slice(0, 6);
-  const noPontoMatches = availableNews.filter((item) => {
+  const editionBulletinPattern =
+    /\\b(?:jornal|noticiário)\\b.*\\b(?:edição|assista|acompanhe)\\b|\\b(?:assista|acompanhe)\\s+(?:ao\\s+)?(?:noticiário|jornal)\\b/i;
+  const feedNews = (Array.isArray(newsItems) ? newsItems : []).filter(
+    (item) => !editionBulletinPattern.test(item.title || ""),
+  );
+  const latestNewsItems = feedNews.slice(0, 6);
+  const noPontoMatches = feedNews.filter((item) => {
     const searchableText = [
       item.title,
       item.sourceUrl,
@@ -184,7 +188,7 @@ export default function Home() {
     return searchableText.includes("no ponto");
   });
   const integralNewsItems = (
-    noPontoMatches.length > 0 ? noPontoMatches : availableNews
+    noPontoMatches.length > 0 ? noPontoMatches : feedNews
   ).slice(0, 4);
 
   return (
@@ -273,7 +277,7 @@ export default function Home() {
                 Tentar novamente
               </Button>
             </div>
-          ) : newsItems.length === 0 ? (
+          ) : feedNews.length === 0 ? (
             <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
               Nenhuma notícia está disponível no feed no momento.
             </p>
