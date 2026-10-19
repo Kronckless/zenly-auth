@@ -166,8 +166,19 @@ async function getNews() {
 }
 
 const server = createServer(async (request, response) => {
+  // Cabeçalhos de Segurança e CORS liberado para requisições do Zenly / Navegador
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("Cache-Control", "no-store");
+  response.setHeader("Access-Control-Allow-Origin", "*");
+  response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  // Tratamento da verificação prévia do navegador (Preflight OPTIONS)
+  if (request.method === "OPTIONS") {
+    response.writeHead(204);
+    response.end();
+    return;
+  }
 
   if (request.method !== "GET") {
     response.writeHead(405, { Allow: "GET" });
