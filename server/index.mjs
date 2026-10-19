@@ -133,7 +133,7 @@ async function refreshNews() {
 
   cachedNews = articles;
   cachedAt = Date.now();
-  return news;
+  return cachedNews;
 }
 
 async function getNews() {

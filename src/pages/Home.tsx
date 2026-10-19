@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useEffect, useState } from "react";
 import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -259,7 +258,7 @@ export default function Home() {
             if (!open) setSelectedNews(null);
           }}
         >
-          <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
+          <DialogContent className="fixed inset-0 left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none p-6 sm:max-w-none sm:p-8">
             {selectedNews && (
               <>
                 <DialogHeader>
