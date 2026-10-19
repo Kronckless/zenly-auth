@@ -153,9 +153,9 @@ async function rewriteArticle(article) {
 }
 
 async function refreshNews() {
-  if (!process.env.RSS_FEED_URL) throw new Error("Fonte RSS não configurada");
-
-  const feedUrl = new URL(process.env.RSS_FEED_URL);
+  const feedUrl = new URL(
+    process.env.RSS_FEED_URL || "https://revistaoeste.com/feed/",
+  );
   if (feedUrl.protocol !== "https:") throw new Error("Fonte RSS inválida");
 
   const xml = await fetchFeedText(feedUrl.href);

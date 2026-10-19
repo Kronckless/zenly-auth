@@ -10,7 +10,7 @@ Base template used to scaffold new projects.
 O serviço de notícias usa apenas conexões HTTPS e fica limitado a `127.0.0.1`
 por padrão. Configure as variáveis de ambiente antes de iniciar:
 
-- `RSS_FEED_URL`: feed RSS/Atom da fonte.
+- `RSS_FEED_URL`: feed RSS/Atom da fonte (opcional; por padrão, usa o feed da Revista Oeste).
 - `REWRITE_API_URL`: endpoint HTTPS compatível que recebe `title`, `content` e `source_url`, e retorna `title` e `content`.
 - `REWRITE_API_KEY`: chave privada do serviço de reescrita. Mantenha-a somente no servidor.
 - `API_PORT`: porta opcional (padrão `3001`).
