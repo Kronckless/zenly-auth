@@ -208,10 +208,47 @@ async function refreshNews() {
   );
   if (feedUrl.protocol !== "https:") throw new Error("Fonte RSS inválida");
 
+  const articlesByUrl = new Map();
+
+  // Prioriza o feed específico da editoria para obter matérias além das
+  // que aparecem na lista geral de notícias.
+  for (const path of ["/category/no-ponto/feed/", "/no-ponto/feed/"]) {
+    try {
+      const categoryUrl = new URL(path, "https://revistaoeste.com");
+      const xml = await fetchFeedText(categoryUrl.href);
+      const categoryArticles = parseFeed(xml, categoryUrl.hostname);
+
+      for (const article of categoryArticles) {
+        articlesByUrl.set(article.sourceUrl, {
+          ...article,
+          categories: [...new Set([...(article.categories || []), "No Ponto"])],
+        });
+      }
+
+      if (articlesByUrl.size >= 4) break;
+    } catch {
+      // Tenta o próximo endereço de feed da editoria.
+    }
+  }
+
   const xml = await fetchFeedText(feedUrl.href);
   const articles = parseFeed(xml, feedUrl.hostname);
+  for (const article of articles) {
+    if (
+      article.categories?.some(
+        (category) =>
+          category
+            .normalize("NFD")
+            .replace(/[\\u0300-\\u036f]/g, "")
+            .trim()
+            .toUpperCase() === "NO PONTO",
+      )
+    ) {
+      articlesByUrl.set(article.sourceUrl, article);
+    }
+  }
 
-  cachedNews = articles;
+  cachedNews = [...articlesByUrl.values()].slice(0, 4);
   cachedAt = Date.now();
   return cachedNews;
 }
