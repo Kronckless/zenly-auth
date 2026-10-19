@@ -40,11 +40,19 @@ function parseFeed(xml, sourceHost) {
   return items
     .map(([item]) => {
       const title = readTag(item, "title");
-      const linkTag = item.match(/<link\b[^>]*>/i)?.[0] || "";
+      const linkTags = [...item.matchAll(/<link\b([^>]*?)(?:\/>|>([\s\S]*?)<\/link\s*>)/gi)];
       const link =
-        readTag(item, "link") ||
-        linkTag.match(/\bhref=["']([^"']+)["']/i)?.[1] ||
-        "";
+        linkTags
+          .map(([, attributes, content]) => {
+            const href = attributes.match(/\bhref=["']([^"']+)["']/i)?.[1];
+            const rel = attributes.match(/\brel=["']([^"']+)["']/i)?.[1];
+            return {
+              value: href || decodeXml(content || ""),
+              rel: rel?.toLowerCase(),
+            };
+          })
+          .find(({ value, rel }) => value && (!rel || rel === "alternate"))
+          ?.value || "";
       const description =
         readTag(item, "content:encoded") ||
         readTag(item, "description") ||
@@ -57,7 +65,10 @@ function parseFeed(xml, sourceHost) {
 
       try {
         const url = new URL(link);
-        if (url.protocol !== "https:" || url.hostname !== sourceHost) return null;
+        const isRevistaOeste =
+          url.hostname === "revistaoeste.com" ||
+          url.hostname.endsWith(".revistaoeste.com");
+        if (url.protocol !== "https:" || !isRevistaOeste) return null;
         if (!title || !description) return null;
 
         return {
