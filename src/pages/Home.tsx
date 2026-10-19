@@ -313,10 +313,10 @@ export default function Home() {
                   <img
                     src={selectedNews.imageUrl}
                     alt={selectedNews.title}
-                    className="max-h-[55vh] w-full rounded-xl object-cover"
+                    className="mx-auto max-h-[55vh] w-full max-w-4xl rounded-xl object-cover"
                   />
                 )}
-                <div className="space-y-5 text-base leading-relaxed text-foreground">
+                <div className="mx-auto w-full max-w-3xl space-y-6 text-[17px] leading-8 text-foreground">
                   {selectedNews.content
                     .split(/\n+/)
                     .map((paragraph) => paragraph.trim())
