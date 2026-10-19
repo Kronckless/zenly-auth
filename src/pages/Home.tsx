@@ -352,6 +352,7 @@ export default function Home() {
             <p className="rounded-xl border border-background/20 p-4 text-sm text-background/75">
               Ainda não há notícias disponíveis no feed.
             </p>
+          )}
         </section>
 
         <Dialog
