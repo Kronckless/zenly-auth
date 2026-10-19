@@ -70,6 +70,15 @@ type NewsResponse = {
   items?: NewsItem[];
 };
 
+function hideSourceTerms(value = "") {
+  return value
+    .replace(/\brevista\s+oeste\b/gi, "a publicação")
+    .replace(/\b(?:revista|oeste)\b/gi, "a publicação")
+    .replace(/[ \t]+/g, " ")
+    .replace(/ *([,.;:!?])/g, "$1")
+    .trim();
+}
+
 function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }) {
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -120,7 +129,19 @@ export default function Home() {
         if (!response.ok) throw new Error("Notícias indisponíveis");
         const data = (await response.json()) as NewsResponse;
 
-        if (isCurrent) setNewsItems(Array.isArray(data.items) ? data.items : []);
+        if (isCurrent) {
+          const items = Array.isArray(data.items) ? data.items : [];
+          setNewsItems(
+            items.map((item) => ({
+              ...item,
+              title: hideSourceTerms(item.title),
+              content: hideSourceTerms(item.content),
+              categories: Array.isArray(item.categories)
+                ? item.categories.map(hideSourceTerms)
+                : [],
+            })),
+          );
+        }
       } catch {
         if (isCurrent) setNewsError(true);
       } finally {
@@ -394,7 +415,7 @@ export default function Home() {
                     ))}
                 </div>
                 <p className="border-t border-border pt-4 text-xs text-muted-foreground">
-                  Conteúdo e imagem conforme disponibilizados pelo feed.
+                  Conteúdo e imagens recebidos de um feed externo; termos identificadores da fonte foram omitidos na exibição.
                 </p>
               </>
             )}
