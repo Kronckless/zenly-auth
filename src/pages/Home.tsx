@@ -316,7 +316,7 @@ export default function Home() {
                     className="mx-auto max-h-[55vh] w-full max-w-4xl rounded-xl object-cover"
                   />
                 )}
-                <div className="mx-auto w-full max-w-3xl space-y-6 text-[17px] leading-8 text-foreground">
+                <div className="mx-auto w-full max-w-3xl space-y-6 text-[17px] leading-relaxed text-foreground">
                   {selectedNews.content
                     .split(/\n+/)
                     .map((paragraph) => paragraph.trim())

@@ -53,18 +53,27 @@ function decodeXml(value = "") {
 
 function cleanNewsContent(value = "") {
   return value
+    .replace(/<[^>]*>/g, " ")
     .replace(
-      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be|youtube-nocookie\.com)\S*/gi,
+      /(?:https?:\/\/|www\.)?(?:www\.)?(?:youtube\.com|youtu\.be|youtube-nocookie\.com)\S*/gi,
       " ",
     )
+    .replace(/\b(?:https?:\/\/|www\.)[^\s<>"']+/gi, " ")
     .replace(
-      /^\s*\+\s*Entenda como funciona a política brasileira no guia de Oeste\.?\s*$/gim,
+      /^\s*\+\s*Entenda como funciona(?: a política brasileira)?(?: no guia)? de? Oeste\.?\s*$/gim,
       "",
     )
     .replace(/^\s*Leia também\s*:\s*.*$/gim, "")
-    .replace(/\n?\s*O post\b[\s\S]*?\bapareceu primeiro em Revista Oeste\.?\s*$/i, "")
-    .replace(/[ \t]{2,}/g, " ")
+    .replace(/^\s*Edição\s+\d+.*Revista Oeste.*$/gim, "")
+    .replace(/\bEdição\s+\d+\s+(?:da\s+)?Revista Oeste\b/gi, "")
+    .replace(/\bRevista Oeste\b/gi, "")
+    .replace(
+      /\n?\s*O post\b[\s\S]*?\bapareceu primeiro em\s*\.?\s*$/i,
+      "",
+    )
+    .replace(/[ \t]+/g, " ")
     .replace(/[ \t]*\n[ \t]*/g, "\n")
+    .replace(/ *([,.;:!?])/g, "$1")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
