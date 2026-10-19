@@ -85,7 +85,7 @@ export default function Home() {
       setNewsError(false);
 
       try {
-        const response = await fetch("https://conscienciapoder.com/api/news", {
+        const response = await fetch("https://conscienciadepoder.com/api/news", {
           mode: "cors",
         });
         if (!response.ok) throw new Error("Notícias indisponíveis");
