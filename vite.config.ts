@@ -8,6 +8,9 @@ export default defineConfig(() => ({
     host: "::",
     port: 8080,
     hmr: { overlay: false },
+    proxy: {
+      "/api": "http://127.0.0.1:3001",
+    },
   },
   // Tailwind 4 is a Vite plugin: there is no tailwind.config.js and no postcss
   // step. The design system lives in src/index.css under @theme.

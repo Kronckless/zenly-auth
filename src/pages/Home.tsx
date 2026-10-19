@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  ArrowRight,
-  Clock3,
-  Menu,
-  Radio,
-  Search,
-  TrendingUp,
-} from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const carouselStories = [
   {
@@ -54,40 +55,53 @@ const carouselStories = [
   },
 ];
 
-const newsItems = [
-  ["Cultura", "Arquitetura histórica inspira uma nova temporada de visitas", "39722022"],
-  ["Mundo", "Cobertura internacional acompanha decisões que movimentam o dia", "10464798"],
-  ["Cidades", "Novos espaços públicos transformam a rotina nos centros urbanos", "7208320"],
-  ["Economia", "Mercados iniciam a semana atentos aos próximos indicadores", "38862877"],
-  ["Saúde", "Equipes de emergência reforçam atendimento durante o feriado", "8941908"],
-  ["Tecnologia", "Estúdios apostam em novas ferramentas para contar histórias", "7865064"],
-  ["Brasil", "Projetos comunitários aproximam serviços dos moradores", "5505690"],
-  ["Política", "Debate nacional reúne diferentes visões sobre o futuro", "30869078"],
-  ["Esportes", "Atletas celebram uma noite de grandes conquistas", "721996"],
-  ["Comportamento", "Pequenas pausas ajudam a criar dias mais equilibrados", "3944425"],
-  ["Educação", "Professores compartilham práticas para uma escola mais aberta", "4057663"],
-  ["Ciência", "Pesquisa amplia o conhecimento sobre ambientes urbanos", "7108127"],
-  ["Cultura", "Detalhes preservados revelam a história de uma antiga cidade", "39825117"],
-  ["Lazer", "Atrações clássicas continuam encantando novas gerações", "5985844"],
-  ["Mundo", "O trabalho de campo de jornalistas ganha destaque", "10464785"],
-  ["Brasil", "Serviços de emergência modernizam sua preparação", "28123659"],
-  ["Opinião", "Por que o jornalismo local continua indispensável", "38748859"],
-  ["Cidades", "Prédios tradicionais mostram caminhos para o futuro", "7208320"],
-  ["Economia", "Informação clara ajuda famílias a planejar seus próximos passos", "5505690"],
-  ["Saúde", "Atendimento humanizado é tema de encontro entre especialistas", "8942071"],
-  ["Cultura", "Feiras noturnas celebram arte, música e gastronomia", "29912748"],
-  ["Tecnologia", "A produção audiovisual passa por uma transformação silenciosa", "7865064"],
-  ["Análise", "As imagens que ajudam a explicar um mundo em movimento", "22039751"],
-  ["Cotidiano", "Café, notícias e os rituais que marcam o começo do dia", "3944425"],
-].map(([category, title, seed], index) => ({
-  id: index + 1,
-  category,
-  title,
-  image: `https://picsum.photos/seed/${seed}/800/600`,
-}));
+type NewsItem = {
+  title: string;
+  content: string;
+  sourceUrl: string;
+  publishedAt?: string;
+  rewritten?: boolean;
+};
+
+type NewsResponse = {
+  source?: string;
+  updatedAt?: number;
+  items?: NewsItem[];
+};
 
 export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [newsError, setNewsError] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    async function loadNews() {
+      setNewsLoading(true);
+      setNewsError(false);
+
+      try {
+        const response = await fetch("/api/news");
+        if (!response.ok) throw new Error("Notícias indisponíveis");
+        const data = (await response.json()) as NewsResponse;
+
+        if (isCurrent) setNewsItems(Array.isArray(data.items) ? data.items : []);
+      } catch {
+        if (isCurrent) setNewsError(true);
+      } finally {
+        if (isCurrent) setNewsLoading(false);
+      }
+    }
+
+    loadNews();
+    return () => {
+      isCurrent = false;
+    };
+  }, [refreshKey]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -167,33 +181,113 @@ export default function Home() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-12">
-            {newsItems.map((item) => (
-              <Card
-                key={item.id}
-                className="group overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md lg:col-span-1"
+          {newsLoading ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Carregando notícias da Revista Oeste…
+            </p>
+          ) : newsError ? (
+            <div className="rounded-[20px] border border-border p-6">
+              <p className="text-sm text-muted-foreground">
+                Não foi possível carregar as notícias agora.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mt-3"
+                onClick={() => setRefreshKey((key) => key + 1)}
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                <CardHeader className="space-y-2 p-3">
-                  <Badge variant="secondary" className="text-[10px]">
-                    {item.category}
-                  </Badge>
-                  <CardTitle className="line-clamp-3 text-sm leading-snug">
-                    {item.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-center gap-1.5 px-3 pb-3 text-[11px] text-muted-foreground">
-                  <Clock3 className="h-3 w-3" />
-                  Há {item.id + 1} min
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                Tentar novamente
+              </Button>
+            </div>
+          ) : newsItems.length === 0 ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Nenhuma notícia está disponível no feed no momento.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {newsItems.map((item) => (
+                <Card
+                  key={item.sourceUrl}
+                  className="overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
+                >
+                  <CardHeader className="space-y-2 p-5">
+                    <Badge variant="secondary" className="w-fit text-[10px]">
+                      Revista Oeste
+                    </Badge>
+                    <CardTitle className="text-base leading-snug">
+                      <button
+                        type="button"
+                        className="text-left hover:text-primary"
+                        onClick={() => setSelectedNews(item)}
+                      >
+                        {item.title}
+                      </button>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3 px-5 pb-5">
+                    <p className="line-clamp-3 text-sm text-muted-foreground">
+                      {item.content}
+                    </p>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                        <Clock3 className="h-3 w-3" />
+                        {item.publishedAt
+                          ? new Date(item.publishedAt).toLocaleDateString("pt-BR")
+                          : "Publicada pela fonte"}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedNews(item)}
+                      >
+                        Ler notícia
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </section>
+
+        <Dialog
+          open={selectedNews !== null}
+          onOpenChange={(open) => {
+            if (!open) setSelectedNews(null);
+          }}
+        >
+          <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
+            {selectedNews && (
+              <>
+                <DialogHeader>
+                  <Badge variant="secondary" className="mb-2 w-fit text-[10px]">
+                    Revista Oeste
+                  </Badge>
+                  <DialogTitle className="text-xl leading-snug">
+                    {selectedNews.title}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {selectedNews.publishedAt
+                      ? `Publicado em ${new Date(selectedNews.publishedAt).toLocaleDateString("pt-BR")}`
+                      : "Notícia do feed da Revista Oeste"}
+                    {selectedNews.rewritten ? " · Texto reescrito" : ""}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="whitespace-pre-line text-sm leading-7 text-foreground">
+                  {selectedNews.content}
+                </div>
+                <a
+                  href={selectedNews.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                  Ver publicação original na Revista Oeste
+                </a>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
 
       <footer id="rodape" className="mt-10 border-t border-border">
