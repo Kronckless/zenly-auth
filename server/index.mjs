@@ -66,7 +66,6 @@ function cleanNewsContent(value = "") {
     .replace(/^\s*Leia também\s*:\s*.*$/gim, "")
     .replace(/^\s*Edição\s+\d+.*Revista Oeste.*$/gim, "")
     .replace(/\bEdição\s+\d+\s+(?:da\s+)?Revista Oeste\b/gi, "")
-    .replace(/\bRevista Oeste\b/gi, "")
     .replace(
       /\n?\s*O post\b[\s\S]*?\bapareceu primeiro em\s*\.?\s*$/i,
       "",
@@ -75,7 +74,10 @@ function cleanNewsContent(value = "") {
     .replace(/[ \t]*\n[ \t]*/g, "\n")
     .replace(/ *([,.;:!?])/g, "$1")
     .replace(/\n{3,}/g, "\n\n")
-    .trim();
+    .trim()
+    .split(/\n+/)
+    .filter((paragraph) => !/\bRevista Oeste\b/i.test(paragraph))
+    .join("\n\n");
 }
 
 function readTag(xml, tag) {
