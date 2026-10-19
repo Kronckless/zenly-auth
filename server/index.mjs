@@ -210,9 +210,17 @@ async function refreshNews() {
 
   const articlesByUrl = new Map();
 
-  // Prioriza o feed específico da editoria para obter matérias além das
-  // que aparecem na lista geral de notícias.
-  for (const path of ["/category/no-ponto/feed/", "/no-ponto/feed/"]) {
+  // Reúne matérias dos feeds e páginas seguintes da editoria No Ponto.
+  // A deduplicação permite completar quatro notícias sem repetir cards.
+  const categoryPaths = [
+    "/category/no-ponto/feed/",
+    "/no-ponto/feed/",
+    "/category/no-ponto/feed/?paged=2",
+    "/category/no-ponto/page/2/feed/",
+    "/no-ponto/feed/?paged=2",
+  ];
+
+  for (const path of categoryPaths) {
     try {
       const categoryUrl = new URL(path, "https://revistaoeste.com");
       const xml = await fetchFeedText(categoryUrl.href);
@@ -227,7 +235,7 @@ async function refreshNews() {
 
       if (articlesByUrl.size >= 4) break;
     } catch {
-      // Tenta o próximo endereço de feed da editoria.
+      // Tenta a próxima página ou endereço de feed da editoria.
     }
   }
 
