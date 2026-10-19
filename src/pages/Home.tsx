@@ -146,13 +146,24 @@ export default function Home() {
   }, []);
 
   const story = carouselStories[activeSlide];
-  const noPontoMatches = newsItems.filter((item) =>
-    /no[\s-]+ponto/i.test(
-      `${item.title} ${item.sourceUrl} ${(item.categories || []).join(" ")}`,
-    ),
-  );
+  const availableNews = Array.isArray(newsItems) ? newsItems : [];
+  const latestNewsItems = availableNews.slice(0, 6);
+  const noPontoMatches = availableNews.filter((item) => {
+    const searchableText = [
+      item.title,
+      item.sourceUrl,
+      ...(item.categories || []),
+    ]
+      .join(" ")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[-_]+/g, " ")
+      .toLowerCase();
+
+    return searchableText.includes("no ponto");
+  });
   const integralNewsItems = (
-    noPontoMatches.length > 0 ? noPontoMatches : newsItems
+    noPontoMatches.length > 0 ? noPontoMatches : availableNews
   ).slice(0, 4);
 
   return (
@@ -247,7 +258,7 @@ export default function Home() {
             </p>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {newsItems.slice(0, 6).map((item) => (
+              {latestNewsItems.map((item) => (
                 <Card
                   key={item.sourceUrl}
                   className="gap-0 overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
@@ -308,54 +319,39 @@ export default function Home() {
             </h2>
           </div>
 
-          {(() => {
-            const noPontoItems = newsItems
-              .filter((item) =>
-                item.categories?.some(
-                  (category) =>
-                    category
-                      .normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                      .trim()
-                      .toUpperCase() === "NO PONTO",
-                ),
-              )
-              .slice(0, 4);
-
-            return noPontoItems.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-                {noPontoItems.map((item) => (
-                  <Card
-                    key={item.sourceUrl}
-                    className="gap-0 overflow-hidden rounded-[20px] border-background/15 bg-background text-foreground"
+          {integralNewsItems.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {integralNewsItems.map((item) => (
+                <Card
+                  key={item.sourceUrl}
+                  className="gap-0 overflow-hidden rounded-[20px] border-background/15 bg-background text-foreground"
+                >
+                  <button
+                    type="button"
+                    className="px-3 pt-3 text-left"
+                    onClick={() => setSelectedNews(item)}
+                    aria-label={`Ler notícia: ${item.title}`}
                   >
-                    <button
-                      type="button"
-                      className="px-3 pt-3 text-left"
-                      onClick={() => setSelectedNews(item)}
-                      aria-label={`Ler notícia: ${item.title}`}
-                    >
-                      <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
-                    </button>
-                    <CardHeader className="p-3">
-                      <CardTitle className="text-sm leading-snug">
-                        <button
-                          type="button"
-                          className="text-left hover:text-primary"
-                          onClick={() => setSelectedNews(item)}
-                        >
-                          {item.title}
-                        </button>
-                      </CardTitle>
-                    </CardHeader>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p className="rounded-xl border border-background/20 p-4 text-sm text-background/75">
-                Ainda não há notícias disponíveis no feed.
-              </p>
-            )}
+                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                  </button>
+                  <CardHeader className="p-3">
+                    <CardTitle className="text-sm leading-snug">
+                      <button
+                        type="button"
+                        className="text-left hover:text-primary"
+                        onClick={() => setSelectedNews(item)}
+                      >
+                        {item.title}
+                      </button>
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-background/20 p-4 text-sm text-background/75">
+              Ainda não há notícias disponíveis no feed.
+            </p>
         </section>
 
         <Dialog
