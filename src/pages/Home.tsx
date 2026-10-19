@@ -98,8 +98,11 @@ export default function Home() {
     }
 
     loadNews();
+    const timer = window.setInterval(loadNews, 12 * 60 * 60 * 1000);
+
     return () => {
       isCurrent = false;
+      window.clearInterval(timer);
     };
   }, [refreshKey]);
 
