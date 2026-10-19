@@ -292,15 +292,14 @@ export default function Home() {
           aria-labelledby="na-integra-title"
           className="mt-10 rounded-2xl bg-foreground p-5 text-background sm:p-7 lg:p-8"
         >
-          <div className="mb-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-background/65">
-              Revista Oeste · No Ponto
-            </p>
+          <div className="mb-6 flex justify-center text-center">
             <h2
               id="na-integra-title"
-              className="mt-2 font-display text-2xl font-bold tracking-wider sm:text-3xl"
+              className="font-display text-3xl font-black tracking-[0.12em] sm:text-4xl"
             >
-              NA ÍNTEGRA
+              <span className="na-integra-glitch" data-text="NA ÍNTEGRA">
+                NA ÍNTEGRA
+              </span>
             </h2>
           </div>
 

@@ -158,3 +158,49 @@
     font-family: var(--font-display);
   }
 }
+
+.na-integra-glitch {
+  position: relative;
+  display: inline-block;
+  animation: na-integra-shake 0.4s steps(2, end) infinite;
+}
+
+.na-integra-glitch::before,
+.na-integra-glitch::after {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  content: attr(data-text);
+  pointer-events: none;
+}
+
+.na-integra-glitch::before {
+  color: #00e5ff;
+  animation: na-integra-cyan 0.55s steps(2, end) infinite;
+}
+
+.na-integra-glitch::after {
+  color: #ff3158;
+  animation: na-integra-red 0.48s steps(2, end) infinite;
+}
+
+@keyframes na-integra-shake {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px) skewX(-2deg); }
+  45% { transform: translate(1px, -1px) skewX(2deg); }
+  70% { transform: translate(-1px, 0) skewX(-1deg); }
+}
+
+@keyframes na-integra-cyan {
+  0%, 100% { clip-path: inset(0 0 82% 0); transform: translate(-2px, -1px); }
+  25% { clip-path: inset(35% 0 42% 0); transform: translate(2px, 1px); }
+  50% { clip-path: inset(72% 0 8% 0); transform: translate(-1px, 1px); }
+  75% { clip-path: inset(18% 0 61% 0); transform: translate(2px, -1px); }
+}
+
+@keyframes na-integra-red {
+  0%, 100% { clip-path: inset(68% 0 12% 0); transform: translate(2px, 1px); }
+  25% { clip-path: inset(8% 0 76% 0); transform: translate(-2px, -1px); }
+  50% { clip-path: inset(42% 0 36% 0); transform: translate(1px, -1px); }
+  75% { clip-path: inset(80% 0 2% 0); transform: translate(-1px, 1px); }
+}
