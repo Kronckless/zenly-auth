@@ -69,6 +69,34 @@ type NewsResponse = {
   items?: NewsItem[];
 };
 
+function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  if (!imageUrl || imageFailed) {
+    return (
+      <div
+        role="img"
+        aria-label={`Capa indisponível: ${title}`}
+        className="flex h-44 w-full items-center justify-center rounded-lg bg-muted"
+      >
+        <span className="font-display text-lg font-bold tracking-[0.2em] text-primary">
+          NOVIDADE
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageUrl}
+      alt={title}
+      loading="lazy"
+      onError={() => setImageFailed(true)}
+      className="h-44 w-full rounded-lg object-cover"
+    />
+  );
+}
+
 export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -215,6 +243,9 @@ export default function Home() {
                   key={item.sourceUrl}
                   className="overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
                 >
+                  <div className="px-5 pt-5">
+                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                  </div>
                   <CardHeader className="space-y-2 p-5">
                     <Badge variant="secondary" className="w-fit text-[10px]">
                       Revista Oeste
