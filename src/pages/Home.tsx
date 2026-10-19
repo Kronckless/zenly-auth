@@ -316,8 +316,16 @@ export default function Home() {
                     className="max-h-[55vh] w-full rounded-xl object-cover"
                   />
                 )}
-                <div className="whitespace-pre-line text-sm leading-7 text-foreground">
-                  {selectedNews.content}
+                <div className="space-y-5 text-base leading-relaxed text-foreground">
+                  {selectedNews.content
+                    .split(/\n+/)
+                    .map((paragraph) => paragraph.trim())
+                    .filter(Boolean)
+                    .map((paragraph, index) => (
+                      <p key={`${index}-${paragraph.slice(0, 24)}`}>
+                        {paragraph}
+                      </p>
+                    ))}
                 </div>
                 <p className="border-t border-border pt-4 text-xs text-muted-foreground">
                   Fonte: Revista Oeste. Conteúdo e imagem conforme disponibilizados pelo feed.

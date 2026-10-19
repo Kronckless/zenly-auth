@@ -12,17 +12,23 @@ let refreshPromise = null;
 function decodeXml(value = "") {
   return value
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    .replace(/<[^>]*>/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
     .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
     .replace(/&#x([\da-f]+);/gi, (_, code) =>
       String.fromCodePoint(parseInt(code, 16)),
     )
-    .replace(/\s+/g, " ")
+    .replace(/<br\b[^>]*\/?>/gi, "\n")
+    .replace(/<\/(?:p|div|li|h[1-6]|blockquote|section|article)\s*>/gi, "\n")
+    .replace(/<(?:p|div|li|h[1-6]|blockquote|section|article)\b[^>]*>/gi, "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/[ \t]+/g, " ")
+    .replace(/ *\n */g, "\n")
+    .replace(/\n{2,}/g, "\n")
     .trim();
 }
 
