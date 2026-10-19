@@ -125,6 +125,12 @@ function parseFeed(xml, sourceHost) {
         readTag(item, "pubDate") ||
         readTag(item, "published") ||
         readTag(item, "updated");
+      const categories = [...item.matchAll(/<category\b([^>]*?)(?:\/>|>([\s\S]*?)<\/category\s*>)/gi)]
+        .map(([, attributes, content]) => {
+          const term = attributes.match(/\bterm=["']([^"']+)["']/i)?.[1];
+          return decodeXml(term || content || "").replace(/<[^>]*>/g, "").trim();
+        })
+        .filter(Boolean);
 
       try {
         const url = new URL(link);
@@ -140,6 +146,7 @@ function parseFeed(xml, sourceHost) {
           sourceUrl: url.href,
           imageUrl,
           publishedAt,
+          categories,
           rewritten: false,
         };
       } catch {

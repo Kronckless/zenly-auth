@@ -60,6 +60,7 @@ type NewsItem = {
   sourceUrl: string;
   imageUrl?: string;
   publishedAt?: string;
+  categories?: string[];
   rewritten?: boolean;
 };
 
@@ -284,6 +285,74 @@ export default function Home() {
               ))}
             </div>
           )}
+        </section>
+
+        <section
+          id="na-integra"
+          aria-labelledby="na-integra-title"
+          className="mt-10 rounded-2xl bg-foreground p-5 text-background sm:p-7 lg:p-8"
+        >
+          <div className="mb-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-background/65">
+              Revista Oeste · No Ponto
+            </p>
+            <h2
+              id="na-integra-title"
+              className="mt-2 font-display text-2xl font-bold tracking-wider sm:text-3xl"
+            >
+              NA ÍNTEGRA
+            </h2>
+          </div>
+
+          {(() => {
+            const noPontoItems = newsItems
+              .filter((item) =>
+                item.categories?.some(
+                  (category) =>
+                    category
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .trim()
+                      .toUpperCase() === "NO PONTO",
+                ),
+              )
+              .slice(0, 4);
+
+            return noPontoItems.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                {noPontoItems.map((item) => (
+                  <Card
+                    key={item.sourceUrl}
+                    className="gap-0 overflow-hidden rounded-[20px] border-background/15 bg-background text-foreground"
+                  >
+                    <button
+                      type="button"
+                      className="px-3 pt-3 text-left"
+                      onClick={() => setSelectedNews(item)}
+                      aria-label={`Ler notícia: ${item.title}`}
+                    >
+                      <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                    </button>
+                    <CardHeader className="p-3">
+                      <CardTitle className="text-sm leading-snug">
+                        <button
+                          type="button"
+                          className="text-left hover:text-primary"
+                          onClick={() => setSelectedNews(item)}
+                        >
+                          {item.title}
+                        </button>
+                      </CardTitle>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <p className="rounded-xl border border-background/20 p-4 text-sm text-background/75">
+                Ainda não há matérias da editoria No Ponto disponíveis no feed.
+              </p>
+            );
+          })()}
         </section>
 
         <Dialog
