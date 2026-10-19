@@ -1,7 +1,7 @@
 import { createServer } from "node:http";
 
-const PORT = Number(process.env.API_PORT || 3001);
-const HOST = process.env.API_HOST || "127.0.0.1";
+const PORT = Number(process.env.PORT || process.env.API_PORT || 3001);
+const HOST = process.env.API_HOST || "0.0.0.0";
 const CACHE_TTL = 12 * 60 * 60 * 1000;
 const MAX_FEED_BYTES = 5 * 1024 * 1024;
 
@@ -141,8 +141,6 @@ async function fetchFeedText(feedUrl) {
   );
 }
 
-
-
 async function refreshNews() {
   const feedUrl = new URL(
     process.env.RSS_FEED_URL || "https://revistaoeste.com/feed/",
@@ -200,5 +198,5 @@ const server = createServer(async (request, response) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`Servidor local ativo em http://${HOST}:${PORT}`);
+  console.log(`Servidor ativo na porta ${PORT}`);
 });
