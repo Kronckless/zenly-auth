@@ -171,7 +171,7 @@ export default function Home() {
             {newsItems.map((item) => (
               <Card
                 key={item.id}
-                className="group overflow-hidden border-border transition-shadow hover:shadow-md lg:col-span-1"
+                className="group overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md lg:col-span-1"
               >
                 <img
                   src={item.image}
