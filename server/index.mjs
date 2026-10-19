@@ -121,35 +121,58 @@ async function fetchFeedText(feedUrl) {
 }
 
 async function rewriteArticle(article) {
-  const endpoint = process.env.REWRITE_API_URL;
-  const apiKey = process.env.REWRITE_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) return article;
 
-  if (!endpoint || !apiKey) return article;
-
-  const url = new URL(endpoint);
-  if (url.protocol !== "https:") throw new Error("Endpoint de reescrita inválido");
-
-  const response = await fetchWithTimeout(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+  const response = await fetchWithTimeout(
+    "https://api.openai.com/v1/chat/completions",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model: process.env.OPENAI_MODEL || "gpt-4o-mini",
+        response_format: { type: "json_object" },
+        messages: [
+          {
+            role: "system",
+            content:
+              "Reescreva a notícia em português brasileiro com clareza e fidelidade. Preserve os fatos, não invente informações e devolva somente um objeto JSON com as propriedades title e content.",
+          },
+          {
+            role: "user",
+            content: JSON.stringify({
+              title: article.title,
+              content: article.content,
+              source_url: article.sourceUrl,
+            }),
+          },
+        ],
+      }),
     },
-    body: JSON.stringify({
-      title: article.title,
-      content: article.content,
-      source_url: article.sourceUrl,
-    }),
-  });
+  );
 
   if (!response.ok) throw new Error("Serviço de reescrita indisponível");
 
-  const result = await response.json();
+  const data = await response.json();
+  const text = data.choices?.[0]?.message?.content;
+  if (typeof text !== "string") {
+    throw new Error("Resposta inválida do serviço de reescrita");
+  }
+
+  const result = JSON.parse(text);
   if (typeof result.title !== "string" || typeof result.content !== "string") {
     throw new Error("Resposta inválida do serviço de reescrita");
   }
 
-  return { ...article, title: result.title, content: result.content, rewritten: true };
+  return {
+    ...article,
+    title: result.title,
+    content: result.content,
+    rewritten: true,
+  };
 }
 
 async function refreshNews() {
