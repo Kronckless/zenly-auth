@@ -176,8 +176,22 @@ const server = createServer(async (request, response) => {
   }
 
   if (request.url === "/health") {
-    response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-    response.end(JSON.stringify({ status: "ok" }));
+    try {
+      const news = await getNews();
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(
+        JSON.stringify({
+          status: "ok",
+          source: "Revista Oeste",
+          updatedAt: cachedAt,
+          itemCount: news.length,
+        }),
+      );
+    } catch (error) {
+      console.error("Falha ao verificar o serviço de notícias:", error);
+      response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ status: "error", message: "Serviço ou feed indisponível." }));
+    }
     return;
   }
 

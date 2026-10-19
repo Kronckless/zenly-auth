@@ -191,7 +191,7 @@ export default function Home() {
           ) : newsError ? (
             <div className="rounded-[20px] border border-border p-6">
               <p className="text-sm text-muted-foreground">
-                Não foi possível carregar as notícias agora.
+                Não foi possível carregar as notícias. Verifique se o serviço Node.js está ativo e consegue acessar o feed da Revista Oeste.
               </p>
               <Button
                 variant="outline"
