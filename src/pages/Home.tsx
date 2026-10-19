@@ -217,12 +217,12 @@ export default function Home() {
 
           {newsLoading ? (
             <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
-              Carregando notícias da Revista Oeste…
+              Carregando notícias…
             </p>
           ) : newsError ? (
             <div className="rounded-[20px] border border-border p-6">
               <p className="text-sm text-muted-foreground">
-                Não foi possível carregar as notícias. Verifique se o serviço Node.js está ativo e consegue acessar o feed da Revista Oeste.
+                Não foi possível carregar as notícias. Verifique se o serviço Node.js está ativo e consegue acessar o feed.
               </p>
               <Button
                 variant="outline"
@@ -248,9 +248,6 @@ export default function Home() {
                     <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                   </div>
                   <CardHeader className="space-y-2 p-3">
-                    <Badge variant="secondary" className="w-fit text-[10px]">
-                      Revista Oeste
-                    </Badge>
                     <CardTitle className="line-clamp-2 text-base leading-snug">
                       <button
                         type="button"
@@ -364,16 +361,13 @@ export default function Home() {
             {selectedNews && (
               <>
                 <DialogHeader>
-                  <Badge variant="secondary" className="mb-2 w-fit text-[10px]">
-                    Revista Oeste
-                  </Badge>
                   <DialogTitle className="text-xl leading-snug">
                     {selectedNews.title}
                   </DialogTitle>
                   <DialogDescription>
                     {selectedNews.publishedAt
                       ? `Publicado em ${new Date(selectedNews.publishedAt).toLocaleDateString("pt-BR")}`
-                      : "Notícia do feed da Revista Oeste"}
+                      : "Notícia do feed"}
                     {selectedNews.rewritten ? " · Texto reescrito" : ""}
                   </DialogDescription>
                 </DialogHeader>
@@ -396,7 +390,7 @@ export default function Home() {
                     ))}
                 </div>
                 <p className="border-t border-border pt-4 text-xs text-muted-foreground">
-                  Fonte: Revista Oeste. Conteúdo e imagem conforme disponibilizados pelo feed.
+                  Conteúdo e imagem conforme disponibilizados pelo feed.
                 </p>
               </>
             )}
