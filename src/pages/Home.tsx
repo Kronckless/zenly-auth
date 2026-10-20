@@ -595,8 +595,8 @@ export default function Home() {
                     <Area
                       type="monotone"
                       dataKey="value"
-                      stroke="var(--color-primary)"
-                      fill="var(--color-primary)"
+                      stroke="var(--color-foreground)"
+                      fill="var(--color-foreground)"
                       fillOpacity={0.14}
                       strokeWidth={2}
                       dot={false}
