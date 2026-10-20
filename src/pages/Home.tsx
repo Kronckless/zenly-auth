@@ -177,45 +177,6 @@ export default function Home() {
     };
   }, [refreshKey]);
 
-  useEffect(() => {
-    if (newsLoading || radarNewsItems.length > 0) return;
-
-    let isCurrent = true;
-    setFallbackLoading(true);
-    setSaberNews([]);
-    setCurrencyHistory([]);
-
-    async function loadFallbacks() {
-      try {
-        const response = await fetch("/api/saber");
-        if (!response.ok) throw new Error("Gazeta do Povo indisponível");
-        const data = (await response.json()) as NewsResponse;
-        const items = Array.isArray(data.items) ? data.items : [];
-
-        if (!isCurrent) return;
-        if (items.length > 0) {
-          setSaberNews(items);
-          return;
-        }
-
-        const currencyResponse = await fetch("/api/usd-brl");
-        if (!currencyResponse.ok) throw new Error("Cotação indisponível");
-        const currencyData = (await currencyResponse.json()) as {
-          items?: CurrencyPoint[];
-        };
-        if (isCurrent) setCurrencyHistory(currencyData.items || []);
-      } catch {
-        if (isCurrent) setSaberNews([]);
-      } finally {
-        if (isCurrent) setFallbackLoading(false);
-      }
-    }
-
-    loadFallbacks();
-    return () => {
-      isCurrent = false;
-    };
-  }, [newsLoading, radarNewsItems.length]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -288,6 +249,46 @@ export default function Home() {
   const radarNewsItems = feedNews
     .filter((item) => !displayedNewsUrls.has(item.sourceUrl))
     .slice(0, 8);
+
+  useEffect(() => {
+    if (newsLoading || radarNewsItems.length > 0) return;
+
+    let isCurrent = true;
+    setFallbackLoading(true);
+    setSaberNews([]);
+    setCurrencyHistory([]);
+
+    async function loadFallbacks() {
+      try {
+        const response = await fetch("/api/saber");
+        if (!response.ok) throw new Error("Gazeta do Povo indisponível");
+        const data = (await response.json()) as NewsResponse;
+        const items = Array.isArray(data.items) ? data.items : [];
+
+        if (!isCurrent) return;
+        if (items.length > 0) {
+          setSaberNews(items);
+          return;
+        }
+
+        const currencyResponse = await fetch("/api/usd-brl");
+        if (!currencyResponse.ok) throw new Error("Cotação indisponível");
+        const currencyData = (await currencyResponse.json()) as {
+          items?: CurrencyPoint[];
+        };
+        if (isCurrent) setCurrencyHistory(currencyData.items || []);
+      } catch {
+        if (isCurrent) setSaberNews([]);
+      } finally {
+        if (isCurrent) setFallbackLoading(false);
+      }
+    }
+
+    loadFallbacks();
+    return () => {
+      isCurrent = false;
+    };
+  }, [newsLoading, radarNewsItems.length]);
 
   return (
     <main className="min-h-screen bg-background">
