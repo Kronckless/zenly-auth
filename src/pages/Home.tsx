@@ -192,6 +192,12 @@ export default function Home() {
   const integralNewsItems = (
     noPontoMatches.length > 0 ? noPontoMatches : feedNews
   ).slice(0, 4);
+  const displayedNewsUrls = new Set(
+    [...latestNewsItems, ...integralNewsItems].map((item) => item.sourceUrl),
+  );
+  const radarNewsItems = feedNews
+    .filter((item) => !displayedNewsUrls.has(item.sourceUrl))
+    .slice(0, 8);
 
   return (
     <main className="min-h-screen bg-background">
@@ -382,8 +388,43 @@ export default function Home() {
           )}
         </section>
 
+        <section
+          id="no-seu-radar"
+          aria-labelledby="no-seu-radar-title"
+          className="mt-10 bg-background py-8"
+        >
+          <h2
+            id="no-seu-radar-title"
+            className="mb-8 flex items-center justify-center gap-4 font-display text-3xl font-bold tracking-tight"
+          >
+            <span aria-hidden="true" className="h-px flex-1 bg-border" />
+            <span>
+              <span>NO SEU </span>
+              <span className="text-radar-green">RADAR</span>
+            </span>
+            <span aria-hidden="true" className="h-px flex-1 bg-border" />
+          </h2>
 
-
+          {radarNewsItems.length > 0 ? (
+            <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
+              {radarNewsItems.map((item) => (
+                <div key={item.sourceUrl} className="border-b border-border">
+                  <button
+                    type="button"
+                    className="w-full py-5 text-left font-poppins text-base font-medium leading-relaxed hover:text-primary"
+                    onClick={() => setSelectedNews(item)}
+                  >
+                    {item.title}
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">
+              Não há outras notícias disponíveis no momento.
+            </p>
+          )}
+        </section>
 
         <Dialog
           open={selectedNews !== null}

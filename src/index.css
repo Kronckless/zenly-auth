@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Poppins:wght@500&display=swap');
 
 @custom-variant dark (&:is(.dark *));
 
@@ -19,6 +19,8 @@
 @theme inline {
   --font-sans: var(--font-body);
   --font-display: var(--font-heading);
+  --font-poppins: "Poppins", var(--font-body);
+  --color-radar-green: var(--radar-green);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -69,6 +71,7 @@
      redefining these two, and every component follows without being touched. */
   --font-body: "Inter", system-ui, sans-serif;
   --font-heading: "Space Grotesk", var(--font-body);
+  --radar-green: #16804a;
 
   --background: oklch(1 0 0);
   --foreground: oklch(0.16 0.012 260);
