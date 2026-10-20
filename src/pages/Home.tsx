@@ -402,7 +402,7 @@ export default function Home() {
             />
             <Button
               type="button"
-              className="mt-4 rounded-none bg-cta px-6 text-cta-foreground hover:bg-cta/90"
+              className="mx-auto mt-5 flex h-14 w-full max-w-sm justify-center rounded-none bg-cta px-8 text-lg font-semibold text-cta-foreground hover:bg-cta/90"
               onClick={() => setEliteDialogOpen(true)}
             >
               Ler...
