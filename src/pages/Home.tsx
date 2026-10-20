@@ -385,27 +385,29 @@ export default function Home() {
 
         <section
           aria-labelledby="elite-oligarchica-title"
-          className="mt-10 rounded-2xl bg-foreground p-5 text-background sm:p-7 lg:p-8"
+          className="relative left-1/2 mt-10 w-screen -translate-x-1/2 bg-foreground py-8 text-background sm:py-10"
         >
-          <h2
-            id="elite-oligarchica-title"
-            className="max-w-3xl font-display text-2xl font-bold leading-tight sm:text-3xl"
-          >
-            O que significa elite oligárquica? Entenda de forma simples
-          </h2>
-          <img
-            src={eliteThumbnail}
-            alt="Grupo pequeno de pessoas influentes reunido em uma sala elegante"
-            loading="lazy"
-            className="mt-5 aspect-video w-full rounded-xl object-cover"
-          />
-          <Button
-            type="button"
-            className="mt-4 rounded-none bg-cta px-6 text-cta-foreground hover:bg-cta/90"
-            onClick={() => setEliteDialogOpen(true)}
-          >
-            Ler...
-          </Button>
+          <div className="mx-auto max-w-7xl px-5 lg:px-8">
+            <h2
+              id="elite-oligarchica-title"
+              className="max-w-3xl font-display text-2xl font-bold leading-tight sm:text-3xl"
+            >
+              O que significa elite oligárquica? Entenda de forma simples
+            </h2>
+            <img
+              src={eliteThumbnail}
+              alt="Grupo pequeno de pessoas influentes reunido em uma sala elegante"
+              loading="lazy"
+              className="mt-5 aspect-video w-full rounded-xl object-cover"
+            />
+            <Button
+              type="button"
+              className="mt-4 rounded-none bg-cta px-6 text-cta-foreground hover:bg-cta/90"
+              onClick={() => setEliteDialogOpen(true)}
+            >
+              Ler...
+            </Button>
+          </div>
         </section>
 
         <Dialog
