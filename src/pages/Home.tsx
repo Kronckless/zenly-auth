@@ -408,10 +408,10 @@ export default function Home() {
           {radarNewsItems.length > 0 ? (
             <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
               {radarNewsItems.map((item) => (
-                <div key={item.sourceUrl} className="border-b border-border">
+                <div key={item.sourceUrl} className="border-b-[0.5px] border-border">
                   <button
                     type="button"
-                    className="w-full py-5 text-left font-poppins text-base font-medium leading-relaxed hover:text-primary"
+                    className="w-full py-5 text-left font-poppins text-base font-medium italic leading-relaxed hover:text-primary"
                     onClick={() => setSelectedNews(item)}
                   >
                     {item.title}
