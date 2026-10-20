@@ -254,6 +254,14 @@ export default function Home() {
   const radarNewsItems = feedNews
     .filter((item) => !displayedNewsUrls.has(item.sourceUrl))
     .slice(0, 8);
+  const radarNewsUrls = new Set(radarNewsItems.map((item) => item.sourceUrl));
+  const additionalNewsItems = feedNews
+    .filter(
+      (item) =>
+        !displayedNewsUrls.has(item.sourceUrl) &&
+        !radarNewsUrls.has(item.sourceUrl),
+    )
+    .slice(0, 16);
 
   useEffect(() => {
     if (newsLoading || radarNewsItems.length > 0) return;
@@ -614,6 +622,33 @@ export default function Home() {
             </p>
           )}
         </section>
+
+        {additionalNewsItems.length > 0 && (
+          <section aria-label="Mais notícias" className="mt-10">
+            <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
+              {[additionalNewsItems.slice(0, 8), additionalNewsItems.slice(8, 16)].map(
+                (column, columnIndex) => (
+                  <div key={columnIndex}>
+                    {column.map((item) => (
+                      <div
+                        key={item.sourceUrl}
+                        className="border-b border-border"
+                      >
+                        <button
+                          type="button"
+                          className="w-full py-5 text-left font-medium leading-relaxed hover:text-primary"
+                          onClick={() => setSelectedNews(item)}
+                        >
+                          {item.title}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ),
+              )}
+            </div>
+          </section>
+        )}
 
         <Dialog
           open={selectedNews !== null}
