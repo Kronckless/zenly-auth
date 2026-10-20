@@ -397,12 +397,12 @@ export default function Home() {
             id="no-seu-radar-title"
             className="mb-8 flex items-center justify-center gap-4 font-display text-3xl font-bold tracking-tight"
           >
-            <span aria-hidden="true" className="h-px flex-1 bg-border" />
+            <span aria-hidden="true" className="h-0.5 flex-1 bg-foreground/40" />
             <span>
               <span>NO SEU </span>
               <span className="text-radar-green">RADAR</span>
             </span>
-            <span aria-hidden="true" className="h-px flex-1 bg-border" />
+            <span aria-hidden="true" className="h-0.5 flex-1 bg-foreground/40" />
           </h2>
 
           {radarNewsItems.length > 0 ? (
