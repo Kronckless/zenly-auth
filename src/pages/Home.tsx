@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock3, TrendingUp, X } from "lucide-react";
+import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -72,6 +81,11 @@ type NewsResponse = {
   items?: NewsItem[];
 };
 
+type CurrencyPoint = {
+  date: string;
+  value: number;
+};
+
 function hideSourceTerms(value = "") {
   return value
     .replace(/\brevista\s+oeste\b/gi, "a publicação")
@@ -116,6 +130,9 @@ export default function Home() {
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [saberNews, setSaberNews] = useState<NewsItem[]>([]);
+  const [currencyHistory, setCurrencyHistory] = useState<CurrencyPoint[]>([]);
+  const [fallbackLoading, setFallbackLoading] = useState(false);
 
   useEffect(() => {
     let isCurrent = true;
@@ -159,6 +176,46 @@ export default function Home() {
       window.clearInterval(timer);
     };
   }, [refreshKey]);
+
+  useEffect(() => {
+    if (newsLoading || radarNewsItems.length > 0) return;
+
+    let isCurrent = true;
+    setFallbackLoading(true);
+    setSaberNews([]);
+    setCurrencyHistory([]);
+
+    async function loadFallbacks() {
+      try {
+        const response = await fetch("/api/saber");
+        if (!response.ok) throw new Error("Gazeta do Povo indisponível");
+        const data = (await response.json()) as NewsResponse;
+        const items = Array.isArray(data.items) ? data.items : [];
+
+        if (!isCurrent) return;
+        if (items.length > 0) {
+          setSaberNews(items);
+          return;
+        }
+
+        const currencyResponse = await fetch("/api/usd-brl");
+        if (!currencyResponse.ok) throw new Error("Cotação indisponível");
+        const currencyData = (await currencyResponse.json()) as {
+          items?: CurrencyPoint[];
+        };
+        if (isCurrent) setCurrencyHistory(currencyData.items || []);
+      } catch {
+        if (isCurrent) setSaberNews([]);
+      } finally {
+        if (isCurrent) setFallbackLoading(false);
+      }
+    }
+
+    loadFallbacks();
+    return () => {
+      isCurrent = false;
+    };
+  }, [newsLoading, radarNewsItems.length]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -452,9 +509,84 @@ export default function Home() {
                 </div>
               ))}
             </div>
+          ) : saberNews.length > 0 ? (
+            <>
+              <p className="mb-4 text-center text-sm text-muted-foreground">
+                Notícias recentes de Saber · Gazeta do Povo
+              </p>
+              <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
+                {saberNews.map((item) => (
+                  <div key={item.sourceUrl} className="border-b-[0.5px] border-border">
+                    <button
+                      type="button"
+                      className="w-full py-5 text-left font-poppins text-base font-medium italic leading-relaxed hover:text-primary"
+                      onClick={() => setSelectedNews(item)}
+                    >
+                      {item.title}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : currencyHistory.length > 0 ? (
+            <div className="mx-auto max-w-3xl rounded-xl border border-border p-4 sm:p-6">
+              <p className="mb-4 text-sm text-muted-foreground">
+                USD/BRL · referência diária · 30 dias
+              </p>
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={currencyHistory} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                    <CartesianGrid vertical={false} stroke="var(--color-border)" />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={(value: string) =>
+                        new Date(`${value}T12:00:00`).toLocaleDateString("pt-BR", {
+                          day: "2-digit",
+                          month: "2-digit",
+                        })
+                      }
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }}
+                    />
+                    <YAxis
+                      domain={["dataMin", "dataMax"]}
+                      tickLine={false}
+                      axisLine={false}
+                      tick={{ fill: "var(--color-muted-foreground)", fontSize: 11 }}
+                      width={48}
+                      tickFormatter={(value: number) => `R$ ${value.toFixed(2)}`}
+                    />
+                    <Tooltip
+                      labelFormatter={(value) =>
+                        new Date(`${value}T12:00:00`).toLocaleDateString("pt-BR")
+                      }
+                      formatter={(value) => [
+                        `R$ ${Number(value).toFixed(4)}`,
+                        "1 USD",
+                      ]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="value"
+                      stroke="var(--color-primary)"
+                      fill="var(--color-primary)"
+                      fillOpacity={0.14}
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Fonte: Frankfurter (taxa de referência diária, não cotação em tempo real).
+              </p>
+            </div>
           ) : (
             <p className="text-center text-sm text-muted-foreground">
-              Não há outras notícias disponíveis no momento.
+              {fallbackLoading
+                ? "Verificando as fontes alternativas…"
+                : "As notícias e a cotação estão indisponíveis no momento."}
             </p>
           )}
         </section>
@@ -498,7 +630,10 @@ export default function Home() {
                     ))}
                 </div>
                 <p className="border-t border-border pt-4 text-xs text-muted-foreground">
-                  Conteúdo e imagens recebidos de um feed externo; termos identificadores da fonte foram omitidos na exibição.
+                  Fonte: {selectedNews.sourceUrl.includes("gazetadopovo.com.br")
+                    ? "Gazeta do Povo — Saber"
+                    : "Revista Oeste"}
+                  . Conteúdo recebido do feed original.
                 </p>
               </>
             )}

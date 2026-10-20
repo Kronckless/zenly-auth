@@ -8,6 +8,8 @@ const MAX_FEED_BYTES = 5 * 1024 * 1024;
 let cachedNews = null;
 let cachedAt = 0;
 let refreshPromise = null;
+let cachedSaberNews = null;
+let cachedSaberAt = 0;
 
 function decodeXml(value = "") {
   return value
@@ -134,10 +136,11 @@ function parseFeed(xml, sourceHost) {
 
       try {
         const url = new URL(link);
-        const isRevistaOeste =
-          url.hostname === "revistaoeste.com" ||
-          url.hostname.endsWith(".revistaoeste.com");
-        if (url.protocol !== "https:" || !isRevistaOeste) return null;
+        const allowedHost = sourceHost.toLowerCase().replace(/^www\./, "");
+        const articleHost = url.hostname.toLowerCase().replace(/^www\./, "");
+        const isAllowedHost =
+          articleHost === allowedHost || articleHost.endsWith(`.${allowedHost}`);
+        if (url.protocol !== "https:" || !isAllowedHost) return null;
         if (!title) return null;
 
         return {
@@ -273,6 +276,38 @@ async function getNews() {
   return refreshPromise;
 }
 
+async function getSaberNews() {
+  if (cachedSaberNews && Date.now() - cachedSaberAt < CACHE_TTL) {
+    return cachedSaberNews;
+  }
+
+  const feedUrl = "https://www.gazetadopovo.com.br/saber/feed/";
+  const xml = await fetchFeedText(feedUrl);
+  cachedSaberNews = parseFeed(xml, "gazetadopovo.com.br")
+    .sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0))
+    .slice(0, 12);
+  cachedSaberAt = Date.now();
+  return cachedSaberNews;
+}
+
+async function getUsdBrlHistory() {
+  const end = new Date();
+  const start = new Date(end);
+  start.setDate(start.getDate() - 30);
+  const formatDate = (date) => date.toISOString().slice(0, 10);
+  const url = `https://api.frankfurter.dev/v1/${formatDate(start)}..${formatDate(end)}?base=USD&symbols=BRL`;
+  const response = await fetchWithTimeout(url, {
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) throw new Error("Cotação indisponível");
+
+  const data = await response.json();
+  return Object.entries(data.rates || {}).map(([date, rates]) => ({
+    date,
+    value: rates.BRL,
+  }));
+}
+
 const server = createServer(async (request, response) => {
   // Cabeçalhos de Segurança e CORS liberado para requisições do Zenly / Navegador
   response.setHeader("X-Content-Type-Options", "nosniff");
@@ -310,6 +345,32 @@ const server = createServer(async (request, response) => {
       console.error("Falha ao verificar o serviço de notícias:", error);
       response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
       response.end(JSON.stringify({ status: "error", message: "Serviço ou feed indisponível." }));
+    }
+    return;
+  }
+
+  if (request.url === "/api/saber") {
+    try {
+      const items = await getSaberNews();
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ source: "Gazeta do Povo — Saber", items }));
+    } catch (error) {
+      console.error("Falha ao carregar notícias de Saber:", error);
+      response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ error: "Notícias de Saber indisponíveis." }));
+    }
+    return;
+  }
+
+  if (request.url === "/api/usd-brl") {
+    try {
+      const items = await getUsdBrlHistory();
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ source: "Frankfurter — referência diária", items }));
+    } catch (error) {
+      console.error("Falha ao carregar cotação USD/BRL:", error);
+      response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ error: "Cotação indisponível." }));
     }
     return;
   }
