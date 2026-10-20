@@ -171,11 +171,44 @@ export default function Home() {
   const story = carouselStories[activeSlide];
   const editionBulletinPattern =
     /\b(?:jornal|noticiário)\b.*\b(?:edição|assista|acompanhe)\b|\b(?:assista|acompanhe)\s+(?:ao\s+)?(?:noticiário|jornal)\b|\b(?:primeira|segunda|terceira|quarta|última)\s+edição\b/i;
-  const feedNews = (Array.isArray(newsItems) ? newsItems : []).filter(
-    (item) => !editionBulletinPattern.test(item.title || ""),
-  );
+  const seenNews = new Set<string>();
+  const feedNews = (Array.isArray(newsItems) ? newsItems : []).filter((item) => {
+    if (editionBulletinPattern.test(item.title || "")) return false;
+
+    const normalizedTitle = (item.title || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\w\s]/g, "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+    let normalizedUrl = item.sourceUrl || "";
+
+    try {
+      const url = new URL(normalizedUrl);
+      url.hash = "";
+      url.search = "";
+      normalizedUrl = `${url.hostname.replace(/^www\./, "")}${url.pathname.replace(/\/+$/, "")}`;
+    } catch {
+      // Usa o endereço original para identificar itens com URL inválida.
+    }
+
+    const identity = normalizedUrl || normalizedTitle;
+    if (!identity || seenNews.has(identity) || seenNews.has(`title:${normalizedTitle}`)) {
+      return false;
+    }
+
+    seenNews.add(identity);
+    seenNews.add(`title:${normalizedTitle}`);
+    return true;
+  });
+
   const latestNewsItems = feedNews.slice(0, 6);
-  const noPontoMatches = feedNews.filter((item) => {
+  const latestNewsUrls = new Set(latestNewsItems.map((item) => item.sourceUrl));
+  const remainingNews = feedNews.filter(
+    (item) => !latestNewsUrls.has(item.sourceUrl),
+  );
+  const noPontoMatches = remainingNews.filter((item) => {
     const searchableText = [
       item.title,
       item.sourceUrl,
@@ -190,7 +223,7 @@ export default function Home() {
     return searchableText.includes("no ponto");
   });
   const integralNewsItems = (
-    noPontoMatches.length > 0 ? noPontoMatches : feedNews
+    noPontoMatches.length > 0 ? noPontoMatches : remainingNews
   ).slice(0, 4);
   const displayedNewsUrls = new Set(
     [...latestNewsItems, ...integralNewsItems].map((item) => item.sourceUrl),
