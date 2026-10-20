@@ -187,6 +187,11 @@ export default function Home() {
   }, []);
 
   const story = carouselStories[activeSlide];
+  const latestCurrencyPoint = currencyHistory.reduce<CurrencyPoint | null>(
+    (latest, point) =>
+      !latest || point.date > latest.date ? point : latest,
+    null,
+  );
   const editionBulletinPattern =
     /\b(?:jornal|noticiário)\b.*\b(?:edição|assista|acompanhe)\b|\b(?:assista|acompanhe)\s+(?:ao\s+)?(?:noticiário|jornal)\b|\b(?:primeira|segunda|terceira|quarta|última)\s+edição\b/i;
   const seenNews = new Set<string>();
@@ -535,9 +540,25 @@ export default function Home() {
             </>
           ) : currencyHistory.length > 0 ? (
             <div className="mx-auto max-w-3xl rounded-xl border border-border p-4 sm:p-6">
-              <p className="mb-4 text-sm text-muted-foreground">
-                USD/BRL · referência diária · 30 dias
-              </p>
+              <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Dólar americano · último valor disponível
+                    {latestCurrencyPoint &&
+                      ` · ${new Date(`${latestCurrencyPoint.date}T12:00:00`).toLocaleDateString("pt-BR")}`}
+                  </p>
+                  {latestCurrencyPoint && (
+                    <p className="font-display text-2xl font-bold">
+                      US$ 1 = R${" "}
+                      {latestCurrencyPoint.value.toLocaleString("pt-BR", {
+                        minimumFractionDigits: 4,
+                        maximumFractionDigits: 4,
+                      })}
+                    </p>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">USD/BRL · 30 dias</p>
+              </div>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={currencyHistory} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
@@ -583,9 +604,7 @@ export default function Home() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Fonte: Frankfurter (taxa de referência diária, não cotação em tempo real).
-              </p>
+
             </div>
           ) : (
             <p className="text-center text-sm text-muted-foreground">
