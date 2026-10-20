@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
+import { ArrowRight, Clock3, TrendingUp, X } from "lucide-react";
+import eliteThumbnail from "@/assets/generated/elite-oligarquica-thumbnail.webp";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -111,6 +113,7 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [eliteDialogOpen, setEliteDialogOpen] = useState(false);
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -379,6 +382,81 @@ export default function Home() {
             </p>
           )}
         </section>
+
+        <section
+          aria-labelledby="elite-oligarchica-title"
+          className="mt-10 rounded-2xl bg-foreground p-5 text-background sm:p-7 lg:p-8"
+        >
+          <h2
+            id="elite-oligarchica-title"
+            className="max-w-3xl font-display text-2xl font-bold leading-tight sm:text-3xl"
+          >
+            O que significa elite oligárquica? Entenda de forma simples
+          </h2>
+          <img
+            src={eliteThumbnail}
+            alt="Grupo pequeno de pessoas influentes reunido em uma sala elegante"
+            loading="lazy"
+            className="mt-5 aspect-video w-full rounded-xl object-cover"
+          />
+          <Button
+            type="button"
+            className="mt-4 rounded-none bg-cta px-6 text-cta-foreground hover:bg-cta/90"
+            onClick={() => setEliteDialogOpen(true)}
+          >
+            Ler...
+          </Button>
+        </section>
+
+        <Dialog
+          open={eliteDialogOpen}
+          onOpenChange={setEliteDialogOpen}
+        >
+          <DialogContent className="fixed inset-0 left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none p-6 sm:max-w-none sm:p-10">
+            <DialogHeader className="mx-auto w-full max-w-3xl">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <DialogTitle className="text-2xl leading-tight sm:text-3xl">
+                    O que é uma elite oligárquica?
+                  </DialogTitle>
+                  <DialogDescription className="mt-2">
+                    Uma explicação simples sobre concentração de influência.
+                  </DialogDescription>
+                </div>
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    aria-label="Fechar explicação"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </DialogClose>
+              </div>
+            </DialogHeader>
+            <div className="mx-auto mt-6 w-full max-w-3xl space-y-5 text-base leading-relaxed text-foreground sm:text-lg">
+              <p>
+                “Elite oligárquica” é uma expressão usada para descrever um
+                grupo pequeno de pessoas que concentra grande influência ou
+                poder de decisão em uma sociedade, organização ou setor.
+              </p>
+              <p>
+                Em termos simples, significa que poucas pessoas têm mais
+                capacidade de influenciar decisões importantes do que a maioria.
+                Essa influência pode vir de riqueza, posição social, controle
+                de instituições ou relações de poder.
+              </p>
+              <p>
+                A expressão descreve uma concentração de influência; por si só,
+                não explica como esse grupo surgiu nem se suas decisões são
+                boas ou ruins. Para entender cada situação, é importante
+                observar quem decide, como as decisões são tomadas e quem é
+                afetado por elas.
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <Dialog
           open={selectedNews !== null}
