@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
+import { ArrowRight, Clock3, Image as ImageIcon, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -649,6 +649,29 @@ export default function Home() {
             </div>
           </section>
         )}
+
+        <section
+          aria-label="Imagem em destaque"
+          className="relative left-1/2 mt-12 w-screen -translate-x-1/2 px-5 py-10 sm:py-14"
+          style={{
+            background:
+              "radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 8%), transparent 58%), linear-gradient(115deg, #262626, #070707)",
+          }}
+        >
+          <div className="mx-auto max-w-7xl">
+            <div
+              role="img"
+              aria-label="Espaço reservado para imagem em destaque"
+              className="flex aspect-[16/8] w-full items-center justify-center border border-background/15 bg-background/[0.03] sm:aspect-[16/6]"
+            >
+              <ImageIcon
+                aria-hidden="true"
+                className="h-10 w-10 text-background/30 sm:h-14 sm:w-14"
+                strokeWidth={1}
+              />
+            </div>
+          </div>
+        </section>
 
         <Dialog
           open={selectedNews !== null}
