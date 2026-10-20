@@ -548,7 +548,7 @@ export default function Home() {
                       ` · ${new Date(`${latestCurrencyPoint.date}T12:00:00`).toLocaleDateString("pt-BR")}`}
                   </p>
                   {latestCurrencyPoint && (
-                    <p className="font-display text-2xl font-bold">
+                    <p className="font-display text-3xl font-bold tracking-tight text-primary sm:text-4xl">
                       US$ 1 = R${" "}
                       {latestCurrencyPoint.value.toLocaleString("pt-BR", {
                         minimumFractionDigits: 4,
