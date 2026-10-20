@@ -260,7 +260,7 @@ export default function Home() {
 
     async function loadFallbacks() {
       try {
-        const response = await fetch("/api/saber");
+        const response = await fetch("https://conscienciadepoder.com/api/saber");
         if (!response.ok) throw new Error("Gazeta do Povo indisponível");
         const data = (await response.json()) as NewsResponse;
         const items = Array.isArray(data.items) ? data.items : [];
@@ -270,15 +270,19 @@ export default function Home() {
           setSaberNews(items);
           return;
         }
+      } catch {
+        // Se as notícias não estiverem disponíveis, tenta carregar a cotação.
+      }
 
-        const currencyResponse = await fetch("/api/usd-brl");
+      try {
+        const currencyResponse = await fetch("https://conscienciadepoder.com/api/usd-brl");
         if (!currencyResponse.ok) throw new Error("Cotação indisponível");
         const currencyData = (await currencyResponse.json()) as {
           items?: CurrencyPoint[];
         };
         if (isCurrent) setCurrencyHistory(currencyData.items || []);
       } catch {
-        if (isCurrent) setSaberNews([]);
+        if (isCurrent) setCurrencyHistory([]);
       } finally {
         if (isCurrent) setFallbackLoading(false);
       }
