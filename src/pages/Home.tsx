@@ -333,7 +333,7 @@ export default function Home() {
         <section
           id="na-integra"
           aria-labelledby="na-integra-title"
-          className="mt-10 rounded-2xl bg-foreground p-5 text-background sm:p-7 lg:p-8"
+          className="relative left-1/2 mt-10 w-screen -translate-x-1/2 rounded-none bg-foreground p-5 text-background sm:p-7 lg:p-8"
         >
           <div className="mb-6 flex justify-center text-center">
             <h2
