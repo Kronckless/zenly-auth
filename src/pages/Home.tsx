@@ -395,7 +395,7 @@ export default function Home() {
         >
           <h2
             id="no-seu-radar-title"
-            className="mb-8 flex items-center justify-center gap-4 font-display text-3xl font-bold tracking-tight"
+            className="mb-8 flex items-center justify-center gap-2 font-display text-2xl font-bold tracking-tight sm:gap-4 sm:text-3xl"
           >
             <span aria-hidden="true" className="h-1 flex-1 bg-foreground" />
             <span>
