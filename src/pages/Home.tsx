@@ -117,7 +117,7 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
       <div
         role="img"
         aria-label={`Capa indisponível: ${title}`}
-        className="flex h-44 w-full items-center justify-center rounded-lg bg-muted"
+        className="flex h-full w-full items-center justify-center rounded-lg bg-muted"
       >
         <span className="font-display text-lg font-bold tracking-[0.2em] text-primary">
           NOVIDADE
@@ -132,7 +132,7 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
       alt={title}
       loading="lazy"
       onError={() => setImageFailed(true)}
-      className="h-32 w-full rounded-lg object-cover"
+      className="h-full w-full rounded-lg object-cover"
     />
   );
 }
@@ -495,12 +495,14 @@ export default function Home() {
               {latestNewsItems.map((item) => (
                 <Card
                   key={item.sourceUrl}
-                  className="gap-0 overflow-hidden rounded-[20px] border-border transition-shadow hover:shadow-md"
+                  className="gap-0 overflow-hidden rounded-[20px] border-border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <div className="px-3 pt-3">
-                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                    <div className="aspect-video overflow-hidden rounded-lg">
+                      <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                    </div>
                   </div>
-                  <CardHeader className="space-y-2 p-3">
+                  <CardHeader className="flex-1 space-y-2 p-4">
                     <CardTitle className="line-clamp-2 text-base leading-snug">
                       <button
                         type="button"
@@ -511,7 +513,7 @@ export default function Home() {
                       </button>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2 px-3 pb-3">
+                  <CardContent className="space-y-3 px-4 pb-4">
                     <p className="line-clamp-2 text-sm text-muted-foreground">
                       {item.content}
                     </p>
@@ -563,11 +565,13 @@ export default function Home() {
                 >
                   <button
                     type="button"
-                    className="px-3 pt-3 text-left"
+                    className="block w-full px-3 pt-3 text-left"
                     onClick={() => setSelectedNews(item)}
                     aria-label={`Ler notícia: ${item.title}`}
                   >
-                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                    <span className="block aspect-video overflow-hidden rounded-lg">
+                      <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                    </span>
                   </button>
                   <CardHeader className="p-3">
                     <CardTitle className="text-sm leading-snug">
@@ -800,7 +804,7 @@ export default function Home() {
                   key={item.sourceUrl}
                   type="button"
                   onClick={() => openNews(item)}
-                  className="flex w-full flex-col gap-4 rounded-[20px] border border-border bg-background p-4 text-left transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex-row sm:items-center"
+                  className="flex w-full flex-col gap-4 rounded-[20px] border border-border bg-card p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex-row sm:items-center"
                   aria-label={`Abrir notícia: ${item.title}`}
                 >
                   <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
