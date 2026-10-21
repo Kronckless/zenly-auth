@@ -715,7 +715,7 @@ export default function Home() {
         <section id="agronegocio" aria-labelledby="agronegocio-title" className="mt-14">
           <div className="mb-6">
             <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Revista Oeste · Agronegócio
+              Agronegócio
             </p>
             <h2 id="agronegocio-title" className="mt-2 font-display text-3xl font-bold tracking-tight">
               Notícias do Agronegócio
@@ -807,7 +807,7 @@ export default function Home() {
                 <p className="border-t border-border pt-4 text-xs text-muted-foreground">
                   Fonte: {selectedNews.sourceUrl.includes("gazetadopovo.com.br")
                     ? "Gazeta do Povo — Saber"
-                    : "Revista Oeste"}
+                    : "Feed de Agronegócio"}
                   . Conteúdo recebido do feed original.
                 </p>
               </>
