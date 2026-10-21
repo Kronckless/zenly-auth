@@ -478,59 +478,6 @@ export default function Home() {
           )}
         </section>
 
-        <section id="agronegocio" aria-labelledby="agronegocio-title" className="mt-14">
-          <div className="mb-6">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-              Revista Oeste · Agronegócio
-            </p>
-            <h2 id="agronegocio-title" className="mt-2 font-display text-3xl font-bold tracking-tight">
-              Notícias do Agronegócio
-            </h2>
-          </div>
-
-          {agroNewsLoading ? (
-            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
-              Carregando notícias do Agronegócio…
-            </p>
-          ) : agroNewsError ? (
-            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
-              Não foi possível carregar as notícias desta editoria no momento.
-            </p>
-          ) : agroNews.length === 0 ? (
-            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
-              Nenhuma notícia disponível nesta editoria no momento.
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {agroNews.map((item) => (
-                <article
-                  key={item.sourceUrl}
-                  className="flex flex-col gap-4 rounded-[20px] border border-border p-4 transition-shadow hover:shadow-md sm:flex-row sm:items-center"
-                >
-                  <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
-                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h3 className="font-display text-lg font-semibold leading-snug">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                      {item.content || "Confira os principais destaques recentes do Agronegócio."}
-                    </p>
-                    <a
-                      href={item.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-3 inline-flex text-sm font-semibold text-primary hover:underline"
-                    >
-                      Ler matéria completa
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
-        </section>
 
         <section
           id="na-integra"
@@ -763,6 +710,60 @@ export default function Home() {
               </Button>
             </div>
           </div>
+        </section>
+
+        <section id="agronegocio" aria-labelledby="agronegocio-title" className="mt-14">
+          <div className="mb-6">
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              Revista Oeste · Agronegócio
+            </p>
+            <h2 id="agronegocio-title" className="mt-2 font-display text-3xl font-bold tracking-tight">
+              Notícias do Agronegócio
+            </h2>
+          </div>
+
+          {agroNewsLoading ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Carregando notícias do Agronegócio…
+            </p>
+          ) : agroNewsError ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Não foi possível carregar as notícias desta editoria no momento.
+            </p>
+          ) : agroNews.length === 0 ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Nenhuma notícia disponível nesta editoria no momento.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {agroNews.slice(0, 8).map((item) => (
+                <article
+                  key={item.sourceUrl}
+                  className="flex flex-col gap-4 rounded-[20px] border border-border p-4 transition-shadow hover:shadow-md sm:flex-row sm:items-center"
+                >
+                  <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
+                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-lg font-semibold leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                      {item.content || "Confira os principais destaques recentes do Agronegócio."}
+                    </p>
+                    <a
+                      href={item.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex text-sm font-semibold text-primary hover:underline"
+                    >
+                      Ler matéria completa
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
 
         <Dialog
