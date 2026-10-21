@@ -96,6 +96,19 @@ function hideSourceTerms(value = "") {
     .trim();
 }
 
+function removeOestePhrases(value = "") {
+  return value
+    .split(/(?<=[.!?])\s+|\n+/)
+    .filter(
+      (phrase) =>
+        !/\boeste\b/i.test(phrase) &&
+        !/\+?\s*entenda\b.*\bagroneg[oó]cio\b/i.test(phrase),
+    )
+    .join(" ")
+    .replace(/[ \t]+/g, " ")
+    .trim();
+}
+
 function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }) {
   const [imageFailed, setImageFailed] = useState(false);
 
@@ -199,7 +212,19 @@ export default function Home() {
         const data = (await response.json()) as NewsResponse;
 
         if (isCurrent) {
-          setAgroNews(Array.isArray(data.items) ? data.items.slice(0, 8) : []);
+          setAgroNews(
+            Array.isArray(data.items)
+              ? data.items.slice(0, 8).map((item) => ({
+                  ...item,
+                  title: removeOestePhrases(item.title),
+                  subtitle: removeOestePhrases(item.subtitle),
+                  content: removeOestePhrases(item.content),
+                  categories: item.categories
+                    ?.map(removeOestePhrases)
+                    .filter(Boolean),
+                }))
+              : [],
+          );
         }
       } catch {
         if (isCurrent) setAgroNewsError(true);
