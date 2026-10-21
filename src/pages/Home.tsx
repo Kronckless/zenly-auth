@@ -788,18 +788,7 @@ export default function Home() {
                 </p>
               </section>
 
-              <p className="border-t border-border pt-5 text-sm text-muted-foreground">
-                Resumo explicativo com base na matéria da Gazeta do Povo sobre
-                os alertas do IFI e do Ipea. Para consultar a reportagem,{" "}
-                <a
-                  href="https://www.gazetadopovo.com.br/economia/colapso-fiscal-governo-lula-alerta-ifi-ipea/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-primary underline underline-offset-4 hover:opacity-80"
-                >
-                  acesse a publicação original
-                </a>.
-              </p>
+
             </article>
           </DialogContent>
         </Dialog>
