@@ -10,6 +10,8 @@ let cachedAt = 0;
 let refreshPromise = null;
 let cachedSaberNews = null;
 let cachedSaberAt = 0;
+let cachedAgroNews = null;
+let cachedAgroAt = 0;
 
 function decodeXml(value = "") {
   return value
@@ -290,6 +292,36 @@ async function getSaberNews() {
   return cachedSaberNews;
 }
 
+async function getAgroNews() {
+  if (cachedAgroNews && Date.now() - cachedAgroAt < CACHE_TTL) {
+    return cachedAgroNews;
+  }
+
+  const feedPaths = [
+    "/agronegocio/feed/",
+    "/category/agronegocio/feed/",
+  ];
+
+  for (const path of feedPaths) {
+    try {
+      const xml = await fetchFeedText(new URL(path, "https://revistaoeste.com").href);
+      const items = parseFeed(xml, "revistaoeste.com")
+        .sort((a, b) => (Date.parse(b.publishedAt || "") || 0) - (Date.parse(a.publishedAt || "") || 0))
+        .slice(0, 8);
+
+      if (items.length > 0) {
+        cachedAgroNews = items;
+        cachedAgroAt = Date.now();
+        return cachedAgroNews;
+      }
+    } catch {
+      // Tenta o endereço alternativo do feed da editoria.
+    }
+  }
+
+  throw new Error("Feed de Agronegócio indisponível");
+}
+
 async function getUsdBrlHistory() {
   const end = new Date();
   const start = new Date(end);
@@ -345,6 +377,19 @@ const server = createServer(async (request, response) => {
       console.error("Falha ao verificar o serviço de notícias:", error);
       response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
       response.end(JSON.stringify({ status: "error", message: "Serviço ou feed indisponível." }));
+    }
+    return;
+  }
+
+  if (request.url === "/api/agronegocio") {
+    try {
+      const items = await getAgroNews();
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ source: "Revista Oeste — Agronegócio", items }));
+    } catch (error) {
+      console.error("Falha ao carregar notícias de Agronegócio:", error);
+      response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ error: "Notícias de Agronegócio indisponíveis." }));
     }
     return;
   }

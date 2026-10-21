@@ -131,6 +131,9 @@ export default function Home() {
   const [newsError, setNewsError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [saberNews, setSaberNews] = useState<NewsItem[]>([]);
+  const [agroNews, setAgroNews] = useState<NewsItem[]>([]);
+  const [agroNewsLoading, setAgroNewsLoading] = useState(true);
+  const [agroNewsError, setAgroNewsError] = useState(false);
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyPoint[]>([]);
   const [fallbackLoading, setFallbackLoading] = useState(false);
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
@@ -180,6 +183,34 @@ export default function Home() {
 
 
   useEffect(() => {
+    let isCurrent = true;
+
+    async function loadAgroNews() {
+      setAgroNewsLoading(true);
+      setAgroNewsError(false);
+
+      try {
+        const response = await fetch("https://conscienciadepoder.com/api/agronegocio");
+        if (!response.ok) throw new Error("Notícias de Agronegócio indisponíveis");
+        const data = (await response.json()) as NewsResponse;
+
+        if (isCurrent) {
+          setAgroNews(Array.isArray(data.items) ? data.items.slice(0, 8) : []);
+        }
+      } catch {
+        if (isCurrent) setAgroNewsError(true);
+      } finally {
+        if (isCurrent) setAgroNewsLoading(false);
+      }
+    }
+
+    loadAgroNews();
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
+
+  useEffect(() => {
     const timer = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % carouselStories.length);
     }, 3000);
@@ -196,7 +227,9 @@ export default function Home() {
   const editionBulletinPattern =
     /\b(?:jornal|noticiário)\b.*\b(?:edição|assista|acompanhe)\b|\b(?:assista|acompanhe)\s+(?:ao\s+)?(?:noticiário|jornal)\b|\b(?:primeira|segunda|terceira|quarta|última)\s+edição\b/i;
   const seenNews = new Set<string>();
+  const agronegocioUrls = new Set(agroNews.map((item) => item.sourceUrl));
   const feedNews = (Array.isArray(newsItems) ? newsItems : []).filter((item) => {
+    if (agronegocioUrls.has(item.sourceUrl)) return false;
     if (editionBulletinPattern.test(item.title || "")) return false;
 
     const normalizedTitle = (item.title || "")
@@ -440,6 +473,60 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section id="agronegocio" aria-labelledby="agronegocio-title" className="mt-14">
+          <div className="mb-6">
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+              Revista Oeste · Agronegócio
+            </p>
+            <h2 id="agronegocio-title" className="mt-2 font-display text-3xl font-bold tracking-tight">
+              Notícias do Agronegócio
+            </h2>
+          </div>
+
+          {agroNewsLoading ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Carregando notícias do Agronegócio…
+            </p>
+          ) : agroNewsError ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Não foi possível carregar as notícias desta editoria no momento.
+            </p>
+          ) : agroNews.length === 0 ? (
+            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
+              Nenhuma notícia disponível nesta editoria no momento.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {agroNews.map((item) => (
+                <article
+                  key={item.sourceUrl}
+                  className="flex flex-col gap-4 rounded-[20px] border border-border p-4 transition-shadow hover:shadow-md sm:flex-row sm:items-center"
+                >
+                  <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
+                    <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-display text-lg font-semibold leading-snug">
+                      {item.title}
+                    </h3>
+                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                      {item.content || "Confira os principais destaques recentes do Agronegócio."}
+                    </p>
+                    <a
+                      href={item.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex text-sm font-semibold text-primary hover:underline"
+                    >
+                      Ler matéria completa
+                    </a>
+                  </div>
+                </article>
               ))}
             </div>
           )}
