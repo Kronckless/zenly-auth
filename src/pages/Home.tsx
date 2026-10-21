@@ -404,7 +404,7 @@ export default function Home() {
     <main className="min-h-screen bg-background">
 
 
-      <div className="mx-auto max-w-7xl px-5 py-8 lg:px-8 lg:py-12">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8 lg:py-12">
         <section id="urgente" aria-label="Notícias urgentes">
           <div className="mb-5 flex items-center gap-3">
             <Badge className="gap-2 px-3 py-1">
@@ -420,21 +420,21 @@ export default function Home() {
             <img
               src={story.image}
               alt={story.title}
-              className="h-[24rem] w-full object-cover opacity-75 transition-opacity duration-500 md:h-[ thirtyrem] lg:h-[ thirtyrem]"
+              className="h-[20rem] w-full object-cover opacity-75 transition-opacity duration-500 sm:h-[24rem] lg:h-[30rem]"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/35 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-6 text-background md:p-10">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-background/70">
+            <div className="absolute inset-x-0 bottom-0 p-4 text-background sm:p-6 md:p-10">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-background/70 sm:mb-3">
                 {story.category}
               </p>
-              <h1 className="max-w-3xl font-display text-3xl font-bold leading-tight md:text-5xl">
+              <h1 className="max-w-3xl font-display text-2xl font-bold leading-tight sm:text-3xl md:text-5xl">
                 {story.title}
               </h1>
               <p className="mt-4 text-xs text-background/60">
                 Foto: {story.credit} / Pexels
               </p>
             </div>
-            <div className="absolute bottom-6 right-6 flex gap-1.5">
+            <div className="absolute bottom-4 right-4 flex gap-1.5 sm:bottom-6 sm:right-6">
               {carouselStories.map((item, index) => (
                 <button
                   key={item.title}
@@ -452,14 +452,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="noticias" className="mt-14">
+        <section id="noticias" className="mt-10 sm:mt-14">
           <div className="mb-6 flex items-end justify-between gap-4">
             <div>
               <p className="flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-primary">
                 <TrendingUp className="h-4 w-4" />
                 Últimas notícias
               </p>
-              <h2 className="mt-2 font-display text-3xl font-bold tracking-tight">
+              <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
                 O dia em 24 histórias
               </h2>
             </div>
@@ -491,7 +491,7 @@ export default function Home() {
               Nenhuma notícia está disponível no feed no momento.
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {latestNewsItems.map((item) => (
                 <Card
                   key={item.sourceUrl}
@@ -807,7 +807,7 @@ export default function Home() {
                   className="flex w-full flex-col gap-4 rounded-[20px] border border-border bg-card p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex-row sm:items-center"
                   aria-label={`Abrir notícia: ${item.title}`}
                 >
-                  <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
+                  <div className="h-36 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
                     <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                   </div>
                   <div className="min-w-0 flex-1">
@@ -837,7 +837,7 @@ export default function Home() {
             }
           }}
         >
-          <DialogContent className="fixed inset-0 left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none p-6 sm:max-w-none sm:p-8">
+          <DialogContent className="fixed inset-0 left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none p-4 sm:max-w-none sm:p-8">
             {selectedNews && (
               <>
                 <DialogHeader>
