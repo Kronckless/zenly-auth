@@ -663,7 +663,7 @@ export default function Home() {
               src="https://i.postimg.cc/3xKFHsFf/81c2840c-582e-482f-9eb6-e3d1865cbf0f.png"
               alt="Imagem em destaque"
               loading="lazy"
-              className="aspect-[16/8] w-full object-cover sm:aspect-[16/6]"
+              className="aspect-[16/9] w-full object-cover sm:aspect-[16/7]"
             />
           </div>
         </section>
