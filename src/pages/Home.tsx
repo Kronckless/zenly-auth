@@ -666,6 +666,15 @@ export default function Home() {
               loading="lazy"
               className="aspect-[16/9] w-full object-cover sm:aspect-[16/7]"
             />
+            <div className="mt-6 flex justify-center">
+              <Button
+                type="button"
+                onClick={() => setFiscalAlertOpen(true)}
+                className="rounded-lg bg-cta px-7 text-cta-foreground shadow-md transition-all hover:scale-[1.02] hover:brightness-95 hover:shadow-lg"
+              >
+                Saber mais
+              </Button>
+            </div>
           </div>
         </section>
 
