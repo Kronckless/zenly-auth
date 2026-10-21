@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Clock3, Image as ImageIcon, TrendingUp } from "lucide-react";
+import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -659,17 +659,12 @@ export default function Home() {
           }}
         >
           <div className="mx-auto max-w-7xl">
-            <div
-              role="img"
-              aria-label="Espaço reservado para imagem em destaque"
-              className="flex aspect-[16/8] w-full items-center justify-center border border-background/15 bg-background/[0.03] sm:aspect-[16/6]"
-            >
-              <ImageIcon
-                aria-hidden="true"
-                className="h-10 w-10 text-background/30 sm:h-14 sm:w-14"
-                strokeWidth={1}
-              />
-            </div>
+            <img
+              src="https://i.postimg.cc/3xKFHsFf/81c2840c-582e-482f-9eb6-e3d1865cbf0f.png"
+              alt="Imagem em destaque"
+              loading="lazy"
+              className="aspect-[16/8] w-full object-cover sm:aspect-[16/6]"
+            />
           </div>
         </section>
 
