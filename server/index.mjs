@@ -340,6 +340,95 @@ async function getUsdBrlHistory() {
   }));
 }
 
+function extractElementInner(html, tagName, openingPattern) {
+  const opening = openingPattern.exec(html);
+  if (!opening) return "";
+
+  const tokens = new RegExp(`<\\/?${tagName}\\b[^>]*>`, "gi");
+  tokens.lastIndex = opening.index;
+  let depth = 0;
+  let token;
+
+  while ((token = tokens.exec(html))) {
+    if (token[0].startsWith("</")) {
+      depth -= 1;
+    } else if (!token[0].endsWith("/>")) {
+      depth += 1;
+    }
+
+    if (depth === 0) {
+      return html.slice(opening.index + opening[0].length, token.index);
+    }
+  }
+
+  return "";
+}
+
+function readArticleMeta(html, names) {
+  for (const [, tag] of html.matchAll(/<meta\\b[^>]*>/gi)) {
+    const attributes = Object.fromEntries(
+      [...tag.matchAll(/([\\w:-]+)\\s*=\\s*["']([^"']*)["']/g)].map(
+        ([, name, value]) => [name.toLowerCase(), value],
+      ),
+    );
+    const key = (attributes.name || attributes.property || "").toLowerCase();
+    if (names.includes(key) && attributes.content) {
+      return decodeXml(attributes.content);
+    }
+  }
+
+  return "";
+}
+
+async function getFullArticle(articleUrl) {
+  const allowedHost = "revistaoeste.com";
+  const articleHost = articleUrl.hostname.toLowerCase().replace(/^www\\./, "");
+  if (
+    articleUrl.protocol !== "https:" ||
+    (articleHost !== allowedHost && !articleHost.endsWith(`.${allowedHost}`))
+  ) {
+    throw new Error("Endereço de matéria inválido");
+  }
+
+  const page = await fetchWithTimeout(articleUrl.href, {
+    headers: { Accept: "text/html,application/xhtml+xml" },
+  });
+  if (!page.ok) throw new Error("Matéria indisponível");
+
+  const finalUrl = new URL(page.url);
+  const finalHost = finalUrl.hostname.toLowerCase().replace(/^www\\./, "");
+  if (
+    finalUrl.protocol !== "https:" ||
+    (finalHost !== allowedHost && !finalHost.endsWith(`.${allowedHost}`))
+  ) {
+    throw new Error("Endereço de matéria inválido");
+  }
+
+  const html = await page.text();
+  const articleHtml =
+    extractElementInner(html, "article", /<article\\b[^>]*>/i) ||
+    extractElementInner(
+      html,
+      "div",
+      /<div\\b(?=[^>]*\\bclass=["'][^"']*\\b(?:entry-content|post-content|article-content|content__body)\\b)[^>]*>/i,
+    );
+
+  const titleMatch = html.match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1\\s*>/i);
+  const title = cleanNewsContent(decodeXml(titleMatch?.[1] || "")) ||
+    readArticleMeta(html, ["og:title"]);
+  const subtitle = cleanNewsContent(
+    readArticleMeta(html, ["description", "og:description"]),
+  );
+  const cleanedHtml = articleHtml.replace(
+    /<(script|style|noscript|nav|aside|footer|form)\\b[^>]*>[\\s\\S]*?<\\/\\1\\s*>/gi,
+    " ",
+  );
+  const content = cleanNewsContent(decodeXml(cleanedHtml));
+
+  if (!content) throw new Error("Texto completo indisponível");
+  return { title, subtitle, content };
+}
+
 const server = createServer(async (request, response) => {
   // Cabeçalhos de Segurança e CORS liberado para requisições do Zenly / Navegador
   response.setHeader("X-Content-Type-Options", "nosniff");

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
 import {
   Area,
@@ -73,6 +73,7 @@ type NewsItem = {
   publishedAt?: string;
   categories?: string[];
   rewritten?: boolean;
+  subtitle?: string;
 };
 
 type NewsResponse = {
@@ -127,6 +128,9 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
+  const [articleLoading, setArticleLoading] = useState(false);
+  const [articleError, setArticleError] = useState(false);
+  const articleRequestRef = useRef(0);
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -340,6 +344,36 @@ export default function Home() {
       isCurrent = false;
     };
   }, [newsLoading, radarNewsItems.length]);
+
+  async function openNews(item: NewsItem) {
+    const requestId = ++articleRequestRef.current;
+    setSelectedNews(item);
+    setArticleError(false);
+    setArticleLoading(false);
+
+    if (!item.sourceUrl.includes("revistaoeste.com")) return;
+
+    setArticleLoading(true);
+    try {
+      const response = await fetch(
+        `https://conscienciadepoder.com/api/article?url=${encodeURIComponent(item.sourceUrl)}`,
+      );
+      if (!response.ok) throw new Error("Texto completo indisponível");
+      const article = (await response.json()) as NewsItem;
+
+      if (articleRequestRef.current === requestId) {
+        setSelectedNews((current) =>
+          current?.sourceUrl === item.sourceUrl
+            ? { ...current, ...article, sourceUrl: item.sourceUrl }
+            : current,
+        );
+      }
+    } catch {
+      if (articleRequestRef.current === requestId) setArticleError(true);
+    } finally {
+      if (articleRequestRef.current === requestId) setArticleLoading(false);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-background">
@@ -737,9 +771,12 @@ export default function Home() {
           ) : (
             <div className="space-y-4">
               {agroNews.slice(0, 8).map((item) => (
-                <article
+                <button
                   key={item.sourceUrl}
-                  className="flex flex-col gap-4 rounded-[20px] border border-border p-4 transition-shadow hover:shadow-md sm:flex-row sm:items-center"
+                  type="button"
+                  onClick={() => openNews(item)}
+                  className="flex w-full flex-col gap-4 rounded-[20px] border border-border bg-background p-4 text-left transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex-row sm:items-center"
+                  aria-label={`Abrir notícia: ${item.title}`}
                 >
                   <div className="h-44 w-full shrink-0 overflow-hidden rounded-lg sm:h-28 sm:w-40">
                     <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
@@ -751,16 +788,11 @@ export default function Home() {
                     <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                       {item.content || "Confira os principais destaques recentes do Agronegócio."}
                     </p>
-                    <a
-                      href={item.sourceUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-3 inline-flex text-sm font-semibold text-primary hover:underline"
-                    >
+                    <span className="mt-3 inline-flex text-sm font-semibold text-primary">
                       Ler matéria completa
-                    </a>
+                    </span>
                   </div>
-                </article>
+                </button>
               ))}
             </div>
           )}
@@ -769,7 +801,11 @@ export default function Home() {
         <Dialog
           open={selectedNews !== null}
           onOpenChange={(open) => {
-            if (!open) setSelectedNews(null);
+            if (!open) {
+              articleRequestRef.current += 1;
+              setSelectedNews(null);
+              setArticleLoading(false);
+            }
           }}
         >
           <DialogContent className="fixed inset-0 left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none p-6 sm:max-w-none sm:p-8">
@@ -786,6 +822,11 @@ export default function Home() {
                     {selectedNews.rewritten ? " · Texto reescrito" : ""}
                   </DialogDescription>
                 </DialogHeader>
+                {selectedNews.subtitle && (
+                  <p className="mx-auto w-full max-w-3xl text-base font-medium leading-relaxed text-muted-foreground">
+                    {selectedNews.subtitle}
+                  </p>
+                )}
                 {selectedNews.imageUrl && (
                   <img
                     src={selectedNews.imageUrl}
@@ -794,6 +835,16 @@ export default function Home() {
                   />
                 )}
                 <div className="mx-auto w-full max-w-3xl space-y-6 text-[17px] leading-relaxed text-foreground">
+                  {articleLoading && (
+                    <p className="text-sm text-muted-foreground">
+                      Carregando o texto completo da matéria…
+                    </p>
+                  )}
+                  {articleError && (
+                    <p className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
+                      Não foi possível carregar o texto completo agora. Você ainda pode abrir a matéria original.
+                    </p>
+                  )}
                   {selectedNews.content
                     .split(/\n+/)
                     .map((paragraph) => paragraph.trim())
@@ -809,6 +860,16 @@ export default function Home() {
                     ? "Gazeta do Povo — Saber"
                     : "Feed de Agronegócio"}
                   . Conteúdo recebido do feed original.
+                </p>
+                <p className="mx-auto w-full max-w-3xl">
+                  <a
+                    href={selectedNews.sourceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-sm font-semibold text-primary hover:underline"
+                  >
+                    Abrir matéria original
+                  </a>
                 </p>
               </>
             )}
