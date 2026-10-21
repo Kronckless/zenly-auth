@@ -855,22 +855,26 @@ export default function Home() {
                       </p>
                     ))}
                 </div>
-                <p className="border-t border-border pt-4 text-xs text-muted-foreground">
-                  Fonte: {selectedNews.sourceUrl.includes("gazetadopovo.com.br")
-                    ? "Gazeta do Povo — Saber"
-                    : "Feed de Agronegócio"}
-                  . Conteúdo recebido do feed original.
-                </p>
-                <p className="mx-auto w-full max-w-3xl">
-                  <a
-                    href={selectedNews.sourceUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm font-semibold text-primary hover:underline"
-                  >
-                    Abrir matéria original
-                  </a>
-                </p>
+                {!agroNews.some((item) => item.sourceUrl === selectedNews.sourceUrl) && (
+                  <>
+                    <p className="border-t border-border pt-4 text-xs text-muted-foreground">
+                      Fonte: {selectedNews.sourceUrl.includes("gazetadopovo.com.br")
+                        ? "Gazeta do Povo — Saber"
+                        : "Feed de Agronegócio"}
+                      . Conteúdo recebido do feed original.
+                    </p>
+                    <p className="mx-auto w-full max-w-3xl">
+                      <a
+                        href={selectedNews.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sm font-semibold text-primary hover:underline"
+                      >
+                        Abrir matéria original
+                      </a>
+                    </p>
+                  </>
+                )}
               </>
             )}
           </DialogContent>
