@@ -133,6 +133,7 @@ export default function Home() {
   const [saberNews, setSaberNews] = useState<NewsItem[]>([]);
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyPoint[]>([]);
   const [fallbackLoading, setFallbackLoading] = useState(false);
+  const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
 
   useEffect(() => {
     let isCurrent = true;
@@ -714,6 +715,83 @@ export default function Home() {
                 </p>
               </>
             )}
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={fiscalAlertOpen} onOpenChange={setFiscalAlertOpen}>
+          <DialogContent className="fixed inset-0 left-0 top-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none p-6 sm:max-w-none sm:p-10">
+            <DialogHeader className="mx-auto w-full max-w-3xl border-b border-border pb-6 pt-8">
+              <DialogTitle className="font-display text-3xl font-bold leading-tight sm:text-5xl">
+                Alerta de colapso fiscal: o que está em jogo
+              </DialogTitle>
+              <DialogDescription className="text-base leading-relaxed">
+                Entenda os principais riscos para as contas públicas e por que
+                especialistas acompanham o equilíbrio entre receitas, despesas e dívida.
+              </DialogDescription>
+            </DialogHeader>
+
+            <article className="mx-auto w-full max-w-3xl space-y-8 py-8 text-base leading-relaxed sm:text-lg">
+              <section className="space-y-3">
+                <h3 className="font-display text-xl font-bold sm:text-2xl">
+                  O que significa o alerta
+                </h3>
+                <p>
+                  A matéria apresenta preocupações atribuídas a análises do IFI
+                  e do Ipea sobre a trajetória das contas públicas. Um quadro
+                  fiscal mais pressionado pode reduzir a margem do governo para
+                  financiar políticas e responder a imprevistos.
+                </p>
+              </section>
+
+              <section className="space-y-4">
+                <h3 className="font-display text-xl font-bold sm:text-2xl">
+                  Pontos para acompanhar
+                </h3>
+                <ul className="list-disc space-y-3 pl-6 marker:text-primary">
+                  <li>
+                    <strong>Receitas e despesas:</strong> o equilíbrio depende
+                    de receitas compatíveis com os gastos públicos ao longo do tempo.
+                  </li>
+                  <li>
+                    <strong>Dívida pública:</strong> déficits persistentes podem
+                    elevar o endividamento e tornar seu financiamento mais caro.
+                  </li>
+                  <li>
+                    <strong>Juros e orçamento:</strong> despesas financeiras
+                    maiores podem limitar recursos disponíveis para outras áreas.
+                  </li>
+                  <li>
+                    <strong>Credibilidade:</strong> previsibilidade nas contas
+                    ajuda a reduzir incertezas para famílias, empresas e investidores.
+                  </li>
+                </ul>
+              </section>
+
+              <section className="space-y-3 rounded-xl border border-border bg-muted/50 p-5 sm:p-6">
+                <h3 className="font-display text-xl font-bold sm:text-2xl">
+                  Por que isso importa
+                </h3>
+                <p>
+                  A expressão “colapso fiscal” descreve um risco, não um
+                  resultado inevitável. A evolução depende das decisões
+                  orçamentárias, do desempenho da economia e da capacidade de
+                  manter as contas públicas sustentáveis.
+                </p>
+              </section>
+
+              <p className="border-t border-border pt-5 text-sm text-muted-foreground">
+                Resumo explicativo com base na matéria da Gazeta do Povo sobre
+                os alertas do IFI e do Ipea. Para consultar a reportagem,{" "}
+                <a
+                  href="https://www.gazetadopovo.com.br/economia/colapso-fiscal-governo-lula-alerta-ifi-ipea/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="font-medium text-primary underline underline-offset-4 hover:opacity-80"
+                >
+                  acesse a publicação original
+                </a>.
+              </p>
+            </article>
           </DialogContent>
         </Dialog>
       </div>
