@@ -12,6 +12,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import AppNavigation from "@/components/AppNavigation";
 import {
   Card,
   CardContent,
@@ -401,7 +402,8 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-background pb-20 sm:pb-0">
+      <AppNavigation />
 
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8 lg:py-12">

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Community from "./pages/Community";
 
 export default function App() {
   return (
@@ -8,6 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/cadastro-login" element={<Login />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/comunidade" element={<Community />} />
         <Route path="*" element={<Navigate to="/cadastro-login" replace />} />
       </Routes>
     </BrowserRouter>
