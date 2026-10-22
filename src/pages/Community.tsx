@@ -122,7 +122,17 @@ export default function Community() {
     event.preventDefault();
     const content = messageText.trim();
 
-    if (!supabase || !userId || !content || sending) return;
+    if (!content || sending) return;
+
+    if (!supabase) {
+      setError("O serviço de mensagens não está configurado.");
+      return;
+    }
+
+    if (!userId) {
+      setError("Entre na sua conta para enviar mensagens.");
+      return;
+    }
 
     setSending(true);
     setError("");
@@ -262,21 +272,17 @@ export default function Community() {
           <Input
             value={messageText}
             onChange={(event) => setMessageText(event.target.value)}
-            placeholder={
-              userId
-                ? "Mensagem..."
-                : "Entre na sua conta para enviar mensagens"
-            }
+            placeholder="Mensagem"
             aria-label="Sua mensagem"
             maxLength={2000}
-            disabled={!userId || sending}
+            disabled={sending}
             className="h-11 rounded-full bg-muted/50 px-4"
           />
           <Button
             type="submit"
             size="icon"
             aria-label="Enviar mensagem"
-            disabled={!userId || !messageText.trim() || sending}
+            disabled={!messageText.trim() || sending}
             className="size-10 shrink-0 rounded-full"
           >
             <Send className="size-4" />
