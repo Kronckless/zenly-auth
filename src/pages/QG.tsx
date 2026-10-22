@@ -72,7 +72,7 @@ export default function QG() {
               QG
             </h1>
             <p className="mt-2 text-lg font-bold text-[#0F172A]">
-              Panorama Diário
+              Dossiê Semanal
             </p>
           </div>
 
@@ -86,10 +86,10 @@ export default function QG() {
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
               <h2 id="reports-title" className="font-display text-2xl font-semibold">
-                Análises e relatórios
+                Relatórios de Inteligência
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Leituras selecionadas para acompanhar os principais temas.
+                Relatórios e análises estratégicas atualizados semanalmente.
               </p>
             </div>
             <BookOpen className="hidden size-6 text-muted-foreground sm:block" />
