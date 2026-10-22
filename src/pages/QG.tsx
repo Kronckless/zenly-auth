@@ -73,26 +73,32 @@ export default function QG() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
   return (
-    <main className="min-h-screen bg-muted/30 pb-16 sm:pb-0">
+    <main className="min-h-screen bg-[#F1F5F9] pb-16 sm:pb-0">
       <AppNavigation />
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        <header className="qg-hero mb-8 flex flex-col justify-between gap-5 rounded-3xl border border-border/70 p-6 shadow-sm sm:mb-10 sm:flex-row sm:items-end sm:p-9">
+        <header
+          className="mb-8 flex flex-col justify-between gap-5 rounded-3xl border border-white/70 p-6 shadow-md sm:mb-10 sm:flex-row sm:items-end sm:p-9"
+          style={{
+            backgroundImage:
+              "radial-gradient(ellipse at 15% 25%, rgba(0,168,89,.82), transparent 48%), radial-gradient(ellipse at 82% 12%, rgba(255,204,0,.88), transparent 42%), radial-gradient(ellipse at 78% 92%, rgba(0,82,204,.72), transparent 48%), linear-gradient(135deg, #ffffff, #f8fafc)",
+          }}
+        >
           <div>
-            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-primary">
+            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#002B7F]">
               <ShieldCheck className="size-4" />
               ÁREA DO MEMBRO
             </div>
-            <h1 className="font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+            <h1 className="font-display text-5xl font-extrabold tracking-tight text-[#0F172A] sm:text-6xl">
               QG
             </h1>
-            <p className="mt-2 text-lg font-medium text-foreground/75">
+            <p className="mt-2 text-lg font-bold text-[#0F172A]">
               Panorama Diário
             </p>
           </div>
 
-          <Badge variant="secondary" className="qg-member-badge w-fit gap-2 px-3 py-2">
-            <span className="size-2 rounded-full bg-radar-green shadow-[0_0_8px_var(--radar-green)]" />
+          <Badge variant="secondary" className="w-fit gap-2 bg-emerald-100 px-3 py-2 font-bold text-[#15803D]">
+            <span className="size-2 rounded-full bg-[#00A859] shadow-[0_0_8px_#00A859]" />
             Membro Ativo
           </Badge>
         </header>
@@ -114,11 +120,14 @@ export default function QG() {
             {reports.map((report) => (
               <Card
                 key={report.title}
-                className="gap-0 overflow-hidden rounded-3xl border-border/80 bg-card py-0 shadow-md transition-shadow hover:shadow-lg"
+                className="gap-0 overflow-hidden rounded-3xl border-[#E2E8F0] bg-white py-0 shadow-md transition-shadow hover:shadow-xl"
               >
-                <div aria-hidden="true" className="qg-report-art" />
+                <div
+                  aria-hidden="true"
+                  className="h-24 bg-gradient-to-br from-[#00A859] via-[#FFCC00] to-[#0052CC]"
+                />
                 <CardHeader className="gap-3 p-5 sm:p-6">
-                  <Badge variant="secondary" className="qg-report-badge w-fit text-xs tracking-wide">
+                  <Badge variant="secondary" className="w-fit bg-[#FFCC00] text-xs font-bold tracking-wide text-[#0F172A]">
                     {report.category}
                   </Badge>
                   <CardTitle className="text-xl leading-snug">
@@ -142,7 +151,7 @@ export default function QG() {
                   <Button
                     type="button"
                     onClick={() => setSelectedReport(report)}
-                    className="gap-2"
+                    className="gap-2 bg-[#00A859] font-bold text-white hover:bg-[#008744]"
                   >
                     Ler Panorama
                     <ArrowRight className="size-4" />

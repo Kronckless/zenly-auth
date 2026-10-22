@@ -75,7 +75,7 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed bottom-0 left-0 right-0 z-50 flex h-12 border-t border-border bg-background/95 shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 flex h-12 border-t-2 border-t-[#00A859] bg-white shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
       >
         {tabs.map(({ label, to, Icon }) => (
           <NavLink
@@ -83,7 +83,7 @@ export default function AppNavigation() {
             to={to}
             className={({ isActive }) =>
               `flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 py-0.5 text-[10px] font-medium transition-colors ${
-                isActive ? "text-primary" : "text-muted-foreground"
+                isActive ? "text-[#00A859]" : "text-muted-foreground"
               }`
             }
           >
