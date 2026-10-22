@@ -2,7 +2,7 @@ import AppNavigation from "@/components/AppNavigation";
 
 export default function Community() {
   return (
-    <main className="min-h-screen bg-background pb-20 sm:pb-0">
+    <main className="min-h-screen bg-background pb-16 sm:pb-0">
       <AppNavigation />
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         <p className="text-sm font-semibold uppercase tracking-widest text-primary">

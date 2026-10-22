@@ -402,7 +402,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-background pb-20 sm:pb-0">
+    <main className="min-h-screen bg-background pb-16 sm:pb-0">
       <AppNavigation />
 
 
