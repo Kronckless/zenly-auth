@@ -1,7 +1,8 @@
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { MessageSquare, Send, Smile, UsersRound } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 type CommunityMessage = {
@@ -20,6 +21,19 @@ export default function Community() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+  const messageListRef = useRef<HTMLDivElement>(null);
+  const quickEmojis = ["😀", "😂", "❤️", "👍", "🎉", "🙏"];
+
+  useEffect(() => {
+    const messageList = messageListRef.current;
+    if (messageList) {
+      messageList.scrollTo({
+        top: messageList.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages, loading]);
 
   const loadMessages = useCallback(async () => {
     if (!supabase) return;
@@ -133,86 +147,150 @@ export default function Community() {
   };
 
   return (
-    <main className="min-h-screen bg-background pb-16 sm:pb-0">
+    <main className="flex h-dvh flex-col overflow-hidden bg-background">
       <AppNavigation />
-      <section className="mx-auto max-w-3xl px-5 py-8 sm:px-8 sm:py-12">
-        <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-          Comunidade
-        </p>
-        <h1 className="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Chat
-        </h1>
-        <p className="mt-3 text-muted-foreground">
-          Converse com a comunidade. As mensagens ficam disponíveis por 7 dias.
-        </p>
-
-        <form onSubmit={sendMessage} className="mt-8 space-y-3">
-          <Textarea
-            value={messageText}
-            onChange={(event) => setMessageText(event.target.value)}
-            placeholder={
-              userId ? "Escreva uma mensagem..." : "Entre na sua conta para enviar mensagens"
-            }
-            aria-label="Sua mensagem"
-            maxLength={2000}
-            rows={3}
-            disabled={!userId || sending}
-          />
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-xs text-muted-foreground">
-              {messageText.length}/2000
-            </span>
-            <Button
-              type="submit"
-              disabled={!userId || !messageText.trim() || sending}
-            >
-              {sending ? "Enviando..." : "Enviar mensagem"}
-            </Button>
+      <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x border-border bg-muted/30 pb-12 sm:pb-0">
+        <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-4 py-3 sm:px-6">
+          <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <UsersRound className="size-5" aria-hidden="true" />
           </div>
-        </form>
+          <div className="min-w-0">
+            <h1 className="truncate text-base font-semibold">
+              Chat da Comunidade
+            </h1>
+            <p className="text-xs text-muted-foreground">
+              Mensagens expiram em 7 dias
+            </p>
+          </div>
+        </header>
+
+        <div
+          ref={messageListRef}
+          aria-live="polite"
+          className="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-6"
+        >
+          {loading ? (
+            <p className="py-4 text-center text-sm text-muted-foreground">
+              Carregando mensagens...
+            </p>
+          ) : messages.length === 0 ? (
+            <div className="flex h-full min-h-32 flex-col items-center justify-center gap-2 text-center">
+              <MessageSquare className="size-6 text-muted-foreground" aria-hidden="true" />
+              <p className="text-sm text-muted-foreground">
+                Ainda não há mensagens dos últimos 7 dias.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {messages.map((message) => {
+                const isOwnMessage = message.user_id === userId;
+
+                return (
+                  <article
+                    key={message.id}
+                    className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[88%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%] ${
+                        isOwnMessage
+                          ? "rounded-br-md bg-primary/15 text-foreground"
+                          : "rounded-bl-md border border-border bg-card text-card-foreground"
+                      }`}
+                    >
+                      {!isOwnMessage && (
+                        <h2 className="mb-1 text-xs font-semibold text-primary">
+                          {message.nome_usuario}
+                        </h2>
+                      )}
+                      <div className="flex items-end gap-3">
+                        <p className="min-w-0 whitespace-pre-wrap break-words text-sm leading-relaxed">
+                          {message.conteudo}
+                        </p>
+                        <time
+                          dateTime={message.created_at}
+                          className="shrink-0 pb-0.5 text-[10px] text-muted-foreground"
+                        >
+                          {new Date(message.created_at).toLocaleTimeString(
+                            "pt-BR",
+                            { hour: "2-digit", minute: "2-digit" },
+                          )}
+                        </time>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+        </div>
 
         {error && (
-          <p role="alert" className="mt-4 text-sm text-destructive">
+          <p role="alert" className="shrink-0 px-4 pb-2 text-sm text-destructive">
             {error}
           </p>
         )}
 
-        <div className="mt-8 space-y-4" aria-live="polite">
-          {loading ? (
-            <p className="text-sm text-muted-foreground">
-              Carregando mensagens...
-            </p>
-          ) : messages.length === 0 ? (
-            <p className="rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
-              Ainda não há mensagens dos últimos 7 dias.
-            </p>
-          ) : (
-            messages.map((message) => (
-              <article
-                key={message.id}
-                className="rounded-xl border border-border bg-card p-4"
-              >
-                <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                  <h2 className="text-sm font-semibold">
-                    {message.nome_usuario}
-                  </h2>
-                  <time
-                    dateTime={message.created_at}
-                    className="text-xs text-muted-foreground"
-                  >
-                    {new Date(message.created_at).toLocaleString("pt-BR", {
-                      dateStyle: "short",
-                      timeStyle: "short",
-                    })}
-                  </time>
-                </div>
-                <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-relaxed">
-                  {message.conteudo}
-                </p>
-              </article>
-            ))
+        <form
+          onSubmit={sendMessage}
+          className="relative flex shrink-0 items-center gap-2 border-t border-border bg-background px-3 py-3 sm:px-5"
+        >
+          {emojiPickerOpen && (
+            <div
+              role="group"
+              aria-label="Escolher emoji"
+              className="absolute bottom-full left-3 mb-2 flex gap-1 rounded-xl border border-border bg-background p-2 shadow-lg sm:left-5"
+            >
+              {quickEmojis.map((emoji) => (
+                <button
+                  key={emoji}
+                  type="button"
+                  aria-label={`Inserir ${emoji}`}
+                  className="rounded-md p-1.5 text-lg transition-colors hover:bg-muted"
+                  onClick={() => {
+                    setMessageText((current) => `${current}${emoji}`);
+                    setEmojiPickerOpen(false);
+                  }}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
           )}
-        </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={emojiPickerOpen ? "Fechar emojis" : "Abrir emojis"}
+            aria-expanded={emojiPickerOpen}
+            disabled={!userId || sending}
+            onClick={() => setEmojiPickerOpen((open) => !open)}
+            className="shrink-0 rounded-full text-muted-foreground"
+          >
+            <Smile className="size-5" />
+          </Button>
+          <Input
+            value={messageText}
+            onChange={(event) => setMessageText(event.target.value)}
+            placeholder={
+              userId
+                ? "Mensagem..."
+                : "Entre na sua conta para enviar mensagens"
+            }
+            aria-label="Sua mensagem"
+            maxLength={2000}
+            disabled={!userId || sending}
+            className="h-11 rounded-full bg-muted/50 px-4"
+          />
+          <Button
+            type="submit"
+            size="icon"
+            aria-label="Enviar mensagem"
+            disabled={!userId || !messageText.trim() || sending}
+            className="size-10 shrink-0 rounded-full"
+          >
+            <Send className="size-4" />
+          </Button>
+        </form>
       </section>
     </main>
   );
