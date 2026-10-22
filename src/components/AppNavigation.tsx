@@ -1,5 +1,8 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { House, MessageSquare } from "lucide-react";
+
+const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
 
 const tabs = [
   { label: "Início", to: "/home", Icon: House },
@@ -7,6 +10,28 @@ const tabs = [
 ];
 
 export default function AppNavigation() {
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    function updateUnreadCount() {
+      const storedCount = Number(window.localStorage.getItem(UNREAD_MESSAGES_KEY) || 0);
+      setUnreadCount(
+        Number.isFinite(storedCount) ? Math.max(0, Math.floor(storedCount)) : 0,
+      );
+    }
+
+    updateUnreadCount();
+    window.addEventListener("storage", updateUnreadCount);
+    window.addEventListener("unread-messages-count-change", updateUnreadCount);
+
+    return () => {
+      window.removeEventListener("storage", updateUnreadCount);
+      window.removeEventListener("unread-messages-count-change", updateUnreadCount);
+    };
+  }, []);
+
+  const unreadLabel = unreadCount > 99 ? "+99" : String(unreadCount);
+
   return (
     <>
       <header className="hidden border-b border-border bg-background sm:block">
@@ -26,7 +51,17 @@ export default function AppNavigation() {
                 }`
               }
             >
-              <Icon className="h-4 w-4" />
+              <span className="relative inline-flex">
+                <Icon className="h-4 w-4" />
+                {to === "/comunidade" && unreadCount > 0 && (
+                  <span
+                    aria-label={`${unreadCount} mensagens não lidas`}
+                    className="absolute -right-2 -top-1 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
+                  >
+                    {unreadLabel}
+                  </span>
+                )}
+              </span>
               {label}
             </NavLink>
           ))}
@@ -47,7 +82,17 @@ export default function AppNavigation() {
               }`
             }
           >
-            <Icon className="h-5 w-5" />
+            <span className="relative inline-flex">
+              <Icon className="h-5 w-5" />
+              {to === "/comunidade" && unreadCount > 0 && (
+                <span
+                  aria-label={`${unreadCount} mensagens não lidas`}
+                  className="absolute -right-2 -top-1 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
+                >
+                  {unreadLabel}
+                </span>
+              )}
+            </span>
             <span>{label}</span>
           </NavLink>
         ))}
