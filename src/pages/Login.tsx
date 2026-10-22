@@ -108,7 +108,7 @@ export default function Login() {
 
         <div
           role="note"
-          className="mt-5 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm leading-relaxed text-foreground"
+          className="important-notice mt-5 rounded-xl px-4 py-3 text-sm leading-relaxed text-foreground"
         >
           <p className="font-semibold">⚠️ IMPORTANTE:</p>
           <p className="mt-1 text-muted-foreground">

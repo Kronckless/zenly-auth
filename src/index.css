@@ -168,6 +168,21 @@
   }
 }
 
+.important-notice {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--background), var(--background)) padding-box,
+    linear-gradient(120deg, #3b82f6, #10b981, #94a3b8, #3b82f6) border-box;
+  background-size: auto, 300% 300%;
+  background-position: 0 0, 0% 50%;
+  animation: important-notice-border 8s ease-in-out infinite;
+}
+
+@keyframes important-notice-border {
+  0%, 100% { background-position: 0 0, 0% 50%; }
+  50% { background-position: 0 0, 100% 50%; }
+}
+
 .na-integra-glitch {
   position: relative;
   display: inline-block;
