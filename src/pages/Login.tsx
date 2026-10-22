@@ -62,8 +62,8 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-background px-6 py-12">
-      <section className="w-full max-w-md">
+    <main className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-10 sm:px-6">
+      <section className="w-full max-w-md rounded-2xl border border-border/70 bg-card p-6 shadow-xl shadow-foreground/5 sm:p-8">
         <div className="mb-8 flex justify-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-sm">
             <ShieldCheck className="h-6 w-6 text-primary-foreground" />
@@ -72,10 +72,12 @@ export default function Login() {
 
         <div className="text-center">
           <h1 className="font-display text-3xl font-semibold tracking-tight">
-            Bem-vindo de volta
+            {mode === "login" ? "Bem-vindo de volta" : "Crie sua conta"}
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Entre na sua conta para continuar
+            {mode === "login"
+              ? "Entre na sua conta para continuar"
+              : "Cadastre-se para liberar seu acesso"}
           </p>
         </div>
 
@@ -83,6 +85,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "login" ? "default" : "ghost"}
+            className="transition-all duration-200"
             onClick={() => {
               setMode("login");
               setFeedback("");
@@ -93,6 +96,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "signup" ? "default" : "ghost"}
+            className="transition-all duration-200"
             onClick={() => {
               setMode("signup");
               setFeedback("");
@@ -102,17 +106,29 @@ export default function Login() {
           </Button>
         </div>
 
+        <div
+          role="note"
+          className="mt-5 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm leading-relaxed text-foreground"
+        >
+          <p className="font-semibold">⚠️ IMPORTANTE:</p>
+          <p className="mt-1 text-muted-foreground">
+            Utilize exatamente o mesmo e-mail preenchido no momento da compra na Cakto para garantir a liberação do seu acesso.
+          </p>
+        </div>
+
         {mode === "login" ? (
-          <form className="mt-6 space-y-5" onSubmit={handleAuth}>
+          <form className="mt-6 space-y-5 transition-all duration-300" onSubmit={handleAuth}>
           <div className="space-y-2">
             <Label htmlFor="email">E-mail</Label>
             <div className="relative">
               <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 placeholder="voce@empresa.com"
-                className="pl-9"
+                className="pl-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
                 required
               />
             </div>
@@ -133,9 +149,11 @@ export default function Login() {
               <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
                 placeholder="Digite sua senha"
-                className="px-9"
+                className="px-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
                 required
               />
               <button
@@ -163,12 +181,16 @@ export default function Login() {
             </Label>
           </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.99]"
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Aguarde…" : "Entrar"}
           </Button>
           </form>
         ) : (
-          <form className="mt-6 space-y-5" onSubmit={handleAuth}>
+          <form className="mt-6 space-y-5 transition-all duration-300" onSubmit={handleAuth}>
             <div className="space-y-2">
               <Label htmlFor="fullName">Nome</Label>
               <div className="relative">
@@ -179,7 +201,7 @@ export default function Login() {
                   type="text"
                   autoComplete="name"
                   placeholder="Seu nome"
-                  className="pl-9"
+                  className="pl-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
                   required
                   maxLength={100}
                 />
@@ -195,7 +217,7 @@ export default function Login() {
                   type="email"
                   autoComplete="email"
                   placeholder="voce@exemplo.com"
-                  className="pl-9"
+                  className="pl-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
                   required
                 />
               </div>
@@ -210,7 +232,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   placeholder="Mínimo de 8 caracteres"
-                  className="px-9"
+                  className="px-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
                   minLength={8}
                   required
                 />
@@ -224,7 +246,11 @@ export default function Login() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
+            <Button
+              type="submit"
+              className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.99]"
+              disabled={isSubmitting}
+            >
               {isSubmitting ? "Aguarde…" : "Criar conta"}
             </Button>
           </form>
