@@ -14,10 +14,14 @@ export default function AppNavigation() {
 
   useEffect(() => {
     function updateUnreadCount() {
-      const storedCount = Number(window.localStorage.getItem(UNREAD_MESSAGES_KEY) || 0);
-      setUnreadCount(
-        Number.isFinite(storedCount) ? Math.max(0, Math.floor(storedCount)) : 0,
-      );
+      try {
+        const storedCount = Number(window.localStorage.getItem(UNREAD_MESSAGES_KEY) || 0);
+        setUnreadCount(
+          Number.isFinite(storedCount) ? Math.max(0, Math.floor(storedCount)) : 0,
+        );
+      } catch {
+        setUnreadCount(0);
+      }
     }
 
     updateUnreadCount();
