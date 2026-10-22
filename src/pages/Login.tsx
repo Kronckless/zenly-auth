@@ -111,7 +111,7 @@ export default function Login() {
           className="important-notice mt-5 rounded-xl px-4 py-3 text-sm leading-relaxed text-foreground"
         >
           <p className="font-semibold">⚠️ IMPORTANTE:</p>
-          <p className="mt-1 text-muted-foreground">
+          <p className="mt-1 font-medium text-foreground">
             Utilize exatamente o mesmo e-mail preenchido no momento da compra na Cakto para garantir a liberação do seu acesso.
           </p>
         </div>
