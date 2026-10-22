@@ -112,7 +112,7 @@ export default function Login() {
         >
           <p className="font-semibold">⚠️ IMPORTANTE:</p>
           <p className="mt-1 font-medium text-foreground">
-            Utilize exatamente o mesmo e-mail preenchido no momento da compra na Cakto para garantir a liberação do seu acesso.
+            Digite o mesmo e-mail utilizado no momento da compra para confirmar seu pedido e garantir a liberação do seu acesso.
           </p>
         </div>
 
