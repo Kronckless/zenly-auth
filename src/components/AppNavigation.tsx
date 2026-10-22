@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { House, MessageSquare } from "lucide-react";
+import { House, MessageSquare, Shield } from "lucide-react";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
 
 const tabs = [
-  { label: "Início", to: "/home", Icon: House },
+  { label: "Início", to: "/", Icon: House },
   { label: "Chat", to: "/comunidade", Icon: MessageSquare },
+  { label: "QG", to: "/qg", Icon: Shield },
 ];
 
 export default function AppNavigation() {
