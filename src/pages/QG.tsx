@@ -13,15 +13,14 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
+
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 
 type Report = {
   title: string;
-  date: string;
-  readingTime: string;
+
   summary: string;
   content: string[];
   category: string;
@@ -29,42 +28,47 @@ type Report = {
 
 const reports: Report[] = [
   {
-    title: "Panorama do dia: prioridades e cenários",
-    date: "18 de junho de 2026",
-    readingTime: "6 min de leitura",
+    title: "Prioridades e cenários políticos",
     summary:
-      "Uma leitura objetiva dos principais movimentos do dia e dos fatores que merecem atenção.",
+      "Uma leitura dos principais temas políticos e dos fatores que podem influenciar os próximos desdobramentos.",
     category: "PANORAMA DIÁRIO",
     content: [
-      "Este panorama reúne os temas que podem influenciar as decisões e os acontecimentos ao longo do dia. A proposta é separar os fatos relevantes do ruído e oferecer contexto para acompanhar os próximos desdobramentos.",
-      "Entre os pontos de atenção estão as decisões públicas, os indicadores econômicos e os acontecimentos internacionais. Observe como esses temas se conectam e quais sinais novos podem alterar as expectativas.",
-      "Acompanhe as atualizações das fontes de referência e considere diferentes perspectivas antes de formar uma conclusão. Este relatório é informativo e deve ser lido como um ponto de partida para análise.",
+      "Este panorama reúne temas políticos relevantes e organiza os principais fatores que podem influenciar decisões e acontecimentos. A proposta é separar os fatos do ruído e oferecer contexto para acompanhar os próximos desdobramentos.",
+      "Observe como as pautas públicas, as articulações políticas e os acontecimentos internacionais se conectam. Novos sinais podem alterar expectativas e prioridades.",
+      "Considere diferentes perspectivas antes de formar uma conclusão. Este conteúdo é informativo e serve como ponto de partida para análise.",
     ],
   },
   {
-    title: "Economia em foco: indicadores para acompanhar",
-    date: "17 de junho de 2026",
-    readingTime: "8 min de leitura",
+    title: "Indicadores e tendências de mercado",
     summary:
-      "Indicadores, tendências e perguntas úteis para entender o cenário econômico recente.",
+      "Indicadores econômicos e movimentos de mercado para acompanhar e compreender o cenário atual.",
     category: "ECONOMIA",
     content: [
-      "Os indicadores econômicos ajudam a entender a direção da atividade, mas ganham significado quando observados em conjunto. Inflação, emprego, juros e confiança oferecem perspectivas diferentes sobre o mesmo cenário.",
-      "Para acompanhar os próximos dados, compare os resultados com as expectativas e com os períodos anteriores. Mudanças consistentes tendem a ser mais informativas do que uma variação isolada.",
-      "O contexto global também importa: preços de commodities, decisões de bancos centrais e condições de comércio podem afetar os resultados domésticos.",
+      "Indicadores econômicos ajudam a entender a direção da atividade e ganham significado quando observados em conjunto. Inflação, emprego, juros e confiança oferecem perspectivas diferentes sobre o mesmo cenário.",
+      "Compare os resultados com as expectativas e com períodos anteriores. Mudanças consistentes tendem a ser mais informativas do que uma variação isolada.",
+      "O contexto global também importa: preços de commodities, decisões de política monetária e condições de comércio podem afetar o mercado doméstico.",
     ],
   },
   {
-    title: "Cenário internacional: tendências e impactos",
-    date: "16 de junho de 2026",
-    readingTime: "5 min de leitura",
+    title: "Pautas no Congresso e impactos institucionais",
     summary:
-      "Os acontecimentos globais em perspectiva e seus possíveis reflexos no Brasil.",
-    category: "MUNDO",
+      "Uma análise das pautas legislativas em debate e de seus possíveis efeitos sobre as instituições.",
+    category: "LEGISLAÇÃO & LIBERDADE",
     content: [
-      "O cenário internacional é influenciado por decisões diplomáticas, condições econômicas e mudanças nas relações entre países. Acompanhar esses fatores em perspectiva ajuda a compreender seus possíveis efeitos.",
-      "No curto prazo, vale observar os anúncios oficiais e a reação dos mercados. No médio prazo, acordos, políticas comerciais e mudanças regulatórias podem ter impacto mais duradouro.",
-      "As consequências para o Brasil dependem dos canais de transmissão, como comércio, investimentos e preços internacionais. Novos dados poderão confirmar ou modificar as tendências atuais.",
+      "As pautas em discussão no Congresso podem produzir efeitos duradouros sobre leis, políticas públicas e o funcionamento das instituições.",
+      "Para compreender cada proposta, vale observar seu texto, a tramitação, os argumentos apresentados e os possíveis impactos sobre direitos e responsabilidades.",
+      "O acompanhamento de diferentes perspectivas ajuda a avaliar os desdobramentos institucionais com mais contexto.",
+    ],
+  },
+  {
+    title: "Estratégias e visão de cenário",
+    summary:
+      "Uma leitura tática dos sinais atuais, dos riscos e das oportunidades que podem orientar decisões.",
+    category: "ANÁLISE TÁTICA",
+    content: [
+      "Uma visão tática começa pela identificação dos sinais mais relevantes e pela distinção entre tendências consistentes e acontecimentos pontuais.",
+      "Considere os riscos, as oportunidades e os possíveis cenários antes de definir prioridades. Uma estratégia clara também precisa se adaptar quando surgem novas informações.",
+      "Acompanhar os próximos movimentos com atenção permite revisar hipóteses e tomar decisões mais bem informadas.",
     ],
   },
 ];
@@ -161,10 +165,7 @@ export default function QG() {
                 <DialogTitle className="font-display text-2xl leading-snug">
                   {selectedReport.title}
                 </DialogTitle>
-                <DialogDescription className="flex flex-wrap gap-x-4 gap-y-1">
-                  <span>{selectedReport.date}</span>
-                  <span>{selectedReport.readingTime}</span>
-                </DialogDescription>
+
               </DialogHeader>
               <article className="space-y-5 text-[15px] leading-7 text-foreground">
                 {selectedReport.content.map((paragraph, index) => (
