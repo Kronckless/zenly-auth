@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { ArrowRight, BookOpen, CalendarDays, Clock3, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight, BookOpen, ShieldCheck } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 import AppNavigation from "@/components/AppNavigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,62 +20,42 @@ import {
 } from "@/components/ui/dialog";
 
 type Report = {
-  title: string;
-
-  summary: string;
-  content: string[];
-  category: string;
+  categoria: string;
+  titulo: string;
+  resumo: string;
+  conteudo_completo: string;
+  created_at: string;
 };
-
-const reports: Report[] = [
-  {
-    title: "Prioridades e cenários políticos",
-    summary:
-      "Uma leitura dos principais temas políticos e dos fatores que podem influenciar os próximos desdobramentos.",
-    category: "PANORAMA DIÁRIO",
-    content: [
-      "Este panorama reúne temas políticos relevantes e organiza os principais fatores que podem influenciar decisões e acontecimentos. A proposta é separar os fatos do ruído e oferecer contexto para acompanhar os próximos desdobramentos.",
-      "Observe como as pautas públicas, as articulações políticas e os acontecimentos internacionais se conectam. Novos sinais podem alterar expectativas e prioridades.",
-      "Considere diferentes perspectivas antes de formar uma conclusão. Este conteúdo é informativo e serve como ponto de partida para análise.",
-    ],
-  },
-  {
-    title: "Indicadores e tendências de mercado",
-    summary:
-      "Indicadores econômicos e movimentos de mercado para acompanhar e compreender o cenário atual.",
-    category: "ECONOMIA",
-    content: [
-      "Indicadores econômicos ajudam a entender a direção da atividade e ganham significado quando observados em conjunto. Inflação, emprego, juros e confiança oferecem perspectivas diferentes sobre o mesmo cenário.",
-      "Compare os resultados com as expectativas e com períodos anteriores. Mudanças consistentes tendem a ser mais informativas do que uma variação isolada.",
-      "O contexto global também importa: preços de commodities, decisões de política monetária e condições de comércio podem afetar o mercado doméstico.",
-    ],
-  },
-  {
-    title: "Pautas no Congresso e impactos institucionais",
-    summary:
-      "Uma análise das pautas legislativas em debate e de seus possíveis efeitos sobre as instituições.",
-    category: "LEGISLAÇÃO & LIBERDADE",
-    content: [
-      "As pautas em discussão no Congresso podem produzir efeitos duradouros sobre leis, políticas públicas e o funcionamento das instituições.",
-      "Para compreender cada proposta, vale observar seu texto, a tramitação, os argumentos apresentados e os possíveis impactos sobre direitos e responsabilidades.",
-      "O acompanhamento de diferentes perspectivas ajuda a avaliar os desdobramentos institucionais com mais contexto.",
-    ],
-  },
-  {
-    title: "Estratégias e visão de cenário",
-    summary:
-      "Uma leitura tática dos sinais atuais, dos riscos e das oportunidades que podem orientar decisões.",
-    category: "ANÁLISE TÁTICA",
-    content: [
-      "Uma visão tática começa pela identificação dos sinais mais relevantes e pela distinção entre tendências consistentes e acontecimentos pontuais.",
-      "Considere os riscos, as oportunidades e os possíveis cenários antes de definir prioridades. Uma estratégia clara também precisa se adaptar quando surgem novas informações.",
-      "Acompanhar os próximos movimentos com atenção permite revisar hipóteses e tomar decisões mais bem informadas.",
-    ],
-  },
-];
 
 export default function QG() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+
+  useEffect(() => {
+    async function loadReports() {
+      if (!supabase) {
+        setLoadError("A conexão com o serviço de conteúdo não está configurada.");
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("panoramas")
+        .select("categoria, titulo, resumo, conteudo_completo, created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        setLoadError("Não foi possível carregar os panoramas agora.");
+      } else {
+        setReports((data ?? []) as Report[]);
+      }
+      setIsLoading(false);
+    }
+
+    loadReports();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-16 sm:pb-0">
@@ -114,38 +95,51 @@ export default function QG() {
             <BookOpen className="hidden size-6 text-muted-foreground sm:block" />
           </div>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {reports.map((report) => (
-              <Card
-                key={report.title}
-                className="gap-0 overflow-hidden rounded-none border-l-4 border-l-[#047857] border-[#CBD5E1] bg-white py-0 shadow-sm transition-shadow hover:shadow-md"
-              >
-                <CardHeader className="gap-3 p-5 sm:p-6">
-                  <Badge variant="outline" className="w-fit rounded-none border-emerald-200 bg-[#DCFCE7] text-xs font-semibold tracking-wide text-[#15803D]">
-                    {report.category}
-                  </Badge>
-                  <CardTitle className="text-xl leading-snug">
-                    {report.title}
-                  </CardTitle>
-                  <CardDescription className="text-sm leading-relaxed">
-                    {report.summary}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="mt-auto p-5 pt-0 sm:p-6 sm:pt-0">
-
-                  <div aria-hidden="true" className="my-5 h-px w-full bg-slate-200" />
-                  <Button
-                    type="button"
-                    onClick={() => setSelectedReport(report)}
-                    className="w-full gap-2 rounded-none bg-gradient-to-r from-blue-800 to-blue-600 font-bold text-white hover:from-blue-900 hover:to-blue-700 sm:w-auto"
-                  >
-                    Ler Panorama
-                    <ArrowRight className="size-4" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {isLoading ? (
+            <p className="py-8 text-sm text-muted-foreground" role="status">
+              Carregando panoramas...
+            </p>
+          ) : loadError ? (
+            <p className="py-8 text-sm text-destructive" role="alert">
+              {loadError}
+            </p>
+          ) : reports.length === 0 ? (
+            <p className="py-8 text-sm text-muted-foreground">
+              Nenhum panorama disponível no momento.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {reports.map((report, index) => (
+                <Card
+                  key={`${report.created_at}-${index}`}
+                  className="gap-0 overflow-hidden rounded-none border-l-4 border-l-[#047857] border-[#CBD5E1] bg-white py-0 shadow-sm transition-shadow hover:shadow-md"
+                >
+                  <CardHeader className="gap-3 p-5 sm:p-6">
+                    <Badge variant="outline" className="w-fit rounded-none border-emerald-200 bg-[#DCFCE7] text-xs font-semibold tracking-wide text-[#15803D]">
+                      {report.categoria}
+                    </Badge>
+                    <CardTitle className="text-xl leading-snug">
+                      {report.titulo}
+                    </CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      {report.resumo}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="mt-auto p-5 pt-0 sm:p-6 sm:pt-0">
+                    <div aria-hidden="true" className="my-5 h-px w-full bg-slate-200" />
+                    <Button
+                      type="button"
+                      onClick={() => setSelectedReport(report)}
+                      className="w-full gap-2 rounded-none bg-gradient-to-r from-blue-800 to-blue-600 font-bold text-white hover:from-blue-900 hover:to-blue-700 sm:w-auto"
+                    >
+                      Ler Panorama
+                      <ArrowRight className="size-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </section>
       </div>
 
@@ -160,17 +154,20 @@ export default function QG() {
             <>
               <DialogHeader>
                 <Badge variant="outline" className="mb-2 w-fit rounded-none text-xs tracking-wide">
-                  {selectedReport.category}
+                  {selectedReport.categoria}
                 </Badge>
                 <DialogTitle className="font-display text-2xl leading-snug">
-                  {selectedReport.title}
+                  {selectedReport.titulo}
                 </DialogTitle>
 
               </DialogHeader>
               <article className="space-y-5 text-[15px] leading-7 text-foreground">
-                {selectedReport.content.map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
-                ))}
+                {selectedReport.conteudo_completo
+                  .split(/\n+/)
+                  .filter((paragraph) => paragraph.trim().length > 0)
+                  .map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
               </article>
             </>
           )}
