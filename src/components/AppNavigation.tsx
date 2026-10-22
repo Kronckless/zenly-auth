@@ -74,20 +74,20 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed bottom-0 left-0 right-0 z-50 flex h-14 border-t border-border bg-background/95 shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
+        className="fixed bottom-0 left-0 right-0 z-50 flex h-12 border-t border-border bg-background/95 shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
       >
         {tabs.map(({ label, to, Icon }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex min-h-14 flex-1 flex-col items-center justify-center gap-0.5 py-1 text-[10px] font-medium transition-colors ${
+              `flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 py-0.5 text-[10px] font-medium transition-colors ${
                 isActive ? "text-primary" : "text-muted-foreground"
               }`
             }
           >
             <span className="relative inline-flex">
-              <Icon className="h-5 w-5" />
+              <Icon className="h-4 w-4" />
               {to === "/comunidade" && unreadCount > 0 && (
                 <span
                   aria-label={`${unreadCount} mensagens não lidas`}
