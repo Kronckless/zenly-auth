@@ -73,17 +73,11 @@ export default function QG() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
 
   return (
-    <main className="min-h-screen bg-[#F1F5F9] pb-16 sm:pb-0">
+    <main className="min-h-screen bg-[#F8FAFC] pb-16 sm:pb-0">
       <AppNavigation />
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        <header
-          className="mb-8 flex flex-col justify-between gap-5 rounded-3xl border border-white/70 p-6 shadow-md sm:mb-10 sm:flex-row sm:items-end sm:p-9"
-          style={{
-            backgroundImage:
-              "radial-gradient(ellipse at 15% 25%, rgba(0,168,89,.82), transparent 48%), radial-gradient(ellipse at 82% 12%, rgba(255,204,0,.88), transparent 42%), radial-gradient(ellipse at 78% 92%, rgba(0,82,204,.72), transparent 48%), linear-gradient(135deg, #ffffff, #f8fafc)",
-          }}
-        >
+        <header className="mb-8 flex flex-col justify-between gap-5 rounded-2xl border border-border bg-white p-6 shadow-sm sm:mb-10 sm:flex-row sm:items-end sm:p-9">
           <div>
             <div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#002B7F]">
               <ShieldCheck className="size-4" />
@@ -97,7 +91,7 @@ export default function QG() {
             </p>
           </div>
 
-          <Badge variant="secondary" className="w-fit gap-2 bg-emerald-100 px-3 py-2 font-bold text-[#15803D]">
+          <Badge variant="secondary" className="w-fit gap-2 bg-emerald-100 px-2 py-1 text-xs font-semibold text-[#15803D]">
             <span className="size-2 rounded-full bg-[#00A859] shadow-[0_0_8px_#00A859]" />
             Membro Ativo
           </Badge>
@@ -120,14 +114,10 @@ export default function QG() {
             {reports.map((report) => (
               <Card
                 key={report.title}
-                className="gap-0 overflow-hidden rounded-3xl border-[#E2E8F0] bg-white py-0 shadow-md transition-shadow hover:shadow-xl"
+                className="gap-0 overflow-hidden rounded-2xl border-[#E2E8F0] bg-white py-0 shadow-sm transition-shadow hover:shadow-md"
               >
-                <div
-                  aria-hidden="true"
-                  className="h-24 bg-gradient-to-br from-[#00A859] via-[#FFCC00] to-[#0052CC]"
-                />
                 <CardHeader className="gap-3 p-5 sm:p-6">
-                  <Badge variant="secondary" className="w-fit bg-[#FFCC00] text-xs font-bold tracking-wide text-[#0F172A]">
+                  <Badge variant="outline" className="w-fit border-emerald-200 bg-emerald-50 text-xs font-semibold tracking-wide text-emerald-800">
                     {report.category}
                   </Badge>
                   <CardTitle className="text-xl leading-snug">
@@ -151,7 +141,7 @@ export default function QG() {
                   <Button
                     type="button"
                     onClick={() => setSelectedReport(report)}
-                    className="gap-2 bg-[#00A859] font-bold text-white hover:bg-[#008744]"
+                    className="gap-2 bg-[#064E3B] font-bold text-white hover:bg-[#043D2E]"
                   >
                     Ler Panorama
                     <ArrowRight className="size-4" />
