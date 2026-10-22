@@ -77,22 +77,22 @@ export default function QG() {
       <AppNavigation />
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8 flex flex-col justify-between gap-5 sm:mb-10 sm:flex-row sm:items-end">
+        <header className="qg-hero mb-8 flex flex-col justify-between gap-5 rounded-3xl border border-border/70 p-6 shadow-sm sm:mb-10 sm:flex-row sm:items-end sm:p-9">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-primary">
+            <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-primary">
               <ShieldCheck className="size-4" />
               ÁREA DO MEMBRO
             </div>
-            <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="font-display text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
               QG
             </h1>
-            <p className="mt-2 text-lg text-muted-foreground">
+            <p className="mt-2 text-lg font-medium text-foreground/75">
               Panorama Diário
             </p>
           </div>
 
-          <Badge variant="secondary" className="w-fit gap-2 px-3 py-2">
-            <span className="size-2 rounded-full bg-radar-green" />
+          <Badge variant="secondary" className="qg-member-badge w-fit gap-2 px-3 py-2">
+            <span className="size-2 rounded-full bg-radar-green shadow-[0_0_8px_var(--radar-green)]" />
             Membro Ativo
           </Badge>
         </header>
@@ -110,14 +110,15 @@ export default function QG() {
             <BookOpen className="hidden size-6 text-muted-foreground sm:block" />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {reports.map((report) => (
               <Card
                 key={report.title}
-                className="gap-0 rounded-2xl border-border/80 bg-card transition-shadow hover:shadow-md"
+                className="gap-0 overflow-hidden rounded-3xl border-border/80 bg-card py-0 shadow-md transition-shadow hover:shadow-lg"
               >
+                <div aria-hidden="true" className="qg-report-art" />
                 <CardHeader className="gap-3 p-5 sm:p-6">
-                  <Badge variant="outline" className="w-fit text-xs tracking-wide">
+                  <Badge variant="secondary" className="qg-report-badge w-fit text-xs tracking-wide">
                     {report.category}
                   </Badge>
                   <CardTitle className="text-xl leading-snug">
