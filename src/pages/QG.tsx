@@ -77,7 +77,7 @@ export default function QG() {
       <AppNavigation />
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8 flex flex-col justify-between gap-5 rounded-2xl border border-border bg-white p-6 shadow-sm sm:mb-10 sm:flex-row sm:items-end sm:p-9">
+        <header className="mb-8 flex flex-col justify-between gap-5 rounded-none border border-border bg-white p-6 shadow-sm sm:mb-10 sm:flex-row sm:items-end sm:p-9">
           <div>
             <div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#002B7F]">
               <ShieldCheck className="size-4" />
@@ -91,7 +91,7 @@ export default function QG() {
             </p>
           </div>
 
-          <Badge variant="secondary" className="w-fit gap-2 bg-emerald-100 px-2 py-1 text-xs font-semibold text-[#15803D]">
+          <Badge variant="secondary" className="w-fit gap-2 rounded-none bg-emerald-100 px-2 py-1 text-xs font-semibold text-[#15803D]">
             <span className="size-2 rounded-full bg-[#00A859] shadow-[0_0_8px_#00A859]" />
             Membro Ativo
           </Badge>
@@ -114,10 +114,10 @@ export default function QG() {
             {reports.map((report) => (
               <Card
                 key={report.title}
-                className="gap-0 overflow-hidden rounded-2xl border-[#E2E8F0] bg-white py-0 shadow-sm transition-shadow hover:shadow-md"
+                className="gap-0 overflow-hidden rounded-none border-l-4 border-l-[#047857] border-[#CBD5E1] bg-white py-0 shadow-sm transition-shadow hover:shadow-md"
               >
                 <CardHeader className="gap-3 p-5 sm:p-6">
-                  <Badge variant="outline" className="w-fit border-emerald-200 bg-emerald-50 text-xs font-semibold tracking-wide text-emerald-800">
+                  <Badge variant="outline" className="w-fit rounded-none border-emerald-200 bg-[#DCFCE7] text-xs font-semibold tracking-wide text-[#15803D]">
                     {report.category}
                   </Badge>
                   <CardTitle className="text-xl leading-snug">
@@ -128,7 +128,7 @@ export default function QG() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="mt-auto p-5 pt-0 sm:p-6 sm:pt-0">
-                  <div className="mb-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+                  <div className="flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1.5">
                       <CalendarDays className="size-3.5" />
                       {report.date}
@@ -138,10 +138,11 @@ export default function QG() {
                       {report.readingTime}
                     </span>
                   </div>
+                  <div aria-hidden="true" className="my-5 h-px w-full bg-slate-200" />
                   <Button
                     type="button"
                     onClick={() => setSelectedReport(report)}
-                    className="gap-2 bg-[#064E3B] font-bold text-white hover:bg-[#043D2E]"
+                    className="w-full gap-2 rounded-none bg-[#047857] font-bold text-white hover:bg-[#065F46] sm:w-auto"
                   >
                     Ler Panorama
                     <ArrowRight className="size-4" />
@@ -159,11 +160,11 @@ export default function QG() {
           if (!open) setSelectedReport(null);
         }}
       >
-        <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+        <DialogContent className="max-h-[90dvh] overflow-y-auto rounded-none sm:max-w-2xl">
           {selectedReport && (
             <>
               <DialogHeader>
-                <Badge variant="outline" className="mb-2 w-fit text-xs tracking-wide">
+                <Badge variant="outline" className="mb-2 w-fit rounded-none text-xs tracking-wide">
                   {selectedReport.category}
                 </Badge>
                 <DialogTitle className="font-display text-2xl leading-snug">
