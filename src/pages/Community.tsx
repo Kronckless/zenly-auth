@@ -154,14 +154,7 @@ export default function Community() {
           <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
             <UsersRound className="size-5" aria-hidden="true" />
           </div>
-          <div className="min-w-0">
-            <h1 className="truncate text-base font-semibold">
-              Chat da Comunidade
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              Mensagens expiram em 7 dias
-            </p>
-          </div>
+
         </header>
 
         <div
@@ -176,9 +169,7 @@ export default function Community() {
           ) : messages.length === 0 ? (
             <div className="flex h-full min-h-32 flex-col items-center justify-center gap-2 text-center">
               <MessageSquare className="size-6 text-muted-foreground" aria-hidden="true" />
-              <p className="text-sm text-muted-foreground">
-                Ainda não há mensagens dos últimos 7 dias.
-              </p>
+
             </div>
           ) : (
             <div className="space-y-3">
