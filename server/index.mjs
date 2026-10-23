@@ -322,6 +322,73 @@ async function getAgroNews() {
   throw new Error("Feed de Agronegócio indisponível");
 }
 
+function isAllowedCheckoutUrl(value) {
+  try {
+    const url = new URL(value);
+    const allowedHosts = [
+      "cakto.com.br",
+      "hotmart.com",
+      "kiwify.com.br",
+      "kiwify.app",
+      "stripe.com",
+      "mercadopago.com",
+      "mercadopago.com.br",
+      "mpago.la",
+    ];
+    const hostname = url.hostname.toLowerCase().replace(/^www\./, "");
+    return (
+      url.protocol === "https:" &&
+      allowedHosts.some((host) => hostname === host || hostname.endsWith(`.${host}`))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function decodeMetaValue(value) {
+  return value
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">");
+}
+
+async function getProductImage(checkoutUrl) {
+  if (!isAllowedCheckoutUrl(checkoutUrl)) {
+    throw new Error("Endereço de checkout não permitido");
+  }
+
+  const page = await fetchWithTimeout(checkoutUrl, {
+    headers: { Accept: "text/html,application/xhtml+xml" },
+  });
+
+  if (!page.ok || !isAllowedCheckoutUrl(page.url)) return null;
+
+  const html = (await page.text()).slice(0, 2 * 1024 * 1024);
+  const metaTags = html.match(/<meta\\b[^>]*>/gi) || [];
+
+  for (const tag of metaTags) {
+    const attributes = Object.fromEntries(
+      [...tag.matchAll(/([\\w:-]+)\\s*=\\s*["']([^"']*)["']/g)].map(
+        ([, name, value]) => [name.toLowerCase(), decodeMetaValue(value)],
+      ),
+    );
+    const property = (attributes.property || attributes.name || "").toLowerCase();
+
+    if (property === "og:image" || property === "twitter:image") {
+      try {
+        const imageUrl = new URL(attributes.content || "", page.url);
+        if (imageUrl.protocol === "https:") return imageUrl.href;
+      } catch {
+        // Continua procurando uma imagem Open Graph válida.
+      }
+    }
+  }
+
+  return null;
+}
+
 async function getUsdBrlHistory() {
   const end = new Date();
   const start = new Date(end);
@@ -492,6 +559,27 @@ const server = createServer(async (request, response) => {
       console.error("Falha ao carregar notícias de Saber:", error);
       response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
       response.end(JSON.stringify({ error: "Notícias de Saber indisponíveis." }));
+    }
+    return;
+  }
+
+  const requestUrl = new URL(request.url || "/", `http://${request.headers.host || "localhost"}`);
+  if (requestUrl.pathname === "/api/product-image") {
+    const checkoutUrl = requestUrl.searchParams.get("url") || "";
+    if (!isAllowedCheckoutUrl(checkoutUrl)) {
+      response.writeHead(400, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ error: "Endereço de checkout não permitido." }));
+      return;
+    }
+
+    try {
+      const imageUrl = await getProductImage(checkoutUrl);
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ imageUrl }));
+    } catch (error) {
+      console.warn("Não foi possível obter a imagem do produto:", error);
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ imageUrl: null }));
     }
     return;
   }

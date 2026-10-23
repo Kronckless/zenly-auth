@@ -36,49 +36,49 @@ const products = [
   {
     title: "TOP MIND",
     price: "R$ 5,00",
-    image: "https://picsum.photos/seed/top-mind-product/800/600",
+    image: "",
     checkoutUrl: "https://pay.cakto.com.br/3docwso_1235475",
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-2/800/600",
+    image: "",
     checkoutUrl: null,
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-3/800/600",
+    image: "",
     checkoutUrl: null,
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-4/800/600",
+    image: "",
     checkoutUrl: null,
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-5/800/600",
+    image: "",
     checkoutUrl: null,
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-6/800/600",
+    image: "",
     checkoutUrl: null,
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-7/800/600",
+    image: "",
     checkoutUrl: null,
   },
   {
     title: "Em breve",
     price: "",
-    image: "https://picsum.photos/seed/product-slot-8/800/600",
+    image: "",
     checkoutUrl: null,
   },
 ];
@@ -153,6 +153,44 @@ export default function Explore() {
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
   const [productsOpen, setProductsOpen] = useState(false);
+  const [productImages, setProductImages] = useState<Record<string, string>>({});
+  const [failedProductImages, setFailedProductImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadProductImages() {
+      const checkoutProducts = products.filter(
+        (product): product is typeof product & { checkoutUrl: string } => Boolean(product.checkoutUrl),
+      );
+
+      await Promise.all(
+        checkoutProducts.map(async (product) => {
+          try {
+            const response = await fetch(
+              `https://conscienciadepoder.com/api/product-image?url=${encodeURIComponent(product.checkoutUrl)}`,
+            );
+            if (!response.ok) return;
+
+            const data: { imageUrl?: string | null } = await response.json();
+            if (!cancelled && data.imageUrl) {
+              setProductImages((current) => ({
+                ...current,
+                [product.checkoutUrl]: data.imageUrl!,
+              }));
+            }
+          } catch {
+            // Mantém o placeholder neutro se a imagem não estiver disponível.
+          }
+        }),
+      );
+    }
+
+    void loadProductImages();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -469,12 +507,37 @@ export default function Explore() {
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {products.map((product, index) => (
                   <Card key={`${product.title}-${index}`} className="overflow-hidden rounded-none shadow-none">
-                    <img
-                      src={product.image}
-                      alt=""
-                      aria-hidden="true"
-                      className="aspect-[4/3] w-full object-cover"
-                    />
+                    {(() => {
+                      const imageUrl =
+                        (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
+                      const imageFailed =
+                        Boolean(product.checkoutUrl && failedProductImages.includes(product.checkoutUrl));
+
+                      return imageUrl && !imageFailed ? (
+                        <img
+                          src={imageUrl}
+                          alt=""
+                          aria-hidden="true"
+                          className="aspect-[4/3] w-full object-cover"
+                          onError={() => {
+                            if (product.checkoutUrl) {
+                              setFailedProductImages((current) =>
+                                current.includes(product.checkoutUrl!)
+                                  ? current
+                                  : [...current, product.checkoutUrl!],
+                              );
+                            }
+                          }}
+                        />
+                      ) : (
+                        <div
+                          aria-hidden="true"
+                          className="flex aspect-[4/3] w-full items-center justify-center bg-muted text-xs text-muted-foreground"
+                        >
+                          Imagem em breve
+                        </div>
+                      );
+                    })()}
                     <CardContent className="flex h-full flex-col gap-3 p-3 sm:p-5">
                       <div>
                         <Badge variant={product.checkoutUrl ? "secondary" : "outline"}>
