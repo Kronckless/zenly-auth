@@ -75,7 +75,26 @@ type NewsItem = {
   categories?: string[];
   rewritten?: boolean;
   subtitle?: string;
+  isMock?: boolean;
 };
+
+const mockNewsItems: NewsItem[] = Array.from({ length: 16 }, (_, index) => ({
+  title: `DEMONSTRAÇÃO: exemplo de notícia ${index + 1}`,
+  content:
+    "Conteúdo fictício usado apenas para manter a pré-visualização do portal. Não corresponde a uma notícia real.",
+  sourceUrl: `mock://news/${index + 1}`,
+  categories: index % 2 === 0 ? ["No Ponto"] : ["Atualidades"],
+  isMock: true,
+}));
+
+const mockAgroNewsItems: NewsItem[] = Array.from({ length: 8 }, (_, index) => ({
+  title: `DEMONSTRAÇÃO: exemplo de notícia do agronegócio ${index + 1}`,
+  content:
+    "Conteúdo fictício usado apenas para manter a pré-visualização da editoria. Não corresponde a uma notícia real.",
+  sourceUrl: `mock://agronegocio/${index + 1}`,
+  categories: ["Agronegócio"],
+  isMock: true,
+}));
 
 type NewsResponse = {
   source?: string;
@@ -164,27 +183,39 @@ export default function Home() {
       setNewsError(false);
 
       try {
-        const response = await fetch("https://conscienciadepoder.com/api/news", {
-          mode: "cors",
-        });
-        if (!response.ok) throw new Error("Notícias indisponíveis");
-        const data = (await response.json()) as NewsResponse;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+          try {
+            const response = await fetch("https://conscienciadepoder.com/api/news", {
+              mode: "cors",
+            });
+            if (!response.ok) {
+              throw new Error(`API de notícias respondeu com status ${response.status}`);
+            }
+            const data = (await response.json()) as NewsResponse;
 
-        if (isCurrent) {
-          const items = Array.isArray(data.items) ? data.items : [];
-          setNewsItems(
-            items.map((item) => ({
-              ...item,
-              title: hideSourceTerms(item.title),
-              content: hideSourceTerms(item.content),
-              categories: Array.isArray(item.categories)
-                ? item.categories.map(hideSourceTerms)
-                : [],
-            })),
-          );
+            if (isCurrent) {
+              const items = Array.isArray(data.items) ? data.items : [];
+              setNewsItems(
+                items.map((item) => ({
+                  ...item,
+                  title: hideSourceTerms(item.title),
+                  content: hideSourceTerms(item.content),
+                  categories: Array.isArray(item.categories)
+                    ? item.categories.map(hideSourceTerms)
+                    : [],
+                })),
+              );
+            }
+            return;
+          } catch (error) {
+            console.error(`[notícias] Tentativa ${attempt}/3 falhou:`, error);
+            if (attempt < 3) {
+              await new Promise((resolve) => window.setTimeout(resolve, 700 * attempt));
+            }
+          }
         }
-      } catch {
-        if (isCurrent) setNewsError(true);
+
+        if (isCurrent) setNewsItems(mockNewsItems);
       } finally {
         if (isCurrent) setNewsLoading(false);
       }
@@ -208,27 +239,39 @@ export default function Home() {
       setAgroNewsError(false);
 
       try {
-        const response = await fetch("https://conscienciadepoder.com/api/agronegocio");
-        if (!response.ok) throw new Error("Notícias de Agronegócio indisponíveis");
-        const data = (await response.json()) as NewsResponse;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+          try {
+            const response = await fetch("https://conscienciadepoder.com/api/agronegocio");
+            if (!response.ok) {
+              throw new Error(`API de Agronegócio respondeu com status ${response.status}`);
+            }
+            const data = (await response.json()) as NewsResponse;
 
-        if (isCurrent) {
-          setAgroNews(
-            Array.isArray(data.items)
-              ? data.items.slice(0, 8).map((item) => ({
-                  ...item,
-                  title: removeOestePhrases(item.title),
-                  subtitle: removeOestePhrases(item.subtitle),
-                  content: removeOestePhrases(item.content),
-                  categories: item.categories
-                    ?.map(removeOestePhrases)
-                    .filter(Boolean),
-                }))
-              : [],
-          );
+            if (isCurrent) {
+              setAgroNews(
+                Array.isArray(data.items)
+                  ? data.items.slice(0, 8).map((item) => ({
+                      ...item,
+                      title: removeOestePhrases(item.title),
+                      subtitle: removeOestePhrases(item.subtitle),
+                      content: removeOestePhrases(item.content),
+                      categories: item.categories
+                        ?.map(removeOestePhrases)
+                        .filter(Boolean),
+                    }))
+                  : [],
+              );
+            }
+            return;
+          } catch (error) {
+            console.error(`[agronegócio] Tentativa ${attempt}/3 falhou:`, error);
+            if (attempt < 3) {
+              await new Promise((resolve) => window.setTimeout(resolve, 700 * attempt));
+            }
+          }
         }
-      } catch {
-        if (isCurrent) setAgroNewsError(true);
+
+        if (isCurrent) setAgroNews(mockAgroNewsItems);
       } finally {
         if (isCurrent) setAgroNewsLoading(false);
       }
@@ -347,7 +390,8 @@ export default function Home() {
           setSaberNews(items);
           return;
         }
-      } catch {
+      } catch (error) {
+        console.error("[radar] Não foi possível carregar as notícias alternativas:", error);
         // Se as notícias não estiverem disponíveis, tenta carregar a cotação.
       }
 
@@ -358,7 +402,8 @@ export default function Home() {
           items?: CurrencyPoint[];
         };
         if (isCurrent) setCurrencyHistory(currencyData.items || []);
-      } catch {
+      } catch (error) {
+        console.error("[radar] Não foi possível carregar a cotação:", error);
         if (isCurrent) setCurrencyHistory([]);
       } finally {
         if (isCurrent) setFallbackLoading(false);
@@ -505,6 +550,9 @@ export default function Home() {
                     </div>
                   </div>
                   <CardHeader className="flex-1 space-y-2 p-4">
+                    {item.isMock && (
+                      <Badge variant="secondary" className="w-fit">DEMONSTRAÇÃO</Badge>
+                    )}
                     <CardTitle className="line-clamp-2 text-base leading-snug">
                       <button
                         type="button"
@@ -575,7 +623,10 @@ export default function Home() {
                       <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                     </span>
                   </button>
-                  <CardHeader className="p-3">
+                  <CardHeader className="space-y-2 p-3">
+                    {item.isMock && (
+                      <Badge variant="secondary" className="w-fit">DEMONSTRAÇÃO</Badge>
+                    )}
                     <CardTitle className="text-sm leading-snug">
                       <button
                         type="button"
@@ -622,7 +673,8 @@ export default function Home() {
                     className="w-full py-5 text-left font-poppins text-base font-medium italic leading-relaxed hover:text-primary"
                     onClick={() => setSelectedNews(item)}
                   >
-                    {item.title}
+                    {item.isMock && <Badge variant="secondary" className="mb-2">DEMONSTRAÇÃO</Badge>}
+                    <span className="block">{item.title}</span>
                   </button>
                 </div>
               ))}
@@ -813,6 +865,9 @@ export default function Home() {
                     <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                   </div>
                   <div className="min-w-0 flex-1">
+                    {item.isMock && (
+                      <Badge variant="secondary" className="mb-2">DEMONSTRAÇÃO</Badge>
+                    )}
                     <h3 className="font-display text-lg font-semibold leading-snug">
                       {item.title}
                     </h3>
@@ -853,6 +908,11 @@ export default function Home() {
                     {selectedNews.rewritten ? " · Texto reescrito" : ""}
                   </DialogDescription>
                 </DialogHeader>
+                {selectedNews.isMock && (
+                  <p className="mx-auto w-full max-w-3xl rounded-lg border border-border p-4 text-sm text-muted-foreground">
+                    Conteúdo fictício de demonstração; não corresponde a uma notícia real.
+                  </p>
+                )}
                 {selectedNews.subtitle && (
                   <p className="mx-auto w-full max-w-3xl text-base font-medium leading-relaxed text-muted-foreground">
                     {selectedNews.subtitle}
@@ -886,7 +946,8 @@ export default function Home() {
                       </p>
                     ))}
                 </div>
-                {!agroNews.some((item) => item.sourceUrl === selectedNews.sourceUrl) && (
+                {!selectedNews.isMock &&
+                  !agroNews.some((item) => item.sourceUrl === selectedNews.sourceUrl) && (
                   <>
                     <p className="border-t border-border pt-4 text-xs text-muted-foreground">
                       Fonte: {selectedNews.sourceUrl.includes("gazetadopovo.com.br")
