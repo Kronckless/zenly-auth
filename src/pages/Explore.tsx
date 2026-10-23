@@ -485,10 +485,9 @@ export default function Explore() {
                   <a
                     key={`${product.title}-${index}`}
                     href={product.checkoutUrl}
-                    target="_top"
-                    rel="noreferrer noopener"
-                    referrerPolicy="no-referrer"
-                    className="group block h-full w-full rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    target="_blank"
+                    rel="noopener noreferrer external"
+                    className="block w-full h-full cursor-pointer"
                     aria-label={`Comprar ${product.title} por ${product.price}`}
                   >
                     <Card className="h-full min-h-[220px] gap-2 overflow-hidden rounded-[2px] border border-border/70 bg-muted/30 p-2 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-3">
