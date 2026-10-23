@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/lib/supabase";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
 
 type Report = {
   id: string;
@@ -74,7 +74,14 @@ function formatDate(value: string): string {
 export default function Explore() {
   const [reports, setReports] = useState<Report[]>([]);
   const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState("Todos");
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    try {
+      return JSON.parse(window.localStorage.getItem("explorar-recent-searches") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
@@ -127,60 +134,144 @@ export default function Explore() {
 
   const visibleReports = useMemo(() => {
     const query = search.trim().toLocaleLowerCase("pt-BR");
+    const searchTerms = query.split(/\s+/).filter(Boolean);
+
     return reports.filter((report) => {
-      const matchesFilter =
-        activeFilter === "Todos" ||
-        report.categoria.toLocaleLowerCase("pt-BR").includes(activeFilter.toLocaleLowerCase("pt-BR"));
-      const searchableText = `${report.categoria} ${report.titulo} ${report.resumo} ${report.conteudoCompleto}`
-        .toLocaleLowerCase("pt-BR");
-      const searchTerms = query.split(/\s+/).filter(Boolean);
-      const matchesSearch =
-        searchTerms.length === 0 ||
-        searchTerms.some((term) => searchableText.includes(term));
-      return matchesFilter && matchesSearch;
+      const searchableText =
+        `${report.titulo} ${report.resumo} ${report.conteudoCompleto}`.toLocaleLowerCase("pt-BR");
+      return searchTerms.length === 0 || searchTerms.some((term) => searchableText.includes(term));
     });
-  }, [reports, search, activeFilter]);
+  }, [reports, search]);
+
+  function saveRecentSearch(value: string) {
+    const term = value.trim();
+    if (!term) return;
+
+    const updated = [term, ...recentSearches.filter(
+      (item) => item.toLocaleLowerCase("pt-BR") !== term.toLocaleLowerCase("pt-BR"),
+    )].slice(0, 8);
+    setRecentSearches(updated);
+    try {
+      window.localStorage.setItem("explorar-recent-searches", JSON.stringify(updated));
+    } catch {
+      // Recent searches remain available for this session.
+    }
+  }
+
+  function clearRecentSearches() {
+    setRecentSearches([]);
+    try {
+      window.localStorage.removeItem("explorar-recent-searches");
+    } catch {
+      // Ignore unavailable local storage.
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background pb-16 sm:pb-0">
       <AppNavigation />
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-        <header className="mb-8">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-[0.16em] text-primary">
-            Acervo Horizonte
-          </p>
+        <header className="mb-7">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Explorar</h1>
-          <p className="mt-2 max-w-2xl text-muted-foreground">
-            Pesquise no acervo completo e descubra análises passadas.
-          </p>
         </header>
 
         <section aria-label="Pesquisar no acervo" className="mb-8">
-          <div className="relative max-w-3xl">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Pesquisar relatórios, temas ou palavras-chave..."
-              aria-label="Pesquisar relatórios, temas ou palavras-chave"
-              className="h-12 rounded-xl pl-10"
-            />
+          <div className="relative z-10 max-w-3xl">
+            <div className="flex h-12 items-center gap-3 rounded-2xl bg-muted px-4 transition-colors focus-within:ring-2 focus-within:ring-primary/20">
+              <Search className="h-[18px] w-[18px] shrink-0 text-muted-foreground" aria-hidden="true" />
+              <Input
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setSuggestionsOpen(true);
+                }}
+                onFocus={() => search.trim() && setSuggestionsOpen(true)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && search.trim()) {
+                    event.preventDefault();
+                    saveRecentSearch(search);
+                    setSuggestionsOpen(false);
+                  }
+                  if (event.key === "Escape") setSuggestionsOpen(false);
+                }}
+                placeholder="Pesquisar relatórios, temas ou palavras-chave..."
+                aria-label="Pesquisar relatórios, temas ou palavras-chave"
+                aria-expanded={Boolean(search.trim()) && suggestionsOpen}
+                className="h-full border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+              {search && (
+                <button
+                  type="button"
+                  aria-label="Limpar pesquisa"
+                  onClick={() => {
+                    setSearch("");
+                    setSuggestionsOpen(false);
+                  }}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {search.trim() && suggestionsOpen && (
+              <div className="absolute left-0 right-0 top-full mt-2 overflow-hidden rounded-2xl border border-border/60 bg-popover shadow-lg">
+                {isLoading ? (
+                  <p className="px-4 py-3 text-sm text-muted-foreground">Buscando no acervo...</p>
+                ) : visibleReports.length ? (
+                  <div className="py-1">
+                    {visibleReports.slice(0, 6).map((report) => (
+                      <button
+                        key={report.id}
+                        type="button"
+                        onClick={() => {
+                          setSearch(report.titulo);
+                          saveRecentSearch(search);
+                          setSuggestionsOpen(false);
+                        }}
+                        className="flex w-full flex-col gap-0.5 px-4 py-3 text-left transition-colors hover:bg-muted"
+                      >
+                        <span className="text-sm font-medium">{report.titulo}</span>
+                        <span className="line-clamp-1 text-xs text-muted-foreground">{report.resumo}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="px-4 py-3 text-sm text-muted-foreground">Nenhuma sugestão encontrada.</p>
+                )}
+              </div>
+            )}
           </div>
-          <div className="mt-4 flex flex-wrap gap-2" aria-label="Filtrar por categoria">
-            {filters.map((filter) => (
-              <Button
-                key={filter}
-                type="button"
-                size="sm"
-                variant={activeFilter === filter ? "default" : "outline"}
-                className="rounded-full"
-                onClick={() => setActiveFilter(filter)}
-                aria-pressed={activeFilter === filter}
-              >
-                {filter}
-              </Button>
-            ))}
-          </div>
+
+          {recentSearches.length > 0 && (
+            <div className="mt-6 max-w-3xl">
+              <div className="mb-3 flex items-center justify-between">
+                <h2 className="text-sm font-semibold">Pesquisas recentes</h2>
+                <button
+                  type="button"
+                  onClick={clearRecentSearches}
+                  className="text-sm font-medium text-primary transition-opacity hover:opacity-75"
+                >
+                  Limpar tudo
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recentSearches.map((term) => (
+                  <button
+                    key={term}
+                    type="button"
+                    onClick={() => {
+                      setSearch(term);
+                      setSuggestionsOpen(true);
+                    }}
+                    className="rounded-full bg-muted px-3.5 py-2 text-sm text-foreground transition-colors hover:bg-accent"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         <section aria-labelledby="archive-heading">
