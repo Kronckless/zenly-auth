@@ -40,46 +40,22 @@ const products = [
     checkoutUrl: "https://pay.cakto.com.br/3docwso_1235475",
   },
   {
-    title: "Em breve",
-    price: "",
+    title: "O MANUAL DA SOBERANIA",
+    price: "R$ 5,00",
     image: "",
-    checkoutUrl: null,
+    checkoutUrl: "https://pay.cakto.com.br/wa9sqw7_1235709",
   },
   {
-    title: "Em breve",
-    price: "",
+    title: "MENTALIDADE DE GRANDES LÍDERES",
+    price: "R$ 5,00",
     image: "",
-    checkoutUrl: null,
+    checkoutUrl: "https://pay.cakto.com.br/8yc58wr_1235717",
   },
   {
-    title: "Em breve",
-    price: "",
+    title: "LEGADO E FAMÍLIA BLINDADA",
+    price: "R$ 5,00",
     image: "",
-    checkoutUrl: null,
-  },
-  {
-    title: "Em breve",
-    price: "",
-    image: "",
-    checkoutUrl: null,
-  },
-  {
-    title: "Em breve",
-    price: "",
-    image: "",
-    checkoutUrl: null,
-  },
-  {
-    title: "Em breve",
-    price: "",
-    image: "",
-    checkoutUrl: null,
-  },
-  {
-    title: "Em breve",
-    price: "",
-    image: "",
-    checkoutUrl: null,
+    checkoutUrl: "https://pay.cakto.com.br/tnbuwf9_1235724",
   },
 ];
 
@@ -506,7 +482,15 @@ export default function Explore() {
               </DialogHeader>
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 {products.map((product, index) => (
-                  <Card key={`${product.title}-${index}`} className="overflow-hidden rounded-none shadow-none">
+                  <a
+                    key={`${product.title}-${index}`}
+                    href={product.checkoutUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    aria-label={`Comprar ${product.title} por ${product.price}`}
+                  >
+                    <Card className="h-full overflow-hidden rounded-none shadow-none transition-shadow hover:shadow-md">
                     {(() => {
                       const imageUrl =
                         (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
@@ -540,31 +524,14 @@ export default function Explore() {
                     })()}
                     <CardContent className="flex h-full flex-col gap-3 p-3 sm:p-5">
                       <div>
-                        <Badge variant={product.checkoutUrl ? "secondary" : "outline"}>
-                          {product.checkoutUrl ? "Disponível" : "Em breve"}
-                        </Badge>
+                        <Badge variant="secondary">Disponível</Badge>
                         <h3 className="mt-2 text-base font-semibold sm:text-xl">{product.title}</h3>
-                        {product.price && (
-                          <p className="mt-1 text-sm text-muted-foreground">{product.price}</p>
-                        )}
+                        <p className="mt-1 text-sm text-muted-foreground">{product.price}</p>
                       </div>
-                      {product.checkoutUrl ? (
-                        <Button asChild className="mt-auto min-h-10 w-full text-xs sm:min-h-12 sm:text-sm">
-                          <a
-                            href={product.checkoutUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Resgatar TOP MIND
-                          </a>
-                        </Button>
-                      ) : (
-                        <p className="mt-auto text-sm font-medium text-muted-foreground">
-                          Espaço disponível
-                        </p>
-                      )}
+                      <p className="mt-auto text-sm font-medium text-primary">Comprar</p>
                     </CardContent>
-                  </Card>
+                    </Card>
+                  </a>
                 ))}
               </div>
             </DialogContent>
