@@ -490,55 +490,52 @@ export default function Explore() {
                     className="group block rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`Comprar ${product.title} por ${product.price}`}
                   >
-                    <Card className="h-full overflow-hidden rounded-[2px] border border-border/60 bg-background text-foreground shadow-sm transition-all duration-200 group-hover:bg-muted/50 group-hover:shadow-md">
-                    {(() => {
-                      const imageUrl =
-                        (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
-                      const imageFailed =
-                        Boolean(product.checkoutUrl && failedProductImages.includes(product.checkoutUrl));
-
-                      return imageUrl && !imageFailed ? (
-                        <img
-                          src={imageUrl}
-                          alt=""
-                          aria-hidden="true"
-                          className="aspect-[4/3] w-full object-cover"
-                          onError={() => {
-                            if (product.checkoutUrl) {
-                              setFailedProductImages((current) =>
-                                current.includes(product.checkoutUrl!)
-                                  ? current
-                                  : [...current, product.checkoutUrl!],
-                              );
-                            }
-                          }}
-                        />
-                      ) : (
-                        <div
-                          aria-hidden="true"
-                          className="flex aspect-[4/3] w-full items-center justify-center bg-muted text-xs text-muted-foreground"
-                        >
-                          Imagem em breve
-                        </div>
-                      );
-                    })()}
-                    <CardContent className="flex h-full flex-col gap-3 p-3 sm:p-5">
-                      <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-sm font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-lg">
+                    <Card className="h-full min-h-[260px] gap-3 overflow-hidden rounded-[2px] border border-border/60 bg-muted/20 p-3 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-4">
+                      <CardContent className="flex h-full flex-1 flex-col gap-3 p-0">
+                        <h3 className="flex min-h-10 items-center justify-center text-center text-sm font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-base">
                           {product.title}
                         </h3>
-                        <Badge
-                          variant="outline"
-                          className="shrink-0 border-border/60 bg-muted px-2 py-1 text-[10px] font-medium text-muted-foreground"
-                        >
-                          {product.price}
-                        </Badge>
-                      </div>
-                      <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-3 text-xs font-medium tracking-wide text-muted-foreground">
-                        <span>Acessar</span>
-                        <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-                      </div>
-                    </CardContent>
+
+                        <div className="flex min-h-28 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-background">
+                          {(() => {
+                            const imageUrl =
+                              (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
+                            const imageFailed =
+                              Boolean(product.checkoutUrl && failedProductImages.includes(product.checkoutUrl));
+
+                            return imageUrl && !imageFailed ? (
+                              <img
+                                src={imageUrl}
+                                alt=""
+                                aria-hidden="true"
+                                className="h-full w-full object-cover"
+                                onError={() => {
+                                  if (product.checkoutUrl) {
+                                    setFailedProductImages((current) =>
+                                      current.includes(product.checkoutUrl!)
+                                        ? current
+                                        : [...current, product.checkoutUrl!],
+                                    );
+                                  }
+                                }}
+                              />
+                            ) : (
+                              <span
+                                aria-hidden="true"
+                                className="text-xs text-muted-foreground"
+                              >
+                                Imagem em breve
+                              </span>
+                            );
+                          })()}
+                        </div>
+
+                        <div className="flex justify-center border-t border-border/60 pt-3">
+                          <span className="inline-flex min-w-28 items-center justify-center rounded-[2px] border border-border/60 bg-background px-4 py-2 text-sm font-semibold text-foreground">
+                            {product.price}
+                          </span>
+                        </div>
+                      </CardContent>
                     </Card>
                   </a>
                 ))}
