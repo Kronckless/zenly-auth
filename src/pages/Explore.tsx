@@ -481,7 +481,7 @@ export default function Explore() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {products.map((product, index) => (
+                {products.slice(0, 4).map((product, index) => (
                   <a
                     key={`${product.title}-${index}`}
                     href={product.checkoutUrl}
