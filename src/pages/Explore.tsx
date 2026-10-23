@@ -13,13 +13,7 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { ArrowUpRight, Search, X } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+
 
 type Report = {
   id: string;
@@ -128,7 +122,7 @@ export default function Explore() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [retryKey, setRetryKey] = useState(0);
-  const [productsOpen, setProductsOpen] = useState(false);
+
   const [productImages, setProductImages] = useState<Record<string, string>>({});
   const [failedProductImages, setFailedProductImages] = useState<string[]>([]);
 
@@ -451,97 +445,73 @@ export default function Explore() {
           )}
         </section>
 
-        <section aria-label="Destaque As Grandes Mentes da Nossa Era" className="mt-10">
-          <button
-            type="button"
-            onClick={() => setProductsOpen(true)}
-            aria-label="Ver produtos: As Grandes Mentes da Nossa Era"
-            className="group relative flex min-h-56 w-full flex-col items-start justify-end overflow-hidden rounded-none border border-border/50 bg-background p-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:min-h-64 sm:p-8"
-          >
-            <img
-              src="https://picsum.photos/seed/minds-era/800/600"
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full object-cover opacity-45 transition-transform duration-700 group-hover:scale-[1.02]"
-            />
-            <span className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/10" />
-            <span className="relative w-full text-left text-2xl font-semibold tracking-tight text-foreground sm:text-5xl">
+        <section
+          aria-label="Catálogo As Grandes Mentes da Nossa Era"
+          className="mt-10 cursor-not-allowed opacity-20 pointer-events-none"
+        >
+          <header className="mb-5">
+            <h2 className="text-2xl font-semibold tracking-tight">
               As Grandes Mentes da Nossa Era
-            </span>
-          </button>
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Explore os destaques disponíveis e os próximos lançamentos.
+            </p>
+          </header>
 
-          <Dialog open={productsOpen} onOpenChange={setProductsOpen}>
-            <DialogContent className="max-h-[90dvh] max-w-3xl overflow-y-auto rounded-none p-5 sm:p-8">
-              <DialogHeader className="mb-2 text-left">
-                <DialogTitle className="text-2xl font-semibold tracking-tight">
-                  As Grandes Mentes da Nossa Era
-                </DialogTitle>
-                <DialogDescription>
-                  Explore os destaques disponíveis e os próximos lançamentos.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                {products.slice(0, 4).map((product, index) => (
-                  <a
-                    key={`${product.title}-${index}`}
-                    href={product.checkoutUrl}
-                    target="_blank"
-                    rel="noopener noreferrer external"
-                    className="block w-full h-full cursor-pointer"
-                    aria-label={`Comprar ${product.title} por ${product.price}`}
-                  >
-                    <Card className="h-full min-h-[220px] gap-2 overflow-hidden rounded-[2px] border border-border/70 bg-muted/30 p-2 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-3">
-                      <CardContent className="flex h-full flex-1 flex-col gap-3 p-0">
-                        <h3 className="flex min-h-8 items-center justify-center text-center text-xs font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-sm">
-                          {product.title}
-                        </h3>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {products.slice(0, 4).map((product, index) => (
+              <Card
+                key={`${product.title}-${index}`}
+                className="h-full min-h-[220px] gap-2 overflow-hidden rounded-[2px] border border-border/70 bg-muted/30 p-2 text-foreground shadow-sm sm:p-3"
+              >
+                <CardContent className="flex h-full flex-1 flex-col gap-3 p-0">
+                  <h3 className="flex min-h-8 items-center justify-center text-center text-xs font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-sm">
+                    {product.title}
+                  </h3>
 
-                        <div className="flex min-h-20 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-muted/10">
-                          {(() => {
-                            const imageUrl =
-                              (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
-                            const imageFailed =
-                              Boolean(product.checkoutUrl && failedProductImages.includes(product.checkoutUrl));
+                  <div className="flex min-h-20 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-muted/10">
+                    {(() => {
+                      const imageUrl =
+                        (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
+                      const imageFailed =
+                        Boolean(product.checkoutUrl && failedProductImages.includes(product.checkoutUrl));
 
-                            return imageUrl && !imageFailed ? (
-                              <img
-                                src={imageUrl}
-                                alt=""
-                                aria-hidden="true"
-                                className="h-full w-full object-cover"
-                                onError={() => {
-                                  if (product.checkoutUrl) {
-                                    setFailedProductImages((current) =>
-                                      current.includes(product.checkoutUrl!)
-                                        ? current
-                                        : [...current, product.checkoutUrl!],
-                                    );
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <span
-                                aria-hidden="true"
-                                className="text-xs text-muted-foreground"
-                              >
-                                Imagem em breve
-                              </span>
-                            );
-                          })()}
-                        </div>
+                      return imageUrl && !imageFailed ? (
+                        <img
+                          src={imageUrl}
+                          alt=""
+                          aria-hidden="true"
+                          className="h-full w-full object-cover"
+                          onError={() => {
+                            if (product.checkoutUrl) {
+                              setFailedProductImages((current) =>
+                                current.includes(product.checkoutUrl!)
+                                  ? current
+                                  : [...current, product.checkoutUrl!],
+                              );
+                            }
+                          }}
+                        />
+                      ) : (
+                        <span
+                          aria-hidden="true"
+                          className="text-xs text-muted-foreground"
+                        >
+                          Imagem em breve
+                        </span>
+                      );
+                    })()}
+                  </div>
 
-                        <div className="flex justify-center border-t border-border/60 pt-2">
-                          <span className="inline-flex min-w-24 items-center justify-center rounded-[2px] border border-border/60 bg-background px-3 py-1.5 text-sm font-semibold text-foreground">
-                            {product.price}
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </a>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
+                  <div className="flex justify-center border-t border-border/60 pt-2">
+                    <span className="inline-flex min-w-24 items-center justify-center rounded-[2px] border border-border/60 bg-background px-3 py-1.5 text-sm font-semibold text-foreground">
+                      {product.price}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </section>
       </main>
     </div>
