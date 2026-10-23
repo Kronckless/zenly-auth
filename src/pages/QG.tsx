@@ -58,13 +58,47 @@ function extractReadableText(value: unknown): string {
   return "";
 }
 
+function findNestedReportField(value: unknown, field: keyof Report): string {
+  if (typeof value === "string") {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      if (typeof parsed === "object" && parsed !== null) {
+        return findNestedReportField(parsed, field);
+      }
+    } catch {
+      // Texto comum não contém outro campo nomeado para localizar.
+    }
+    return "";
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const result = findNestedReportField(item, field);
+      if (result) return result;
+    }
+    return "";
+  }
+
+  if (typeof value === "object" && value !== null) {
+    const record = value as Record<string, unknown>;
+    if (field in record) return getReportField(record[field], field);
+
+    for (const item of Object.values(record)) {
+      const result = findNestedReportField(item, field);
+      if (result) return result;
+    }
+  }
+
+  return "";
+}
+
 function getReportField(value: unknown, field: keyof Report): string {
   if (typeof value === "string") {
     const text = value.trim();
     try {
       const parsed: unknown = JSON.parse(text);
       if (typeof parsed === "object" && parsed !== null) {
-        return getReportField(parsed, field) || extractReadableText(parsed);
+        return findNestedReportField(parsed, field);
       }
     } catch {
       return text;
@@ -72,10 +106,14 @@ function getReportField(value: unknown, field: keyof Report): string {
     return text;
   }
 
+  if (Array.isArray(value)) {
+    return findNestedReportField(value, field);
+  }
+
   if (typeof value === "object" && value !== null) {
     const record = value as Record<string, unknown>;
     if (field in record) return getReportField(record[field], field);
-    return extractReadableText(record);
+    return findNestedReportField(record, field);
   }
 
   return "";
