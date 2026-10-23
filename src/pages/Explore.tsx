@@ -415,7 +415,7 @@ export default function Explore() {
                   Explore os destaques disponíveis e os próximos lançamentos.
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <Card className="rounded-none shadow-none">
                   <CardContent className="flex h-full flex-col gap-4 p-5">
                     <div>
@@ -434,10 +434,18 @@ export default function Explore() {
                     </Button>
                   </CardContent>
                 </Card>
-                {["Próximo destaque", "Novo lançamento", "Em breve"].map((item) => (
+                {[
+                  "Próximo destaque",
+                  "Novo lançamento",
+                  "Em breve",
+                  "Em breve",
+                  "Em breve",
+                  "Em breve",
+                  "Em breve",
+                ].map((item, index) => (
                   <div
-                    key={item}
-                    className="flex min-h-36 flex-col justify-between border border-dashed border-border bg-muted/30 p-5"
+                    key={`${item}-${index}`}
+                    className="flex min-h-32 flex-col justify-between border border-dashed border-border bg-muted/30 p-3 sm:min-h-36 sm:p-5"
                   >
                     <Badge variant="outline" className="w-fit">Espaço disponível</Badge>
                     <p className="text-sm font-medium text-muted-foreground">{item}</p>
