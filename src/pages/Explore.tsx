@@ -391,7 +391,7 @@ export default function Explore() {
             type="button"
             onClick={() => setProductsOpen(true)}
             aria-label="Ver produtos: As Grandes Mentes da Nossa Era"
-            className="group relative flex min-h-56 w-full items-end overflow-hidden border border-border/50 bg-background text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:min-h-64"
+            className="group relative flex min-h-56 w-full flex-col items-start justify-end overflow-hidden rounded-none border border-border/50 bg-background p-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:min-h-64 sm:p-8"
           >
             <img
               src="https://picsum.photos/seed/minds-era/800/600"
@@ -400,7 +400,7 @@ export default function Explore() {
               className="absolute inset-0 h-full w-full object-cover opacity-45 transition-transform duration-700 group-hover:scale-[1.02]"
             />
             <span className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/10" />
-            <span className="relative w-full pb-5 text-left text-3xl font-semibold tracking-tight text-foreground sm:pb-8 sm:text-5xl">
+            <span className="relative w-full text-left text-2xl font-semibold tracking-tight text-foreground sm:text-5xl">
               As Grandes Mentes da Nossa Era
             </span>
           </button>
