@@ -490,13 +490,13 @@ export default function Explore() {
                     className="group block rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`Comprar ${product.title} por ${product.price}`}
                   >
-                    <Card className="h-full min-h-[260px] gap-3 overflow-hidden rounded-[2px] border border-border/70 bg-muted/30 p-3 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-4">
+                    <Card className="h-full min-h-[220px] gap-2 overflow-hidden rounded-[2px] border border-border/70 bg-muted/30 p-2 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-3">
                       <CardContent className="flex h-full flex-1 flex-col gap-3 p-0">
-                        <h3 className="flex min-h-10 items-center justify-center text-center text-sm font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-base">
+                        <h3 className="flex min-h-8 items-center justify-center text-center text-xs font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-sm">
                           {product.title}
                         </h3>
 
-                        <div className="flex min-h-28 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-muted/10">
+                        <div className="flex min-h-20 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-muted/10">
                           {(() => {
                             const imageUrl =
                               (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
@@ -530,8 +530,8 @@ export default function Explore() {
                           })()}
                         </div>
 
-                        <div className="flex justify-center border-t border-border/60 pt-3">
-                          <span className="inline-flex min-w-28 items-center justify-center rounded-[2px] border border-border/60 bg-background px-4 py-2 text-sm font-semibold text-foreground">
+                        <div className="flex justify-center border-t border-border/60 pt-2">
+                          <span className="inline-flex min-w-24 items-center justify-center rounded-[2px] border border-border/60 bg-background px-3 py-1.5 text-sm font-semibold text-foreground">
                             {product.price}
                           </span>
                         </div>
