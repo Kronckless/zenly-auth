@@ -131,11 +131,12 @@ export default function Explore() {
       const matchesFilter =
         activeFilter === "Todos" ||
         report.categoria.toLocaleLowerCase("pt-BR").includes(activeFilter.toLocaleLowerCase("pt-BR"));
+      const searchableText = `${report.categoria} ${report.titulo} ${report.resumo} ${report.conteudoCompleto}`
+        .toLocaleLowerCase("pt-BR");
+      const searchTerms = query.split(/\s+/).filter(Boolean);
       const matchesSearch =
-        !query ||
-        `${report.categoria} ${report.titulo} ${report.resumo} ${report.conteudoCompleto}`
-          .toLocaleLowerCase("pt-BR")
-          .includes(query);
+        searchTerms.length === 0 ||
+        searchTerms.some((term) => searchableText.includes(term));
       return matchesFilter && matchesSearch;
     });
   }, [reports, search, activeFilter]);
