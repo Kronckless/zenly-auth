@@ -32,6 +32,57 @@ type Report = {
 
 const filters = ["Todos", "Política", "Economia"];
 
+const products = [
+  {
+    title: "TOP MIND",
+    price: "R$ 5,00",
+    image: "https://picsum.photos/seed/top-mind-product/800/600",
+    checkoutUrl: "https://pay.cakto.com.br/3docwso_1235475",
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-2/800/600",
+    checkoutUrl: null,
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-3/800/600",
+    checkoutUrl: null,
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-4/800/600",
+    checkoutUrl: null,
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-5/800/600",
+    checkoutUrl: null,
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-6/800/600",
+    checkoutUrl: null,
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-7/800/600",
+    checkoutUrl: null,
+  },
+  {
+    title: "Em breve",
+    price: "",
+    image: "https://picsum.photos/seed/product-slot-8/800/600",
+    checkoutUrl: null,
+  },
+];
+
 function findText(value: unknown, field: string): string {
   if (typeof value === "string") {
     const text = value.trim();
@@ -416,40 +467,41 @@ export default function Explore() {
                 </DialogDescription>
               </DialogHeader>
               <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <Card className="rounded-none shadow-none">
-                  <CardContent className="flex h-full flex-col gap-4 p-5">
-                    <div>
-                      <Badge variant="secondary">Disponível</Badge>
-                      <h3 className="mt-3 text-xl font-semibold">TOP MIND</h3>
-                      <p className="mt-1 text-sm text-muted-foreground">R$ 5,00</p>
-                    </div>
-                    <Button asChild className="mt-auto min-h-12 w-full">
-                      <a
-                        href="https://pay.cakto.com.br/3docwso_1235475"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Resgatar TOP MIND
-                      </a>
-                    </Button>
-                  </CardContent>
-                </Card>
-                {[
-                  "Próximo destaque",
-                  "Novo lançamento",
-                  "Em breve",
-                  "Em breve",
-                  "Em breve",
-                  "Em breve",
-                  "Em breve",
-                ].map((item, index) => (
-                  <div
-                    key={`${item}-${index}`}
-                    className="flex min-h-32 flex-col justify-between border border-dashed border-border bg-muted/30 p-3 sm:min-h-36 sm:p-5"
-                  >
-                    <Badge variant="outline" className="w-fit">Espaço disponível</Badge>
-                    <p className="text-sm font-medium text-muted-foreground">{item}</p>
-                  </div>
+                {products.map((product, index) => (
+                  <Card key={`${product.title}-${index}`} className="overflow-hidden rounded-none shadow-none">
+                    <img
+                      src={product.image}
+                      alt=""
+                      aria-hidden="true"
+                      className="aspect-[4/3] w-full object-cover"
+                    />
+                    <CardContent className="flex h-full flex-col gap-3 p-3 sm:p-5">
+                      <div>
+                        <Badge variant={product.checkoutUrl ? "secondary" : "outline"}>
+                          {product.checkoutUrl ? "Disponível" : "Em breve"}
+                        </Badge>
+                        <h3 className="mt-2 text-base font-semibold sm:text-xl">{product.title}</h3>
+                        {product.price && (
+                          <p className="mt-1 text-sm text-muted-foreground">{product.price}</p>
+                        )}
+                      </div>
+                      {product.checkoutUrl ? (
+                        <Button asChild className="mt-auto min-h-10 w-full text-xs sm:min-h-12 sm:text-sm">
+                          <a
+                            href={product.checkoutUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Resgatar TOP MIND
+                          </a>
+                        </Button>
+                      ) : (
+                        <p className="mt-auto text-sm font-medium text-muted-foreground">
+                          Espaço disponível
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </DialogContent>
