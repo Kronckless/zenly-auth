@@ -447,7 +447,7 @@ export default function Explore() {
 
         <section
           aria-label="Catálogo As Grandes Mentes da Nossa Era"
-          className="mt-10 cursor-not-allowed opacity-20 pointer-events-none"
+          className="mt-10 cursor-not-allowed opacity-0 pointer-events-none"
         >
           <header className="mb-5">
             <h2 className="text-2xl font-semibold tracking-tight">
