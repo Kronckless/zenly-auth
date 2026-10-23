@@ -12,6 +12,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import AppNavigation from "@/components/AppNavigation";
 import {
   Card,
@@ -75,26 +76,7 @@ type NewsItem = {
   categories?: string[];
   rewritten?: boolean;
   subtitle?: string;
-  isMock?: boolean;
 };
-
-const mockNewsItems: NewsItem[] = Array.from({ length: 16 }, (_, index) => ({
-  title: `DEMONSTRAÇÃO: exemplo de notícia ${index + 1}`,
-  content:
-    "Conteúdo fictício usado apenas para manter a pré-visualização do portal. Não corresponde a uma notícia real.",
-  sourceUrl: `mock://news/${index + 1}`,
-  categories: index % 2 === 0 ? ["No Ponto"] : ["Atualidades"],
-  isMock: true,
-}));
-
-const mockAgroNewsItems: NewsItem[] = Array.from({ length: 8 }, (_, index) => ({
-  title: `DEMONSTRAÇÃO: exemplo de notícia do agronegócio ${index + 1}`,
-  content:
-    "Conteúdo fictício usado apenas para manter a pré-visualização da editoria. Não corresponde a uma notícia real.",
-  sourceUrl: `mock://agronegocio/${index + 1}`,
-  categories: ["Agronegócio"],
-  isMock: true,
-}));
 
 type NewsResponse = {
   source?: string;
@@ -215,7 +197,7 @@ export default function Home() {
           }
         }
 
-        if (isCurrent) setNewsItems(mockNewsItems);
+        if (isCurrent) setNewsError(true);
       } finally {
         if (isCurrent) setNewsLoading(false);
       }
@@ -271,7 +253,7 @@ export default function Home() {
           }
         }
 
-        if (isCurrent) setAgroNews(mockAgroNewsItems);
+        if (isCurrent) setAgroNewsError(true);
       } finally {
         if (isCurrent) setAgroNewsLoading(false);
       }
@@ -516,9 +498,27 @@ export default function Home() {
           </div>
 
           {newsLoading ? (
-            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
-              Carregando notícias…
-            </p>
+            <div
+              className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
+              role="status"
+              aria-label="Carregando notícias"
+            >
+              {Array.from({ length: 6 }, (_, index) => (
+                <Card key={index} className="gap-0 overflow-hidden rounded-[20px] border-border">
+                  <div className="px-3 pt-3">
+                    <Skeleton className="aspect-video w-full rounded-lg" />
+                  </div>
+                  <CardHeader className="space-y-3 p-4">
+                    <Skeleton className="h-5 w-full" />
+                    <Skeleton className="h-5 w-4/5" />
+                  </CardHeader>
+                  <CardContent className="space-y-3 px-4 pb-4">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-2/3" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           ) : newsError ? (
             <div className="rounded-[20px] border border-border p-6">
               <p className="text-sm text-muted-foreground">
@@ -550,9 +550,6 @@ export default function Home() {
                     </div>
                   </div>
                   <CardHeader className="flex-1 space-y-2 p-4">
-                    {item.isMock && (
-                      <Badge variant="secondary" className="w-fit">DEMONSTRAÇÃO</Badge>
-                    )}
                     <CardTitle className="line-clamp-2 text-base leading-snug">
                       <button
                         type="button"
@@ -606,7 +603,23 @@ export default function Home() {
             </h2>
           </div>
 
-          {integralNewsItems.length > 0 ? (
+          {newsLoading ? (
+            <div
+              className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+              role="status"
+              aria-label="Carregando notícias na íntegra"
+            >
+              {Array.from({ length: 4 }, (_, index) => (
+                <Card key={index} className="gap-0 overflow-hidden rounded-[20px] border-background/15 bg-background p-3">
+                  <Skeleton className="aspect-video w-full rounded-lg" />
+                  <div className="space-y-2 pt-3">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-4/5" />
+                  </div>
+                </Card>
+              ))}
+            </div>
+          ) : integralNewsItems.length > 0 ? (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               {integralNewsItems.map((item) => (
                 <Card
@@ -624,9 +637,6 @@ export default function Home() {
                     </span>
                   </button>
                   <CardHeader className="space-y-2 p-3">
-                    {item.isMock && (
-                      <Badge variant="secondary" className="w-fit">DEMONSTRAÇÃO</Badge>
-                    )}
                     <CardTitle className="text-sm leading-snug">
                       <button
                         type="button"
@@ -664,7 +674,16 @@ export default function Home() {
             <span aria-hidden="true" className="h-1 flex-1 bg-foreground" />
           </h2>
 
-          {radarNewsItems.length > 0 ? (
+          {newsLoading || fallbackLoading ? (
+            <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2" role="status" aria-label="Carregando notícias do radar">
+              {Array.from({ length: 4 }, (_, index) => (
+                <div key={index} className="border-b-[0.5px] border-border py-5">
+                  <Skeleton className="h-5 w-full" />
+                  <Skeleton className="mt-2 h-5 w-3/4" />
+                </div>
+              ))}
+            </div>
+          ) : radarNewsItems.length > 0 ? (
             <div className="grid grid-cols-1 gap-x-10 md:grid-cols-2">
               {radarNewsItems.map((item) => (
                 <div key={item.sourceUrl} className="border-b-[0.5px] border-border">
@@ -673,7 +692,6 @@ export default function Home() {
                     className="w-full py-5 text-left font-poppins text-base font-medium italic leading-relaxed hover:text-primary"
                     onClick={() => setSelectedNews(item)}
                   >
-                    {item.isMock && <Badge variant="secondary" className="mb-2">DEMONSTRAÇÃO</Badge>}
                     <span className="block">{item.title}</span>
                   </button>
                 </div>
@@ -840,9 +858,18 @@ export default function Home() {
           </div>
 
           {agroNewsLoading ? (
-            <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
-              Carregando notícias do Agronegócio…
-            </p>
+            <div className="space-y-4" role="status" aria-label="Carregando notícias do Agronegócio">
+              {Array.from({ length: 4 }, (_, index) => (
+                <div key={index} className="flex flex-col gap-4 rounded-[20px] border border-border p-4 sm:flex-row">
+                  <Skeleton className="h-36 w-full shrink-0 rounded-lg sm:h-28 sm:w-40" />
+                  <div className="flex-1 space-y-3">
+                    <Skeleton className="h-5 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-4/5" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : agroNewsError ? (
             <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
               Não foi possível carregar as notícias desta editoria no momento.
@@ -865,9 +892,6 @@ export default function Home() {
                     <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    {item.isMock && (
-                      <Badge variant="secondary" className="mb-2">DEMONSTRAÇÃO</Badge>
-                    )}
                     <h3 className="font-display text-lg font-semibold leading-snug">
                       {item.title}
                     </h3>
@@ -908,11 +932,6 @@ export default function Home() {
                     {selectedNews.rewritten ? " · Texto reescrito" : ""}
                   </DialogDescription>
                 </DialogHeader>
-                {selectedNews.isMock && (
-                  <p className="mx-auto w-full max-w-3xl rounded-lg border border-border p-4 text-sm text-muted-foreground">
-                    Conteúdo fictício de demonstração; não corresponde a uma notícia real.
-                  </p>
-                )}
                 {selectedNews.subtitle && (
                   <p className="mx-auto w-full max-w-3xl text-base font-medium leading-relaxed text-muted-foreground">
                     {selectedNews.subtitle}
