@@ -12,6 +12,7 @@ type Report = {
   categoria: string;
   titulo: string;
   resumo: string;
+  conteudoCompleto: string;
   data: string;
 };
 
@@ -92,8 +93,8 @@ export default function Explore() {
       }
 
       const { data, error: queryError } = await supabase
-        .from("relatorios")
-        .select("*")
+        .from("panoramas")
+        .select("titulo, resumo, conteudo_completo, created_at")
         .order("created_at", { ascending: false });
 
       if (cancelled) return;
@@ -111,7 +112,8 @@ export default function Explore() {
           categoria: getField(row, "categoria", "category") || "Geral",
           titulo: getField(row, "titulo", "title") || "Relatório sem título",
           resumo: getField(row, "resumo", "summary") || "Resumo não disponível.",
-          data: getField(row, "data_publicacao", "published_at", "created_at"),
+          conteudoCompleto: getField(row, "conteudo_completo", "content"),
+          data: getField(row, "created_at"),
         })),
       );
       setIsLoading(false);
@@ -131,7 +133,7 @@ export default function Explore() {
         report.categoria.toLocaleLowerCase("pt-BR").includes(activeFilter.toLocaleLowerCase("pt-BR"));
       const matchesSearch =
         !query ||
-        `${report.categoria} ${report.titulo} ${report.resumo}`
+        `${report.categoria} ${report.titulo} ${report.resumo} ${report.conteudoCompleto}`
           .toLocaleLowerCase("pt-BR")
           .includes(query);
       return matchesFilter && matchesSearch;
