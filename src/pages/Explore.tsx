@@ -205,66 +205,6 @@ export default function Explore() {
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Explorar</h1>
         </header>
 
-        <button
-          type="button"
-          onClick={() => setProductsOpen(true)}
-          aria-label="Ver produtos: As Grandes Mentes da Nossa Era"
-          className="group relative mb-8 flex min-h-56 w-full items-center overflow-hidden border border-border/50 bg-background text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:min-h-64"
-        >
-          <img
-            src="https://picsum.photos/seed/minds-era/800/600"
-            alt=""
-            aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover opacity-45 transition-transform duration-700 group-hover:scale-[1.02]"
-          />
-          <span className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/10" />
-          <span className="relative max-w-xl px-6 py-10 text-3xl font-semibold tracking-tight text-foreground sm:px-10 sm:text-5xl">
-            As Grandes Mentes da Nossa Era
-          </span>
-        </button>
-
-        <Dialog open={productsOpen} onOpenChange={setProductsOpen}>
-          <DialogContent className="max-h-[90dvh] max-w-3xl overflow-y-auto rounded-none p-5 sm:p-8">
-            <DialogHeader className="mb-2 text-left">
-              <DialogTitle className="text-2xl font-semibold tracking-tight">
-                As Grandes Mentes da Nossa Era
-              </DialogTitle>
-              <DialogDescription>
-                Explore os destaques disponíveis e os próximos lançamentos.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2">
-              <Card className="rounded-none shadow-none">
-                <CardContent className="flex h-full flex-col gap-4 p-5">
-                  <div>
-                    <Badge variant="secondary">Disponível</Badge>
-                    <h3 className="mt-3 text-xl font-semibold">TOP MIND</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">R$ 5,00</p>
-                  </div>
-                  <Button asChild className="mt-auto min-h-12 w-full">
-                    <a
-                      href="https://pay.cakto.com.br/3docwso_1235475"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Resgatar TOP MIND
-                    </a>
-                  </Button>
-                </CardContent>
-              </Card>
-              {["Próximo destaque", "Novo lançamento", "Em breve"].map((item) => (
-                <div
-                  key={item}
-                  className="flex min-h-36 flex-col justify-between border border-dashed border-border bg-muted/30 p-5"
-                >
-                  <Badge variant="outline" className="w-fit">Espaço disponível</Badge>
-                  <p className="text-sm font-medium text-muted-foreground">{item}</p>
-                </div>
-              ))}
-            </div>
-          </DialogContent>
-        </Dialog>
-
         <section aria-label="Pesquisar no acervo" className="mb-8">
           <div className="relative z-10 max-w-3xl">
             <div className="flex h-12 items-center gap-3 rounded-2xl bg-muted px-4 transition-colors focus-within:ring-2 focus-within:ring-primary/20">
@@ -444,6 +384,68 @@ export default function Explore() {
               ))}
             </div>
           )}
+        </section>
+
+        <section aria-label="Destaque As Grandes Mentes da Nossa Era" className="mt-10">
+          <button
+            type="button"
+            onClick={() => setProductsOpen(true)}
+            aria-label="Ver produtos: As Grandes Mentes da Nossa Era"
+            className="group relative flex min-h-56 w-full items-center overflow-hidden border border-border/50 bg-background text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:min-h-64"
+          >
+            <img
+              src="https://picsum.photos/seed/minds-era/800/600"
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full object-cover opacity-45 transition-transform duration-700 group-hover:scale-[1.02]"
+            />
+            <span className="absolute inset-0 bg-gradient-to-r from-background via-background/85 to-background/10" />
+            <span className="relative max-w-xl px-6 py-10 text-3xl font-semibold tracking-tight text-foreground sm:px-10 sm:text-5xl">
+              As Grandes Mentes da Nossa Era
+            </span>
+          </button>
+
+          <Dialog open={productsOpen} onOpenChange={setProductsOpen}>
+            <DialogContent className="max-h-[90dvh] max-w-3xl overflow-y-auto rounded-none p-5 sm:p-8">
+              <DialogHeader className="mb-2 text-left">
+                <DialogTitle className="text-2xl font-semibold tracking-tight">
+                  As Grandes Mentes da Nossa Era
+                </DialogTitle>
+                <DialogDescription>
+                  Explore os destaques disponíveis e os próximos lançamentos.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2">
+                <Card className="rounded-none shadow-none">
+                  <CardContent className="flex h-full flex-col gap-4 p-5">
+                    <div>
+                      <Badge variant="secondary">Disponível</Badge>
+                      <h3 className="mt-3 text-xl font-semibold">TOP MIND</h3>
+                      <p className="mt-1 text-sm text-muted-foreground">R$ 5,00</p>
+                    </div>
+                    <Button asChild className="mt-auto min-h-12 w-full">
+                      <a
+                        href="https://pay.cakto.com.br/3docwso_1235475"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Resgatar TOP MIND
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+                {["Próximo destaque", "Novo lançamento", "Em breve"].map((item) => (
+                  <div
+                    key={item}
+                    className="flex min-h-36 flex-col justify-between border border-dashed border-border bg-muted/30 p-5"
+                  >
+                    <Badge variant="outline" className="w-fit">Espaço disponível</Badge>
+                    <p className="text-sm font-medium text-muted-foreground">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
         </section>
       </main>
     </div>
