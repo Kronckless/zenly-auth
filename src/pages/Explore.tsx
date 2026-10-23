@@ -4,6 +4,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
 import { Search, X } from "lucide-react";
 
@@ -74,6 +81,8 @@ function formatDate(value: string): string {
 export default function Explore() {
   const [reports, setReports] = useState<Report[]>([]);
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [sortOrder, setSortOrder] = useState("recentes");
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     try {
       return JSON.parse(window.localStorage.getItem("explorar-recent-searches") || "[]");
@@ -136,12 +145,25 @@ export default function Explore() {
     const query = search.trim().toLocaleLowerCase("pt-BR");
     const searchTerms = query.split(/\s+/).filter(Boolean);
 
-    return reports.filter((report) => {
-      const searchableText =
-        `${report.titulo} ${report.resumo} ${report.conteudoCompleto}`.toLocaleLowerCase("pt-BR");
-      return searchTerms.length === 0 || searchTerms.some((term) => searchableText.includes(term));
-    });
-  }, [reports, search]);
+    return reports
+      .filter((report) => {
+        const searchableText =
+          `${report.categoria} ${report.titulo} ${report.resumo} ${report.conteudoCompleto}`.toLocaleLowerCase("pt-BR");
+        const matchesSearch =
+          searchTerms.length === 0 || searchTerms.some((term) => searchableText.includes(term));
+        const matchesCategory =
+          selectedCategory === "Todos" ||
+          report.categoria.toLocaleLowerCase("pt-BR").includes(selectedCategory.toLocaleLowerCase("pt-BR")) ||
+          searchableText.includes(selectedCategory.toLocaleLowerCase("pt-BR"));
+
+        return matchesSearch && matchesCategory;
+      })
+      .sort((a, b) => {
+        const dateA = new Date(a.data).getTime() || 0;
+        const dateB = new Date(b.data).getTime() || 0;
+        return sortOrder === "antigos" ? dateA - dateB : dateB - dateA;
+      });
+  }, [reports, search, selectedCategory, sortOrder]);
 
   function saveRecentSearch(value: string) {
     const term = value.trim();
@@ -199,19 +221,19 @@ export default function Explore() {
                 aria-expanded={Boolean(search.trim()) && suggestionsOpen}
                 className="h-full border-0 bg-transparent px-0 shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
               />
-              {search && (
-                <button
-                  type="button"
-                  aria-label="Limpar pesquisa"
-                  onClick={() => {
-                    setSearch("");
-                    setSuggestionsOpen(false);
-                  }}
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
+              <button
+                type="button"
+                aria-label="Limpar pesquisa"
+                onClick={() => {
+                  setSearch("");
+                  setSuggestionsOpen(false);
+                }}
+                disabled={!search}
+                className="flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-background hover:text-foreground disabled:opacity-50"
+              >
+                <X className="h-3.5 w-3.5" />
+                Clear
+              </button>
             </div>
 
             {search.trim() && suggestionsOpen && (
@@ -241,6 +263,24 @@ export default function Explore() {
                 )}
               </div>
             )}
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2" aria-label="Filtrar por categoria">
+            {filters.map((category) => (
+              <button
+                key={category}
+                type="button"
+                aria-pressed={selectedCategory === category}
+                onClick={() => setSelectedCategory(category)}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+                  selectedCategory === category
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
 
           {recentSearches.length > 0 && (
@@ -284,6 +324,15 @@ export default function Explore() {
                 {isLoading ? "Carregando relatórios..." : `${visibleReports.length} relatórios encontrados`}
               </p>
             </div>
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger className="w-[155px] rounded-xl bg-background">
+                <SelectValue placeholder="Ordenar por" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recentes">Mais recentes</SelectItem>
+                <SelectItem value="antigos">Mais antigos</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {isLoading ? (
