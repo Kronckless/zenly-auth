@@ -27,6 +27,60 @@ type Report = {
   created_at: string;
 };
 
+function extractReadableText(value: unknown): string {
+  if (typeof value === "string") {
+    const text = value.trim();
+    try {
+      const parsed: unknown = JSON.parse(text);
+      if (typeof parsed === "object" && parsed !== null) {
+        return extractReadableText(parsed);
+      }
+    } catch {
+      return text;
+    }
+    return text;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(extractReadableText).filter(Boolean).join("\n");
+  }
+
+  if (typeof value === "object" && value !== null) {
+    const record = value as Record<string, unknown>;
+    for (const key of ["text", "content", "parts", "candidates", "data", "output", "result", "message", "response"]) {
+      if (key in record) {
+        const text = extractReadableText(record[key]);
+        if (text) return text;
+      }
+    }
+  }
+
+  return "";
+}
+
+function getReportField(value: unknown, field: keyof Report): string {
+  if (typeof value === "string") {
+    const text = value.trim();
+    try {
+      const parsed: unknown = JSON.parse(text);
+      if (typeof parsed === "object" && parsed !== null) {
+        return getReportField(parsed, field) || extractReadableText(parsed);
+      }
+    } catch {
+      return text;
+    }
+    return text;
+  }
+
+  if (typeof value === "object" && value !== null) {
+    const record = value as Record<string, unknown>;
+    if (field in record) return getReportField(record[field], field);
+    return extractReadableText(record);
+  }
+
+  return "";
+}
+
 export default function QG() {
   const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
@@ -49,7 +103,15 @@ export default function QG() {
       if (error) {
         setLoadError("Não foi possível carregar os panoramas agora.");
       } else {
-        setReports((data ?? []) as Report[]);
+        setReports(
+          (data ?? []).map((row) => ({
+            categoria: getReportField(row, "categoria"),
+            titulo: getReportField(row, "titulo"),
+            resumo: getReportField(row, "resumo"),
+            conteudo_completo: getReportField(row, "conteudo_completo"),
+            created_at: getReportField(row, "created_at"),
+          })),
+        );
       }
       setIsLoading(false);
     }
