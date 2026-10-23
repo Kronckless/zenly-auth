@@ -124,9 +124,12 @@ export default function QG() {
   const [reports, setReports] = useState<Report[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     async function loadReports() {
+      setIsLoading(true);
+      setLoadError("");
       if (!supabase) {
         setLoadError("A conexão com o serviço de conteúdo não está configurada.");
         setIsLoading(false);
@@ -155,7 +158,7 @@ export default function QG() {
     }
 
     loadReports();
-  }, []);
+  }, [retryKey]);
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-16 sm:pb-0">
@@ -200,9 +203,18 @@ export default function QG() {
               Carregando panoramas...
             </p>
           ) : loadError ? (
-            <p className="py-8 text-sm text-destructive" role="alert">
-              {loadError}
-            </p>
+            <div className="py-8" role="alert">
+              <p className="text-sm text-destructive">{loadError}</p>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="mt-3"
+                onClick={() => setRetryKey((key) => key + 1)}
+              >
+                Verificar novamente
+              </Button>
+            </div>
           ) : reports.length === 0 ? (
             <p className="py-8 text-sm text-muted-foreground">
               Nenhum panorama disponível no momento.
