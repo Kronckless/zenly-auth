@@ -490,7 +490,7 @@ export default function Explore() {
                     className="group block rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`Comprar ${product.title} por ${product.price}`}
                   >
-                    <Card className="h-full overflow-hidden rounded-[2px] border border-background/10 bg-foreground text-background shadow-sm backdrop-blur-sm transition-all duration-200 group-hover:shadow-md">
+                    <Card className="h-full overflow-hidden rounded-[2px] border border-border/60 bg-background text-foreground shadow-sm transition-all duration-200 group-hover:bg-muted/50 group-hover:shadow-md">
                     {(() => {
                       const imageUrl =
                         (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
@@ -516,7 +516,7 @@ export default function Explore() {
                       ) : (
                         <div
                           aria-hidden="true"
-                          className="flex aspect-[4/3] w-full items-center justify-center bg-background/10 text-xs text-background/60"
+                          className="flex aspect-[4/3] w-full items-center justify-center bg-muted text-xs text-muted-foreground"
                         >
                           Imagem em breve
                         </div>
@@ -524,17 +524,17 @@ export default function Explore() {
                     })()}
                     <CardContent className="flex h-full flex-col gap-3 p-3 sm:p-5">
                       <div className="flex items-start justify-between gap-2">
-                        <h3 className="text-sm font-semibold uppercase leading-snug tracking-wider text-background sm:text-lg">
+                        <h3 className="text-sm font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-lg">
                           {product.title}
                         </h3>
                         <Badge
                           variant="outline"
-                          className="shrink-0 border-background/15 bg-background/10 px-2 py-1 text-[10px] font-medium text-background/80"
+                          className="shrink-0 border-border/60 bg-muted px-2 py-1 text-[10px] font-medium text-muted-foreground"
                         >
                           {product.price}
                         </Badge>
                       </div>
-                      <div className="mt-auto flex items-center justify-between border-t border-background/10 pt-3 text-xs font-medium tracking-wide text-background/70">
+                      <div className="mt-auto flex items-center justify-between border-t border-border/60 pt-3 text-xs font-medium tracking-wide text-muted-foreground">
                         <span>Acessar</span>
                         <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
                       </div>
