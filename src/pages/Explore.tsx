@@ -490,13 +490,13 @@ export default function Explore() {
                     className="group block rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`Comprar ${product.title} por ${product.price}`}
                   >
-                    <Card className="h-full min-h-[260px] gap-3 overflow-hidden rounded-[2px] border border-border/60 bg-muted/20 p-3 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-4">
+                    <Card className="h-full min-h-[260px] gap-3 overflow-hidden rounded-[2px] border border-border/70 bg-muted/30 p-3 text-foreground shadow-sm transition-all duration-200 group-hover:shadow-md sm:p-4">
                       <CardContent className="flex h-full flex-1 flex-col gap-3 p-0">
                         <h3 className="flex min-h-10 items-center justify-center text-center text-sm font-semibold uppercase leading-snug tracking-wider text-foreground sm:text-base">
                           {product.title}
                         </h3>
 
-                        <div className="flex min-h-28 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-background">
+                        <div className="flex min-h-28 flex-1 items-center justify-center overflow-hidden rounded-[2px] border border-border/60 bg-muted/10">
                           {(() => {
                             const imageUrl =
                               (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
