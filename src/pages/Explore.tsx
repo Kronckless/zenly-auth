@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/lib/supabase";
-import { Search, X } from "lucide-react";
+import { ArrowUpRight, Search, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -487,10 +487,10 @@ export default function Explore() {
                     href={product.checkoutUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block rounded-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                    className="group block rounded-[2px] transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                     aria-label={`Comprar ${product.title} por ${product.price}`}
                   >
-                    <Card className="h-full overflow-hidden rounded-none shadow-none transition-shadow hover:shadow-md">
+                    <Card className="h-full overflow-hidden rounded-[2px] border border-background/10 bg-foreground text-background shadow-sm backdrop-blur-sm transition-all duration-200 group-hover:shadow-md">
                     {(() => {
                       const imageUrl =
                         (product.checkoutUrl && productImages[product.checkoutUrl]) || product.image;
@@ -516,19 +516,28 @@ export default function Explore() {
                       ) : (
                         <div
                           aria-hidden="true"
-                          className="flex aspect-[4/3] w-full items-center justify-center bg-muted text-xs text-muted-foreground"
+                          className="flex aspect-[4/3] w-full items-center justify-center bg-background/10 text-xs text-background/60"
                         >
                           Imagem em breve
                         </div>
                       );
                     })()}
                     <CardContent className="flex h-full flex-col gap-3 p-3 sm:p-5">
-                      <div>
-                        <Badge variant="secondary">Disponível</Badge>
-                        <h3 className="mt-2 text-base font-semibold sm:text-xl">{product.title}</h3>
-                        <p className="mt-1 text-sm text-muted-foreground">{product.price}</p>
+                      <div className="flex items-start justify-between gap-2">
+                        <h3 className="text-sm font-semibold uppercase leading-snug tracking-wider text-background sm:text-lg">
+                          {product.title}
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className="shrink-0 border-background/15 bg-background/10 px-2 py-1 text-[10px] font-medium text-background/80"
+                        >
+                          {product.price}
+                        </Badge>
                       </div>
-                      <p className="mt-auto text-sm font-medium text-primary">Comprar</p>
+                      <div className="mt-auto flex items-center justify-between border-t border-background/10 pt-3 text-xs font-medium tracking-wide text-background/70">
+                        <span>Acessar</span>
+                        <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+                      </div>
                     </CardContent>
                     </Card>
                   </a>
