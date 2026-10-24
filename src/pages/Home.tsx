@@ -18,7 +18,7 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,
+  CardTitle,H
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -167,7 +167,7 @@ export default function Home() {
       try {
         for (let attempt = 1; attempt <= 3; attempt += 1) {
           try {
-            const response = await fetch("https://conscienciadepoder.com/api/news", {
+            const response = await fetch("https://zenly-auth-8osq.onrender.com/api/news", {
               mode: "cors",
             });
             if (!response.ok) {
@@ -223,7 +223,7 @@ export default function Home() {
       try {
         for (let attempt = 1; attempt <= 3; attempt += 1) {
           try {
-            const response = await fetch("https://conscienciadepoder.com/api/agronegocio");
+            const response = await fetch("https://zenly-auth-8osq.onrender.com/api/agronegocio");
             if (!response.ok) {
               throw new Error(`API de Agronegócio respondeu com status ${response.status}`);
             }
@@ -362,7 +362,7 @@ export default function Home() {
 
     async function loadFallbacks() {
       try {
-        const response = await fetch("https://conscienciadepoder.com/api/saber");
+        const response = await fetch("https://zenly-auth-8osq.onrender.com/api/saber");
         if (!response.ok) throw new Error("Gazeta do Povo indisponível");
         const data = (await response.json()) as NewsResponse;
         const items = Array.isArray(data.items) ? data.items : [];
@@ -378,7 +378,7 @@ export default function Home() {
       }
 
       try {
-        const currencyResponse = await fetch("https://conscienciadepoder.com/api/usd-brl");
+        const currencyResponse = await fetch("https://zenly-auth-8osq.onrender.com/api/usd-brl");
         if (!currencyResponse.ok) throw new Error("Cotação indisponível");
         const currencyData = (await currencyResponse.json()) as {
           items?: CurrencyPoint[];
@@ -398,7 +398,7 @@ export default function Home() {
     };
   }, [newsLoading, radarNewsItems.length]);
 
-  async function openNews(item: NewsItem) {
+async function openNews(item: NewsItem) {
     const requestId = ++articleRequestRef.current;
     setSelectedNews(item);
     setArticleError(false);
@@ -409,7 +409,7 @@ export default function Home() {
     setArticleLoading(true);
     try {
       const response = await fetch(
-        `https://conscienciadepoder.com/api/article?url=${encodeURIComponent(item.sourceUrl)}`,
+        `https://zenly-auth-8osq.onrender.com/api/article?url=${encodeURIComponent(item.sourceUrl)}`,
       );
       if (!response.ok) throw new Error("Texto completo indisponível");
       const article = (await response.json()) as NewsItem;
@@ -418,6 +418,15 @@ export default function Home() {
         setSelectedNews((current) =>
           current?.sourceUrl === item.sourceUrl
             ? { ...current, ...article, sourceUrl: item.sourceUrl }
+            : current,
+        );
+      }
+    } catch {
+      if (articleRequestRef.current === requestId) setArticleError(true);
+    } finally {
+      if (articleRequestRef.current === requestId) setArticleLoading(false);
+    }
+  }
             : current,
         );
       }
