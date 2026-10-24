@@ -18,7 +18,7 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardTitle,H
+  CardTitle,
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -418,15 +418,6 @@ async function openNews(item: NewsItem) {
         setSelectedNews((current) =>
           current?.sourceUrl === item.sourceUrl
             ? { ...current, ...article, sourceUrl: item.sourceUrl }
-            : current,
-        );
-      }
-    } catch {
-      if (articleRequestRef.current === requestId) setArticleError(true);
-    } finally {
-      if (articleRequestRef.current === requestId) setArticleLoading(false);
-    }
-  }
             : current,
         );
       }
