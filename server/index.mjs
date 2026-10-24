@@ -366,11 +366,11 @@ async function getProductImage(checkoutUrl) {
   if (!page.ok || !isAllowedCheckoutUrl(page.url)) return null;
 
   const html = (await page.text()).slice(0, 2 * 1024 * 1024);
-  const metaTags = html.match(/<meta\\b[^>]*>/gi) || [];
+  const metaTags = html.match(/<meta\b[^>]*>/gi) || [];
 
   for (const tag of metaTags) {
     const attributes = Object.fromEntries(
-      [...tag.matchAll(/([\\w:-]+)\\s*=\\s*["']([^"']*)["']/g)].map(
+      [...tag.matchAll(/([\w:-]+)\s*=\s*["']([^"']*)["']/g)].map(
         ([, name, value]) => [name.toLowerCase(), decodeMetaValue(value)],
       ),
     );
@@ -411,7 +411,7 @@ function extractElementInner(html, tagName, openingPattern) {
   const opening = openingPattern.exec(html);
   if (!opening) return "";
 
-  const tokens = new RegExp(`<\\/?${tagName}\\b[^>]*>`, "gi");
+  const tokens = new RegExp(`<\/?${tagName}\b[^>]*>`, "gi");
   tokens.lastIndex = opening.index;
   let depth = 0;
   let token;
@@ -432,9 +432,9 @@ function extractElementInner(html, tagName, openingPattern) {
 }
 
 function readArticleMeta(html, names) {
-  for (const [, tag] of html.matchAll(/<meta\\b[^>]*>/gi)) {
+  for (const [, tag] of html.matchAll(/<meta\b[^>]*>/gi)) {
     const attributes = Object.fromEntries(
-      [...tag.matchAll(/([\\w:-]+)\\s*=\\s*["']([^"']*)["']/g)].map(
+      [...tag.matchAll(/([\w:-]+)\s*=\s*["']([^"']*)["']/g)].map(
         ([, name, value]) => [name.toLowerCase(), value],
       ),
     );
@@ -449,7 +449,7 @@ function readArticleMeta(html, names) {
 
 async function getFullArticle(articleUrl) {
   const allowedHost = "revistaoeste.com";
-  const articleHost = articleUrl.hostname.toLowerCase().replace(/^www\\./, "");
+  const articleHost = articleUrl.hostname.toLowerCase().replace(/^www\./, "");
   if (
     articleUrl.protocol !== "https:" ||
     (articleHost !== allowedHost && !articleHost.endsWith(`.${allowedHost}`))
@@ -463,7 +463,7 @@ async function getFullArticle(articleUrl) {
   if (!page.ok) throw new Error("Matéria indisponível");
 
   const finalUrl = new URL(page.url);
-  const finalHost = finalUrl.hostname.toLowerCase().replace(/^www\\./, "");
+  const finalHost = finalUrl.hostname.toLowerCase().replace(/^www\./, "");
   if (
     finalUrl.protocol !== "https:" ||
     (finalHost !== allowedHost && !finalHost.endsWith(`.${allowedHost}`))
@@ -473,21 +473,21 @@ async function getFullArticle(articleUrl) {
 
   const html = await page.text();
   const articleHtml =
-    extractElementInner(html, "article", /<article\\b[^>]*>/i) ||
+    extractElementInner(html, "article", /<article\b[^>]*>/i) ||
     extractElementInner(
       html,
       "div",
-      /<div\\b(?=[^>]*\\bclass=["'][^"']*\\b(?:entry-content|post-content|article-content|content__body)\\b)[^>]*>/i,
+      /<div\b(?=[^>]*\bclass=["'][^"']*\b(?:entry-content|post-content|article-content|content__body)\b)[^>]*>/i,
     );
 
-  const titleMatch = html.match(/<h1\\b[^>]*>([\\s\\S]*?)<\\/h1\\s*>/i);
+  const titleMatch = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/i);
   const title = cleanNewsContent(decodeXml(titleMatch?.[1] || "")) ||
     readArticleMeta(html, ["og:title"]);
   const subtitle = cleanNewsContent(
     readArticleMeta(html, ["description", "og:description"]),
   );
   const cleanedHtml = articleHtml.replace(
-    /<(script|style|noscript|nav|aside|footer|form)\\b[^>]*>[\\s\\S]*?<\\/\\1\\s*>/gi,
+    /<(script|style|noscript|nav|aside|footer|form)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
     " ",
   );
   const content = cleanNewsContent(decodeXml(cleanedHtml));
