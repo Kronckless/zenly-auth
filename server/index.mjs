@@ -59,22 +59,17 @@ function cleanNewsContent(value = "") {
   if (!value) return "";
 
   return value
-    // 1. Decodifica caracteres XML/HTML primeiro
     .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
-    // 2. Remove tags HTML completas
     .replace(/<[^>]*>/g, " ")
-    // 3. Remove rodapés de atribuição dos portais
+    // Regra reforçada para limpar qualquer variação de "Leia também", "Leia mais" e menções a edições/publicações
+    .replace(/Leia\s+(?:também|mais)[\s\S]*?(?:Edição|Edicao|\.|$)/gi, "")
     .replace(/O\s+post[\s\S]*?apareceu\s+primeiro\s+em[\s\S]*?\./gi, "")
     .replace(/O\s+conteúdo[\s\S]*?aparece\s+primeiro\s+em[\s\S]*?\./gi, "")
-    // 4. Remove chamadas para leitura adicional e atalhos
-    .replace(/\+?\s*Leia\s+mais[\s\S]*?(?:em|no|na)\s+[A-Z\s]+/gi, "")
-    .replace(/\+?\s*Leia\s+também[\s\S]*?\./gi, "")
-    .replace(/\+?\s*Entenda[\s\S]*?(?:em|no|na)\s+[A-Z\s]+/gi, "")
-    .replace(/Confira\s+os\s+perfis[\s\S]*?site\s+de\s+Oeste/gi, "")
-    .replace(/Ver\s+esse\s+post\s+no\s+Instagram[\s\S]*?Um\s+post\s+compartilhado\s+por[\s\S]*?\n/gi, "")
-    // 5. Remove URLs puras (Twitter, YouTube, links externos)
+    .replace(/\+?\s*Leia\s+mais[\s\S]*/gi, "")
+    .replace(/\+?\s*Entenda[\s\S]*/gi, "")
+    .replace(/Confira\s+os\s+perfis[\s\S]*/gi, "")
+    .replace(/Ver\s+esse\s+post\s+no\s+Instagram[\s\S]*/gi, "")
     .replace(/\b(?:https?:\/\/|www\.)[^\s<>"']+/gi, "")
-    // 6. Limpa múltiplos espaços em branco e quebras de linha desnecessárias
     .replace(/[ \t]+/g, " ")
     .replace(/\n\s*\n+/g, "\n\n")
     .trim();
@@ -110,7 +105,6 @@ function parseRssItems(xmlText, sourceName) {
     const descMatch = itemXml.match(/<description>([\s\S]*?)<\/description>/i);
     const contentMatch = itemXml.match(/<content:encoded>([\s\S]*?)<\/content:encoded>/i);
     
-    // Tenta extrair imagem das tags comuns do RSS
     const imgMatch = itemXml.match(/url=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp))["']/i) ||
                      itemXml.match(/src=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp))["']/i);
 
@@ -158,7 +152,6 @@ async function refreshNews() {
   }
 
   if (collectedItems.length === 0) {
-    console.info("[noticias] Utilizando noticias de contingencia.");
     collectedItems = FALLBACK_NEWS;
   }
 
