@@ -174,7 +174,10 @@ async function fetchWithTimeout(url, options = {}) {
 
 async function fetchFeedText(feedUrl) {
   const response = await fetchWithTimeout(feedUrl, {
-    headers: { Accept: "application/rss+xml, application/atom+xml, application/xml, text/xml" },
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+      "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml, */*",
+    },
   });
 
   if (!response.ok) throw new Error("Feed indisponível");
@@ -319,7 +322,7 @@ async function getAgroNews() {
     }
   }
 
-  throw new Error("Feed de Agronegócio indisponível");
+  return [];
 }
 
 function isAllowedCheckoutUrl(value) {
@@ -407,104 +410,13 @@ async function getUsdBrlHistory() {
   }));
 }
 
-function extractElementInner(html, tagName, openingPattern) {
-  const opening = openingPattern.exec(html);
-  if (!opening) return "";
-
-  const tokens = new RegExp(`<\/?${tagName}\b[^>]*>`, "gi");
-  tokens.lastIndex = opening.index;
-  let depth = 0;
-  let token;
-
-  while ((token = tokens.exec(html))) {
-    if (token[0].startsWith("</")) {
-      depth -= 1;
-    } else if (!token[0].endsWith("/>")) {
-      depth += 1;
-    }
-
-    if (depth === 0) {
-      return html.slice(opening.index + opening[0].length, token.index);
-    }
-  }
-
-  return "";
-}
-
-function readArticleMeta(html, names) {
-  for (const [, tag] of html.matchAll(/<meta\b[^>]*>/gi)) {
-    const attributes = Object.fromEntries(
-      [...tag.matchAll(/([\w:-]+)\s*=\s*["']([^"']*)["']/g)].map(
-        ([, name, value]) => [name.toLowerCase(), value],
-      ),
-    );
-    const key = (attributes.name || attributes.property || "").toLowerCase();
-    if (names.includes(key) && attributes.content) {
-      return decodeXml(attributes.content);
-    }
-  }
-
-  return "";
-}
-
-async function getFullArticle(articleUrl) {
-  const allowedHost = "revistaoeste.com";
-  const articleHost = articleUrl.hostname.toLowerCase().replace(/^www\./, "");
-  if (
-    articleUrl.protocol !== "https:" ||
-    (articleHost !== allowedHost && !articleHost.endsWith(`.${allowedHost}`))
-  ) {
-    throw new Error("Endereço de matéria inválido");
-  }
-
-  const page = await fetchWithTimeout(articleUrl.href, {
-    headers: { Accept: "text/html,application/xhtml+xml" },
-  });
-  if (!page.ok) throw new Error("Matéria indisponível");
-
-  const finalUrl = new URL(page.url);
-  const finalHost = finalUrl.hostname.toLowerCase().replace(/^www\./, "");
-  if (
-    finalUrl.protocol !== "https:" ||
-    (finalHost !== allowedHost && !finalHost.endsWith(`.${allowedHost}`))
-  ) {
-    throw new Error("Endereço de matéria inválido");
-  }
-
-  const html = await page.text();
-  const articleHtml =
-    extractElementInner(html, "article", /<article\b[^>]*>/i) ||
-    extractElementInner(
-      html,
-      "div",
-      /<div\b(?=[^>]*\bclass=["'][^"']*\b(?:entry-content|post-content|article-content|content__body)\b)[^>]*>/i,
-    );
-
-  const titleMatch = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1\s*>/i);
-  const title = cleanNewsContent(decodeXml(titleMatch?.[1] || "")) ||
-    readArticleMeta(html, ["og:title"]);
-  const subtitle = cleanNewsContent(
-    readArticleMeta(html, ["description", "og:description"]),
-  );
-  const cleanedHtml = articleHtml.replace(
-    /<(script|style|noscript|nav|aside|footer|form)\b[^>]*>[\s\S]*?<\/\1\s*>/gi,
-    " ",
-  );
-  const content = cleanNewsContent(decodeXml(cleanedHtml));
-
-  if (!content) throw new Error("Texto completo indisponível");
-  return { title, subtitle, content };
-}
-
 const server = createServer(async (request, response) => {
-  // Cabeçalhos de Segurança e CORS liberado para requisições do Zenly / Navegador
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("Cache-Control", "no-store");
   response.setHeader("Access-Control-Allow-Origin", "*");
   response.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Tratamento da verificação prévia do navegador (Preflight OPTIONS)
   if (request.method === "OPTIONS") {
     response.writeHead(204);
     response.end();
@@ -544,8 +456,8 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify({ source: "Revista Oeste — Agronegócio", items }));
     } catch (error) {
       console.error("Falha ao carregar notícias de Agronegócio:", error);
-      response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(JSON.stringify({ error: "Notícias de Agronegócio indisponíveis." }));
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ source: "Revista Oeste — Agronegócio", items: [] }));
     }
     return;
   }
@@ -557,8 +469,8 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify({ source: "Gazeta do Povo — Saber", items }));
     } catch (error) {
       console.error("Falha ao carregar notícias de Saber:", error);
-      response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(JSON.stringify({ error: "Notícias de Saber indisponíveis." }));
+      response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+      response.end(JSON.stringify({ source: "Gazeta do Povo — Saber", items: [] }));
     }
     return;
   }
@@ -608,8 +520,8 @@ const server = createServer(async (request, response) => {
     response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
     response.end(JSON.stringify({ source: "Revista Oeste", updatedAt: cachedAt, items: news }));
   } catch {
-    response.writeHead(503, { "Content-Type": "application/json; charset=utf-8" });
-    response.end(JSON.stringify({ error: "Notícias indisponíveis no momento." }));
+    response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
+    response.end(JSON.stringify({ source: "Revista Oeste", updatedAt: Date.now(), items: [] }));
   }
 });
 
