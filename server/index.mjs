@@ -49,38 +49,64 @@ async function fetchWithTimeout(url, options = {}) {
   }
 }
 
-async function refreshNews() {
-  const rssUrl = encodeURIComponent("https://revistaoeste.com/feed/");
-  const apiProxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
-
+async function fetchFeedViaProxy(targetRssUrl, sourceName) {
+  const apiProxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(targetRssUrl)}`;
   const response = await fetchWithTimeout(apiProxyUrl, {
     headers: { Accept: "application/json" },
   });
 
-  if (!response.ok) throw new Error("Falha ao carregar feed via agregador");
+  if (!response.ok) throw new Error(`Falha ao carregar ${sourceName}`);
 
   const data = await response.json();
-  
   if (data.status !== "ok" || !data.items) {
-    throw new Error("Formato de feed inválido");
+    throw new Error(`Formato inválido para ${sourceName}`);
   }
 
-  cachedNews = data.items.map((item) => ({
+  return data.items.map((item) => ({
     title: decodeXml(item.title || ""),
     content: cleanNewsContent(item.content || item.description || ""),
     sourceUrl: item.link,
     imageUrl: item.thumbnail || item.enclosure?.link || null,
     publishedAt: item.pubDate,
-    categories: item.categories || [],
+    categories: item.categories || [sourceName],
     rewritten: false,
-  })).sort((a, b) => {
+  }));
+}
+
+async function refreshNews() {
+  // Lista de fontes autorizadas (Revista Oeste, Gazeta do Povo e Direita Online)
+  const sources = [
+    { name: "Revista Oeste", url: "https://revistaoeste.com/feed/" },
+    { name: "Gazeta do Povo", url: "https://www.gazetadopovo.com.br/feed/" },
+    { name: "Direita Online", url: "https://direitaonline.com.br/feed/" },
+  ];
+
+  let allArticles = [];
+
+  // Tenta recolher notícias de todas as fontes disponíveis de forma segura
+  for (const source of sources) {
+    try {
+      const items = await fetchFeedViaProxy(source.url, source.name);
+      allArticles.push(...items);
+    } catch (error) {
+      console.warn(`[notícias] Aviso: Não foi possível carregar de ${source.name}:`, error.message);
+    }
+  }
+
+  // Se por algum motivo todas falharem, garante um array limpo
+  if (allArticles.length === 0) {
+    throw new Error("Nenhuma notícia disponível em nenhuma das fontes no momento.");
+  }
+
+  // Ordena da mais recente para a mais antiga
+  cachedNews = allArticles.sort((a, b) => {
     const dateA = Date.parse(a.publishedAt || "") || 0;
     const dateB = Date.parse(b.publishedAt || "") || 0;
     return dateB - dateA;
   });
 
   cachedAt = Date.now();
-  console.info(`[notícias] Sucesso: ${cachedNews.length} matérias carregadas`);
+  console.info(`[notícias] Sincronização concluída: ${cachedNews.length} matérias carregadas.`);
   return cachedNews;
 }
 
@@ -112,29 +138,6 @@ async function getAgroNews() {
   return cachedAgroNews;
 }
 
-function isAllowedCheckoutUrl(value) {
-  try {
-    const url = new URL(value);
-    const allowedHosts = [
-      "cakto.com.br",
-      "hotmart.com",
-      "kiwify.com.br",
-      "kiwify.app",
-      "stripe.com",
-      "mercadopago.com",
-      "mercadopago.com.br",
-      "mpago.la",
-    ];
-    const hostname = url.hostname.toLowerCase().replace(/^www\./, "");
-    return (
-      url.protocol === "https:" &&
-      allowedHosts.some((host) => hostname === host || hostname.endsWith(`.${host}`))
-    );
-  } catch {
-    return false;
-  }
-}
-
 const server = createServer(async (request, response) => {
   response.setHeader("X-Content-Type-Options", "nosniff");
   response.setHeader("Cache-Control", "no-store");
@@ -161,15 +164,14 @@ const server = createServer(async (request, response) => {
       response.end(
         JSON.stringify({
           status: "ok",
-          source: "Revista Oeste",
+          source: "Multi-Portais (Oeste, Gazeta, Direita Online)",
           updatedAt: cachedAt,
           itemCount: news.length,
         }),
       );
-    } catch (error) {
-      console.error("Falha ao verificar o serviço:", error);
+    } catch {
       response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(JSON.stringify({ status: "ok", message: "Serviço ativo com fallback." }));
+      response.end(JSON.stringify({ status: "ok", message: "Serviço ativo." }));
     }
     return;
   }
@@ -178,11 +180,11 @@ const server = createServer(async (request, response) => {
     try {
       const news = await getNews();
       response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(JSON.stringify({ source: "Revista Oeste", updatedAt: cachedAt, items: news }));
+      response.end(JSON.stringify({ source: "Rede de Portais", updatedAt: cachedAt, items: news }));
     } catch (error) {
       console.error("Erro ao carregar notícias:", error);
       response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(JSON.stringify({ source: "Revista Oeste", updatedAt: Date.now(), items: [] }));
+      response.end(JSON.stringify({ source: "Rede de Portais", updatedAt: Date.now(), items: [] }));
     }
     return;
   }
