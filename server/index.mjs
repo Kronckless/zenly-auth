@@ -8,7 +8,7 @@ let cachedNews = null;
 let cachedAt = 0;
 let refreshPromise = null;
 
-// Notícias de contingência garantidas (para o site NUNCA ficar vazio)
+// Notícias de contingência limpas (para garantir exibição em qualquer falha de rede)
 const FALLBACK_NEWS = [
   {
     title: "Agronegócio brasileiro registra recorde de exportações no último trimestre",
@@ -48,8 +48,35 @@ function decodeXml(value = "") {
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
     .replace(/&nbsp;/g, " ")
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([\da-f]+);/gi, (_, code) =>
+      String.fromCodePoint(parseInt(code, 16)),
+    )
+    .trim();
+}
+
+function cleanNewsContent(value = "") {
+  if (!value) return "";
+
+  return value
+    // 1. Decodifica caracteres XML/HTML primeiro
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    // 2. Remove tags HTML completas
     .replace(/<[^>]*>/g, " ")
+    // 3. Remove rodapés de atribuição dos portais
+    .replace(/O\s+post[\s\S]*?apareceu\s+primeiro\s+em[\s\S]*?\./gi, "")
+    .replace(/O\s+conteúdo[\s\S]*?aparece\s+primeiro\s+em[\s\S]*?\./gi, "")
+    // 4. Remove chamadas para leitura adicional e atalhos
+    .replace(/\+?\s*Leia\s+mais[\s\S]*?(?:em|no|na)\s+[A-Z\s]+/gi, "")
+    .replace(/\+?\s*Leia\s+também[\s\S]*?\./gi, "")
+    .replace(/\+?\s*Entenda[\s\S]*?(?:em|no|na)\s+[A-Z\s]+/gi, "")
+    .replace(/Confira\s+os\s+perfis[\s\S]*?site\s+de\s+Oeste/gi, "")
+    .replace(/Ver\s+esse\s+post\s+no\s+Instagram[\s\S]*?Um\s+post\s+compartilhado\s+por[\s\S]*?\n/gi, "")
+    // 5. Remove URLs puras (Twitter, YouTube, links externos)
+    .replace(/\b(?:https?:\/\/|www\.)[^\s<>"']+/gi, "")
+    // 6. Limpa múltiplos espaços em branco e quebras de linha desnecessárias
     .replace(/[ \t]+/g, " ")
+    .replace(/\n\s*\n+/g, "\n\n")
     .trim();
 }
 
@@ -81,15 +108,19 @@ function parseRssItems(xmlText, sourceName) {
     const linkMatch = itemXml.match(/<link>([\s\S]*?)<\/link>/i);
     const pubDateMatch = itemXml.match(/<pubDate>([\s\S]*?)<\/pubDate>/i);
     const descMatch = itemXml.match(/<description>([\s\S]*?)<\/description>/i);
+    const contentMatch = itemXml.match(/<content:encoded>([\s\S]*?)<\/content:encoded>/i);
     
-    // Tenta extrair imagem das tags comuns de RSS
+    // Tenta extrair imagem das tags comuns do RSS
     const imgMatch = itemXml.match(/url=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp))["']/i) ||
                      itemXml.match(/src=["'](https?:\/\/[^"']+\.(?:jpg|jpeg|png|webp))["']/i);
 
     if (titleMatch && linkMatch) {
+      const rawTitle = titleMatch[1] || "";
+      const rawContent = contentMatch ? contentMatch[1] : (descMatch ? descMatch[1] : "");
+
       items.push({
-        title: decodeXml(titleMatch[1] || ""),
-        content: decodeXml(descMatch ? descMatch[1] : ""),
+        title: decodeXml(rawTitle).replace(/<[^>]*>/g, "").trim(),
+        content: cleanNewsContent(rawContent),
         sourceUrl: (linkMatch[1] || "").trim(),
         imageUrl: imgMatch ? imgMatch[1] : null,
         publishedAt: pubDateMatch ? pubDateMatch[1] : new Date().toISOString(),
@@ -122,13 +153,12 @@ async function refreshNews() {
         }
       }
     } catch (err) {
-      console.warn(`[noticias] Erro ao buscar ${source.name}:`, err.message);
+      console.warn(`[noticias] Aviso em ${source.name}:`, err.message);
     }
   }
 
-  // Se os feeds diretos falharem, usa a contingência garantida
   if (collectedItems.length === 0) {
-    console.info("[noticias] Usando alimentador de contingencia ativo.");
+    console.info("[noticias] Utilizando noticias de contingencia.");
     collectedItems = FALLBACK_NEWS;
   }
 
@@ -178,7 +208,7 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify({ status: "ok", itemCount: news.length }));
     } catch {
       response.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-      response.end(JSON.stringify({ status: "ok", message: "Servico ativo." }));
+      response.end(JSON.stringify({ status: "ok", message: "Serviço ativo." }));
     }
     return;
   }
