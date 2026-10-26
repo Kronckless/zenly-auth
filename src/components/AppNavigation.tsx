@@ -60,7 +60,7 @@ export default function AppNavigation() {
   const waveCenterY = 12;
   const waveRadiusY = 22;
   const waveSide = Math.max(0, waveHalfWidth - waveRadius);
-  const wavePath = `M 0 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 1 ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth}`;
+  const wavePath = `M 0 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 0 ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth}`;
 
   return (
     <>
@@ -120,7 +120,7 @@ export default function AppNavigation() {
         </svg>
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-[-10px] z-10 size-11 -translate-x-1/2 rounded-full shadow-lg transition-[left] duration-300 ease-out"
+          className="pointer-events-none absolute top-[-10px] z-10 size-11 -translate-x-1/2 rounded-full shadow-lg transition-[left] duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
           style={{
             left: `${((waveIndex + 0.5) / mobileTabs.length) * 100}%`,
             backgroundColor: "#DC2626",
