@@ -43,16 +43,16 @@ export default function AppNavigation() {
       <header className="hidden border-b border-border bg-background sm:block">
         <nav
           aria-label="Navegação principal"
-          className="mx-auto flex h-16 max-w-7xl items-center gap-8 px-5 lg:px-8"
+          className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:gap-8 sm:px-5 lg:px-8"
         >
           {tabs.map(({ label, to, Icon }) => (
             <NavLink
               key={to}
               to={to}
               className={({ isActive }) =>
-                `inline-flex h-full items-center gap-2 border-b-2 px-1 text-sm font-medium transition-colors hover:text-primary ${
+                `inline-flex h-full items-center gap-2 border-b-2 px-1 text-sm font-medium transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive ${
                   isActive
-                    ? "border-primary text-primary"
+                    ? "border-destructive text-destructive"
                     : "border-transparent text-muted-foreground"
                 }`
               }
@@ -76,15 +76,15 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed bottom-0 left-0 right-0 z-50 flex h-12 border-t-2 border-t-[#00A859] bg-white shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 flex h-[calc(3.5rem+env(safe-area-inset-bottom))] border-t-2 border-destructive bg-background pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
       >
         {tabs.map(({ label, to, Icon }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `flex min-h-12 flex-1 flex-col items-center justify-center gap-0.5 py-0.5 text-[10px] font-medium transition-colors ${
-                isActive ? "text-[#00A859]" : "text-muted-foreground"
+              `flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
+                isActive ? "font-semibold text-destructive" : "text-muted-foreground"
               }`
             }
           >
