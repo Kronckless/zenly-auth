@@ -440,7 +440,7 @@ async function openNews(item: NewsItem) {
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8 lg:py-12">
         <section id="urgente" aria-label="Notícias urgentes">
           <div className="mb-5 flex items-center gap-3">
-            <Badge className="gap-2 px-3 py-1">
+            <Badge className="gap-2 bg-destructive px-3 py-1 text-destructive-foreground hover:bg-destructive">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-foreground" />
               NOTÍCIAS URGENTES
             </Badge>
