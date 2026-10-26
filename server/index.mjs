@@ -21,21 +21,18 @@ let cachedNews = [];
 let lastFetchTime = 0;
 const CACHE_DURATION = 15 * 60 * 1000; // 15 minutos
 
-// Função para limpar HTML e sanitizar o texto original
 function cleanText(text) {
   if (!text) return '';
   return text
-    .replace(/<[^>]*>?/gm, '') // Remove tags HTML
-    .replace(/https?:\/\/\S+/gi, '') // Remove URLs e links
-    .replace(/\s+/g, ' ') // Remove espaços extras
+    .replace(/<[^>]*>?/gm, '')
+    .replace(/https?:\/\/\S+/gi, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
-// Reescrita por IA (Gemini 1.5 Flash)
 async function rewriteWithGemini(title, content) {
   try {
     if (!process.env.GEMINI_API_KEY) {
-      console.warn('GEMINI_API_KEY não configurada. Usando texto limpo original.');
       return { title: cleanText(title), body: cleanText(content) };
     }
 
@@ -57,8 +54,7 @@ Conteúdo original: ${content}
 
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
-    
-    // Extrai o JSON da resposta
+
     const jsonMatch = responseText.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
@@ -74,15 +70,13 @@ Conteúdo original: ${content}
   }
 }
 
-// Endpoint de verificação
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-// Endpoint principal do Feed de Notícias
 app.get('/api/news', async (req, res) => {
   const now = Date.now();
-  
+
   if (cachedNews.length > 0 && (now - lastFetchTime) < CACHE_DURATION) {
     return res.json(cachedNews);
   }
@@ -107,7 +101,6 @@ app.get('/api/news', async (req, res) => {
       }
     }
 
-    // Processa e reescreve as notícias com a IA
     const processedNews = await Promise.all(
       allItems.map(async (item, index) => {
         const rewritten = await rewriteWithGemini(item.title, item.content);
@@ -117,7 +110,7 @@ app.get('/api/news', async (req, res) => {
           content: rewritten.body,
           summary: rewritten.body.substring(0, 160) + '...',
           date: item.pubDate,
-          category: item.category, // Categoria (Geral ou Agronegócio)
+          category: item.category,
           categories: [item.category, 'Geral'],
           imageUrl: item.imageUrl
         };
