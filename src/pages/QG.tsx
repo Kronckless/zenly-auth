@@ -181,7 +181,7 @@ export default function QG() {
 
           <Badge variant="secondary" className="w-fit gap-2 rounded-none bg-emerald-100 px-2 py-1 text-xs font-semibold text-[#15803D]">
             <span className="size-2 rounded-full bg-[#00A859] shadow-[0_0_8px_#00A859]" />
-            Patriota Online
+            Você está online
           </Badge>
         </header>
 
