@@ -242,7 +242,7 @@ export default function QG() {
                     <Button
                       type="button"
                       onClick={() => setSelectedReport(report)}
-                      className="w-full gap-2 rounded-none bg-gradient-to-r from-blue-800 to-blue-600 font-bold text-white hover:from-blue-900 hover:to-blue-700 sm:w-auto"
+                      className="w-full gap-2 rounded-none bg-gradient-to-r from-red-900 to-red-600 font-bold text-white hover:from-red-950 hover:to-red-700 sm:w-auto"
                     >
                       Ler Panorama
                       <ArrowRight className="size-4" />
