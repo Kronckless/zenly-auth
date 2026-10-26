@@ -45,7 +45,7 @@ export default function AppNavigation() {
       (to !== "/" && location.pathname.startsWith(`${to}/`)),
   );
   const waveCenter = ((activeMobileIndex + 0.5) / mobileTabs.length) * 1000;
-  const wavePath = `M 0 16 H ${waveCenter - 48} C ${waveCenter - 34} 16 ${waveCenter - 36} 0 ${waveCenter - 22} 0 C ${waveCenter - 10} 0 ${waveCenter - 12} -17 ${waveCenter} -17 C ${waveCenter + 12} -17 ${waveCenter + 10} 0 ${waveCenter + 22} 0 C ${waveCenter + 36} 0 ${waveCenter + 34} 16 ${waveCenter + 48} 16 H 1000`;
+  const wavePath = `M 0 16 H ${waveCenter - 52} C ${waveCenter - 34} 16 ${waveCenter - 34} -2 ${waveCenter - 20} -2 C ${waveCenter - 12} -2 ${waveCenter - 12} -18 ${waveCenter} -18 C ${waveCenter + 12} -18 ${waveCenter + 12} -2 ${waveCenter + 20} -2 C ${waveCenter + 34} -2 ${waveCenter + 34} 16 ${waveCenter + 52} 16 H 1000`;
 
   return (
     <>
