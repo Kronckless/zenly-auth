@@ -13,6 +13,15 @@ const tabs = [
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
+  const [viewportWidth, setViewportWidth] = useState(
+    () => (typeof window === "undefined" ? 1000 : window.innerWidth),
+  );
+
+  useEffect(() => {
+    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
+    window.addEventListener("resize", updateViewportWidth);
+    return () => window.removeEventListener("resize", updateViewportWidth);
+  }, []);
 
   useEffect(() => {
     function updateUnreadCount() {
@@ -44,8 +53,10 @@ export default function AppNavigation() {
       location.pathname === to ||
       (to !== "/" && location.pathname.startsWith(`${to}/`)),
   );
-  const waveCenter = ((activeMobileIndex + 0.5) / mobileTabs.length) * 1000;
-  const wavePath = `M 0 16 H ${waveCenter - 52} C ${waveCenter - 34} 16 ${waveCenter - 34} -2 ${waveCenter - 20} -2 C ${waveCenter - 12} -2 ${waveCenter - 12} -18 ${waveCenter} -18 C ${waveCenter + 12} -18 ${waveCenter + 12} -2 ${waveCenter + 20} -2 C ${waveCenter + 34} -2 ${waveCenter + 34} 16 ${waveCenter + 52} 16 H 1000`;
+  const waveIndex = activeMobileIndex >= 0 ? activeMobileIndex : 2;
+  const waveCenter = ((waveIndex + 0.5) / mobileTabs.length) * viewportWidth;
+  const waveHalfWidth = Math.min(52, waveCenter, viewportWidth - waveCenter);
+  const wavePath = `M 0 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth * 0.65} 16 ${waveCenter - waveHalfWidth * 0.65} -2 ${waveCenter - waveHalfWidth * 0.38} -2 C ${waveCenter - waveHalfWidth * 0.23} -2 ${waveCenter - waveHalfWidth * 0.23} -18 ${waveCenter} -18 C ${waveCenter + waveHalfWidth * 0.23} -18 ${waveCenter + waveHalfWidth * 0.23} -2 ${waveCenter + waveHalfWidth * 0.38} -2 C ${waveCenter + waveHalfWidth * 0.65} -2 ${waveCenter + waveHalfWidth * 0.65} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth}`;
 
   return (
     <>
@@ -91,7 +102,7 @@ export default function AppNavigation() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 h-full w-full"
           preserveAspectRatio="none"
-          viewBox="0 -28 1000 92"
+          viewBox={`0 -28 ${viewportWidth} 92`}
         >
           <path d={`${wavePath} V 64 H 0 Z`} fill="var(--background)" />
           <path
@@ -107,7 +118,7 @@ export default function AppNavigation() {
           aria-hidden="true"
           className="pointer-events-none absolute top-[-10px] z-10 size-11 -translate-x-1/2 rounded-full shadow-lg transition-[left] duration-300 ease-out"
           style={{
-            left: `${((activeMobileIndex + 0.5) / mobileTabs.length) * 100}%`,
+            left: `${((waveIndex + 0.5) / mobileTabs.length) * 100}%`,
             backgroundColor: "#DC2626",
           }}
         />
