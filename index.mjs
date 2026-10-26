@@ -13,38 +13,41 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 // Fontes de RSS Mapeadas
 const FEEDS = [
-  // NA ÍNTEGRA
+  // 1. NA ÍNTEGRA
   {
-    url: 'https://vermelho.org.br/movimentos/feed/',
+    urls: ['https://vermelho.org.br/movimentos/feed/'],
     category: 'Na Íntegra',
     source: 'Vermelho - Movimentos'
   },
-  // AGRONEGÓCIO
+  // 2. AGRONEGÓCIO
   {
-    url: 'https://www.brasil247.com/tag/agronegocio/feed',
+    urls: ['https://www.brasil247.com/tag/agronegocio/feed'],
     category: 'Agronegócio',
     source: 'Brasil 247 - Agro'
   },
-  // NO SEU RADAR (Principal: LGBTQI+ / Fallback: Sul Global)
+  // 3. NO SEU RADAR (Tenta LGBTQI+ do Esquerda Online e, se falhar, usa Sul Global do Brasil 247)
   {
-    url: 'https://esquerdaonline.com.br/category/lgbtqi/feed/',
-    fallbackUrl: 'https://www.brasil247.com/tag/sul-global/feed',
+    urls: [
+      'https://esquerdaonline.com.br/category/lgbtqi/feed/',
+      'https://esquerdaonline.com.br/feed/',
+      'https://www.brasil247.com/tag/sul-global/feed'
+    ],
     category: 'No Seu Radar',
-    source: 'Esquerda Online - LGBTQI+'
+    source: 'No Seu Radar'
   },
-  // GERAL
+  // 4. GERAL
   {
-    url: 'https://www.brasil247.com/feed',
+    urls: ['https://www.brasil247.com/feed'],
     category: 'Geral',
     source: 'Brasil 247'
   },
   {
-    url: 'https://vermelho.org.br/feed/',
+    urls: ['https://vermelho.org.br/feed/'],
     category: 'Geral',
     source: 'Vermelho'
   },
   {
-    url: 'https://esquerdaonline.com.br/feed/',
+    urls: ['https://esquerdaonline.com.br/feed/'],
     category: 'Geral',
     source: 'Esquerda Online'
   }
@@ -57,7 +60,7 @@ async function rewriteWithGemini(title, contentSnippet) {
 
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const prompt = `Reescreva a seguinte notícia de forma jornalística e neutra. Retorne apenas JSON válido: {"title": "novo título", "summary": "resumo com 2 a 3 frases"}.\n\nTítulo: ${title}\nConteúdo: ${contentSnippet}`;
+    const prompt = `Reescreva a seguinte notícia de forma jornalística e neutra. Retorne apenas JSON válido no formato: {"title": "novo título", "summary": "resumo de até 3 frases"}.\n\nTítulo: ${title}\nConteúdo: ${contentSnippet}`;
 
     const result = await model.generateContent(prompt);
     const cleanedText = result.response.text().replace(/```json|```/g, '').trim();
@@ -77,18 +80,17 @@ app.get('/api/news', async (req, res) => {
 
     for (const feedConfig of FEEDS) {
       let feedItems = [];
-      try {
-        const feed = await parser.parseURL(feedConfig.url);
-        feedItems = feed.items;
-      } catch (err) {
-        // Se falhar o feed principal e existir fallback (ex: Sul Global)
-        if (feedConfig.fallbackUrl) {
-          try {
-            const fallbackFeed = await parser.parseURL(feedConfig.fallbackUrl);
-            feedItems = fallbackFeed.items;
-          } catch (fallbackErr) {
-            console.error(`Erro ao buscar fallback ${feedConfig.fallbackUrl}`);
+
+      // Testa as URLs configuradas para o feed até encontrar uma que funcione
+      for (const feedUrl of feedConfig.urls) {
+        try {
+          const feed = await parser.parseURL(feedUrl);
+          if (feed && feed.items && feed.items.length > 0) {
+            feedItems = feed.items;
+            break; // Encontrou dados, sai do loop de URLs alternativas
           }
+        } catch (err) {
+          console.error(`Erro ao acessar feed ${feedUrl}:`, err.message);
         }
       }
 
@@ -96,7 +98,8 @@ app.get('/api/news', async (req, res) => {
 
       for (const item of items) {
         const titleText = (item.title || '').trim();
-        // Filtro para ignorar matérias quebradas/vazias como "Agro"
+        
+        // Filtro sanitizador: ignora conteúdos vazios ou títulos pequenos/incompletos
         if (titleText.length < 6 || titleText.toLowerCase() === 'agro') {
           continue;
         }
@@ -128,6 +131,7 @@ app.get('/api/news', async (req, res) => {
 
     res.json(allArticles);
   } catch (error) {
+    console.error('Erro geral ao processar notícias:', error);
     res.status(500).json({ error: 'Erro ao processar as notícias' });
   }
 });
