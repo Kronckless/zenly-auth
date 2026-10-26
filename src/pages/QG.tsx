@@ -167,7 +167,7 @@ export default function QG() {
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
         <header className="mb-8 flex flex-col justify-between gap-5 rounded-none border border-border bg-white p-6 shadow-sm sm:mb-10 sm:flex-row sm:items-end sm:p-9">
           <div>
-            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#002B7F]">
+            <div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#991B1B]">
               <ShieldCheck className="size-4" />
               QUADRO DE GIRO
             </div>
