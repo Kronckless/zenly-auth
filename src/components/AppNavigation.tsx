@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { House, MessageSquare, Search, Shield } from "lucide-react";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
@@ -37,6 +37,15 @@ export default function AppNavigation() {
   }, []);
 
   const unreadLabel = unreadCount > 99 ? "+99" : String(unreadCount);
+  const location = useLocation();
+  const mobileTabs = [tabs[2], tabs[3], tabs[0], tabs[1]];
+  const activeMobileIndex = mobileTabs.findIndex(
+    ({ to }) =>
+      location.pathname === to ||
+      (to !== "/" && location.pathname.startsWith(`${to}/`)),
+  );
+  const waveCenter = ((activeMobileIndex + 0.5) / mobileTabs.length) * 1000;
+  const wavePath = `M 0 16 H ${waveCenter - 48} C ${waveCenter - 34} 16 ${waveCenter - 36} 0 ${waveCenter - 22} 0 C ${waveCenter - 10} 0 ${waveCenter - 12} -17 ${waveCenter} -17 C ${waveCenter + 12} -17 ${waveCenter + 10} 0 ${waveCenter + 22} 0 C ${waveCenter + 36} 0 ${waveCenter + 34} 16 ${waveCenter + 48} 16 H 1000`;
 
   return (
     <>
@@ -76,49 +85,57 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-50 flex h-[calc(4rem+env(safe-area-inset-bottom))] border-t-2 border-destructive bg-background pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 flex h-[calc(4rem+env(safe-area-inset-bottom))] bg-transparent pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] sm:hidden"
       >
-        {[tabs[2], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => {
-          const isHome = to === "/";
-
-          return (
-            <NavLink
-              key={to}
-              to={to}
-              className={({ isActive }) =>
-                `relative flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
-                  isActive ? "font-semibold text-destructive" : "text-muted-foreground"
-                } ${isHome && isActive ? "-mt-5" : ""}`
-              }
-            >
-              <span
-                className={`relative inline-flex items-center justify-center transition-all duration-200 ${
-                  isHome
-                    ? "size-10"
-                    : "size-7"
-                }`}
-              >
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+          preserveAspectRatio="none"
+          viewBox="0 -28 1000 92"
+        >
+          <path d={`${wavePath} V 64 H 0 Z`} fill="var(--background)" />
+          <path
+            d={wavePath}
+            fill="none"
+            stroke="var(--destructive)"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+        {mobileTabs.map(({ label, to, Icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            className={({ isActive }) =>
+              `relative z-10 flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
+                isActive ? "font-semibold text-destructive" : "text-muted-foreground"
+              }`
+            }
+          >
+            {({ isActive }) => (
+              <>
                 <span
-                  className={`flex items-center justify-center transition-all duration-200 ${
-                    isHome && arguments
-                      ? ""
-                      : ""
+                  className={`relative inline-flex items-center justify-center rounded-full transition-all duration-200 ${
+                    isActive
+                      ? "-mt-5 size-11 bg-background text-destructive shadow-md"
+                      : "size-7"
                   }`}
-                />
-                <Icon className="h-5 w-5" />
-              </span>
-              {to === "/comunidade" && unreadCount > 0 && (
-                <span
-                  aria-label={`${unreadCount} mensagens não lidas`}
-                  className="absolute right-1/4 top-2 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
                 >
-                  {unreadLabel}
+                  <Icon className={isActive ? "h-6 w-6" : "h-5 w-5"} />
                 </span>
-              )}
-              <span>{label}</span>
-            </NavLink>
-          );
-        })}
+                {to === "/comunidade" && unreadCount > 0 && (
+                  <span
+                    aria-label={`${unreadCount} mensagens não lidas`}
+                    className="absolute right-1/4 top-2 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
+                  >
+                    {unreadLabel}
+                  </span>
+                )}
+                <span>{label}</span>
+              </>
+            )}
+          </NavLink>
+        ))}
       </nav>
     </>
   );
