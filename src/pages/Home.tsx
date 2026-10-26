@@ -1048,20 +1048,7 @@ async function openNews(item: NewsItem) {
         </Dialog>
       </div>
 
-      <footer id="rodape" className="mt-10 border-t border-border">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-8 text-xs text-muted-foreground lg:px-8">
-          <p className="font-display text-base font-semibold text-foreground">
-            Horizonte
-          </p>
-          <p>
-            Fotografias do portal via Pexels. Créditos: HÜSEYİN AVCI, cottonbro
-            studio, Ahmet Yüksek ✪, Paul Espinoza, Mikhail Nilov, Darya
-            Sannikova, Ann H, SHAHBAZ ZAMAN, Andrea Piacquadio, Mike van
-            Schoonderwalt, Oriel Frankie Ashcroft, Markus Winkler, Alexander
-            Gluschenko, ayça bilge e Pavel Danilyuk.
-          </p>
-        </div>
-      </footer>
+
     </main>
   );
 }
