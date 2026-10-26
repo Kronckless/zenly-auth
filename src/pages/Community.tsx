@@ -161,7 +161,7 @@ export default function Community() {
       <AppNavigation />
       <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x border-border bg-muted/30 pb-12 sm:pb-0">
         <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-4 py-3 sm:px-6">
-          <div className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <div className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
             <UsersRound className="size-5" aria-hidden="true" />
           </div>
 
