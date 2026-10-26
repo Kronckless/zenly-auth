@@ -61,6 +61,7 @@ export default function AppNavigation() {
   const waveRadiusY = 22;
   const waveSide = Math.max(0, waveHalfWidth - waveRadius);
   const wavePath = `M -2 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 0 ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth + 2}`;
+  const waveBorderPath = `M -2 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} M ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth + 2}`;
 
   return (
     <>
@@ -110,10 +111,11 @@ export default function AppNavigation() {
         >
           <path d={`${wavePath} V 64 H 0 Z`} fill="var(--background)" />
           <path
-            d={wavePath}
+            d={waveBorderPath}
             fill="none"
             stroke="#DC2626"
             strokeWidth="2.5"
+            strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
             style={{ transition: "d 320ms cubic-bezier(0.22, 1, 0.36, 1)" }}
           />
