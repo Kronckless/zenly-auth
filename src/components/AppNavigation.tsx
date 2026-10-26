@@ -61,7 +61,7 @@ export default function AppNavigation() {
   const waveRadiusY = 22;
   const waveSide = Math.max(0, waveHalfWidth - waveRadius);
   const wavePath = `M -2 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 0 ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth + 2}`;
-  const waveBorderPath = `M -2 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} M ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth + 2}`;
+  const waveBorderPath = `M ${waveCenter - waveHalfWidth} 16 C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius - waveSide * 0.12} ${waveCenterY} ${waveCenter - waveRadius} ${waveCenterY} M ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius + waveSide * 0.12} ${waveCenterY} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16`;
 
   return (
     <>
@@ -74,6 +74,7 @@ export default function AppNavigation() {
             <NavLink
               key={to}
               to={to}
+              end={to === "/"}
               className={({ isActive }) =>
                 `inline-flex h-full items-center gap-2 border-b-2 px-1 text-sm font-medium transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive ${
                   isActive
@@ -132,6 +133,7 @@ export default function AppNavigation() {
           <NavLink
             key={to}
             to={to}
+            end={to === "/"}
             className={({ isActive }) =>
               `relative z-20 flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
                 isActive ? "font-semibold text-[#DC2626]" : "text-muted-foreground"
