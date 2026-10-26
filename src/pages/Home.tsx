@@ -306,14 +306,11 @@ export default function Home() {
   const displayedNewsUrls = new Set(
     [...latestNewsItems, ...integralNewsItems].map((item) => item.sourceUrl),
   );
-  const radarCategoryNewsItems = feedNews.filter((item) =>
-    matchesNewsCategory(item, "No Seu Radar", "No Seu Radar"),
-  );
-  const radarSourceNewsItems =
-    radarCategoryNewsItems.length > 0 ? radarCategoryNewsItems : fallbackNewsItems;
-  const seenRadarTitles = new Set<string>();
-  const seenRadarSummaries = new Set<string>();
-  const radarNewsItems = radarSourceNewsItems
+  const seenRadarText = new Set<string>();
+  const radarNewsItems = feedNews
+    .filter((item) =>
+      matchesNewsCategory(item, "No Seu Radar", "No Seu Radar"),
+    )
     .filter((item) => {
       if (displayedNewsUrls.has(item.sourceUrl)) return false;
 
@@ -328,17 +325,13 @@ export default function Home() {
 
       const title = normalizeText(item.title);
       const summary = normalizeText(item.summary || item.content);
+      const texts = [title, summary].filter(Boolean);
 
-      if (
-        !title ||
-        seenRadarTitles.has(title) ||
-        (summary && seenRadarSummaries.has(summary))
-      ) {
+      if (!title || texts.some((text) => seenRadarText.has(text))) {
         return false;
       }
 
-      seenRadarTitles.add(title);
-      if (summary) seenRadarSummaries.add(summary);
+      texts.forEach((text) => seenRadarText.add(text));
       return true;
     })
     .slice(0, 8);
