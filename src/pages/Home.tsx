@@ -101,6 +101,20 @@ function hideSourceTerms(value = "") {
     .trim();
 }
 
+function cleanJournalisticText(value = "") {
+  return value
+    .split(/\n+/)
+    .map((paragraph) => paragraph.trim())
+    .filter(
+      (paragraph) =>
+        paragraph &&
+        !/^(?:(?:not[ií]cia|mat[eé]ria|conte[uú]do|texto)\s+(?:do|da|de)\s+(?:feed|fonte)|publicad[ao]\s+(?:pela|por)\s+fonte|fonte\s*:)/i.test(
+          paragraph,
+        ),
+    )
+    .join("\n\n");
+}
+
 function matchesNewsCategory(
   item: NewsItem,
   category: string,
@@ -551,16 +565,18 @@ async function openNews(item: NewsItem) {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 px-4 pb-4">
-                    <p className="line-clamp-2 text-sm text-muted-foreground">
-                      {item.summary || item.content}
-                    </p>
+                    {(item.summary || item.content) && (
+                      <p className="line-clamp-2 text-sm text-muted-foreground">
+                        {cleanJournalisticText(item.summary || item.content)}
+                      </p>
+                    )}
                     <div className="flex items-center justify-between gap-3">
-                      <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Clock3 className="h-3 w-3" />
-                        {item.publishedAt
-                          ? new Date(item.publishedAt).toLocaleDateString("pt-BR")
-                          : "Publicada pela fonte"}
-                      </span>
+                      {item.publishedAt && (
+                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Clock3 className="h-3 w-3" />
+                          {new Date(item.publishedAt).toLocaleDateString("pt-BR")}
+                        </span>
+                      )}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -885,9 +901,11 @@ async function openNews(item: NewsItem) {
                     <h3 className="font-display text-lg font-semibold leading-snug">
                       {item.title}
                     </h3>
-                    <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
-                      {item.content || "Confira os principais destaques recentes do Agronegócio."}
-                    </p>
+                    {(item.content || item.summary) && (
+                      <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+                        {cleanJournalisticText(item.content || item.summary)}
+                      </p>
+                    )}
                     <span className="mt-3 inline-flex text-sm font-semibold text-primary">
                       Ler matéria completa
                     </span>
@@ -918,7 +936,7 @@ async function openNews(item: NewsItem) {
                   <DialogDescription>
                     {selectedNews.publishedAt
                       ? `Publicado em ${new Date(selectedNews.publishedAt).toLocaleDateString("pt-BR")}`
-                      : "Notícia do feed"}
+                      : ""}
                     {selectedNews.rewritten ? " · Texto reescrito" : ""}
                   </DialogDescription>
                 </DialogHeader>
@@ -945,7 +963,9 @@ async function openNews(item: NewsItem) {
                       Não foi possível carregar o texto completo agora. Você ainda pode abrir a matéria original.
                     </p>
                   )}
-                  {selectedNews.content
+                  {cleanJournalisticText(
+                    selectedNews.content || selectedNews.summary || "",
+                  )
                     .split(/\n+/)
                     .map((paragraph) => paragraph.trim())
                     .filter(Boolean)
