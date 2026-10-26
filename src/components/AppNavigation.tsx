@@ -98,16 +98,22 @@ export default function AppNavigation() {
             d={wavePath}
             fill="none"
             stroke="var(--destructive)"
-            strokeWidth="2"
+            strokeWidth="2.5"
             vectorEffect="non-scaling-stroke"
+            style={{ transition: "d 320ms cubic-bezier(0.22, 1, 0.36, 1)" }}
           />
         </svg>
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-[-10px] z-10 size-11 -translate-x-1/2 rounded-full bg-destructive shadow-lg transition-[left] duration-300 ease-out"
+          style={{ left: `${((activeMobileIndex + 0.5) / mobileTabs.length) * 100}%` }}
+        />
         {mobileTabs.map(({ label, to, Icon }) => (
           <NavLink
             key={to}
             to={to}
             className={({ isActive }) =>
-              `relative z-10 flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
+              `relative z-20 flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
                 isActive ? "font-semibold text-destructive" : "text-muted-foreground"
               }`
             }
@@ -117,7 +123,7 @@ export default function AppNavigation() {
                 <span
                   className={`relative inline-flex items-center justify-center rounded-full transition-all duration-200 ${
                     isActive
-                      ? "-mt-5 size-11 bg-background text-destructive shadow-md"
+                      ? "-mt-5 size-11 text-destructive-foreground"
                       : "size-7"
                   }`}
                 >
