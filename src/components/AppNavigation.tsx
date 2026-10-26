@@ -111,15 +111,7 @@ export default function AppNavigation() {
           viewBox={`0 -28 ${viewportWidth} 92`}
         >
           <path d={`${wavePath} V 64 H 0 Z`} fill="var(--background)" />
-          <path
-            d={waveBorderPath}
-            fill="none"
-            stroke="#DC2626"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            vectorEffect="non-scaling-stroke"
-            style={{ transition: "d 320ms cubic-bezier(0.22, 1, 0.36, 1)" }}
-          />
+
         </svg>
         <span
           aria-hidden="true"
