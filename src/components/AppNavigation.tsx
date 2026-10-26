@@ -76,34 +76,49 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-50 flex h-[calc(3.75rem+env(safe-area-inset-bottom))] border-t-2 border-destructive bg-background pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 flex h-[calc(4rem+env(safe-area-inset-bottom))] border-t-2 border-destructive bg-background pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] backdrop-blur sm:hidden"
       >
-        {tabs.map(({ label, to, Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `relative flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
-                isActive
-                  ? "font-semibold text-destructive before:absolute before:left-1/2 before:top-0 before:h-1 before:w-9 before:-translate-x-1/2 before:rounded-full before:bg-destructive"
-                  : "text-muted-foreground"
-              }`
-            }
-          >
-            <span className="relative inline-flex">
-              <Icon className="h-4 w-4" />
+        {[tabs[2], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => {
+          const isHome = to === "/";
+
+          return (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `relative flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
+                  isActive ? "font-semibold text-destructive" : "text-muted-foreground"
+                } ${isHome && isActive ? "-mt-5" : ""}`
+              }
+            >
+              <span
+                className={`relative inline-flex items-center justify-center transition-all duration-200 ${
+                  isHome
+                    ? "size-10"
+                    : "size-7"
+                }`}
+              >
+                <span
+                  className={`flex items-center justify-center transition-all duration-200 ${
+                    isHome && arguments
+                      ? ""
+                      : ""
+                  }`}
+                />
+                <Icon className="h-5 w-5" />
+              </span>
               {to === "/comunidade" && unreadCount > 0 && (
                 <span
                   aria-label={`${unreadCount} mensagens não lidas`}
-                  className="absolute -right-2 -top-1 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
+                  className="absolute right-1/4 top-2 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
                 >
                   {unreadLabel}
                 </span>
               )}
-            </span>
-            <span>{label}</span>
-          </NavLink>
-        ))}
+              <span>{label}</span>
+            </NavLink>
+          );
+        })}
       </nav>
     </>
   );
