@@ -306,8 +306,41 @@ export default function Home() {
   const displayedNewsUrls = new Set(
     [...latestNewsItems, ...integralNewsItems].map((item) => item.sourceUrl),
   );
-  const radarNewsItems = feedNews
-    .filter((item) => !displayedNewsUrls.has(item.sourceUrl))
+  const radarCategoryNewsItems = feedNews.filter((item) =>
+    matchesNewsCategory(item, "No Seu Radar", "No Seu Radar"),
+  );
+  const radarSourceNewsItems =
+    radarCategoryNewsItems.length > 0 ? radarCategoryNewsItems : fallbackNewsItems;
+  const seenRadarTitles = new Set<string>();
+  const seenRadarSummaries = new Set<string>();
+  const radarNewsItems = radarSourceNewsItems
+    .filter((item) => {
+      if (displayedNewsUrls.has(item.sourceUrl)) return false;
+
+      const normalizeText = (value = "") =>
+        value
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^\w\s]/g, "")
+          .replace(/\s+/g, " ")
+          .trim()
+          .toLowerCase();
+
+      const title = normalizeText(item.title);
+      const summary = normalizeText(item.summary || item.content);
+
+      if (
+        !title ||
+        seenRadarTitles.has(title) ||
+        (summary && seenRadarSummaries.has(summary))
+      ) {
+        return false;
+      }
+
+      seenRadarTitles.add(title);
+      if (summary) seenRadarSummaries.add(summary);
+      return true;
+    })
     .slice(0, 8);
   const radarNewsUrls = new Set(radarNewsItems.map((item) => item.sourceUrl));
   const additionalNewsItems = feedNews
