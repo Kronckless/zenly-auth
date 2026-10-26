@@ -169,7 +169,7 @@ export default function QG() {
           <div>
             <div className="mb-3 flex items-center gap-2 text-sm font-bold text-[#002B7F]">
               <ShieldCheck className="size-4" />
-              ÁREA DO MEMBRO
+              QUADRO DE GIRO
             </div>
             <h1 className="font-display text-5xl font-extrabold tracking-tight text-[#0F172A] sm:text-6xl">
               QG
