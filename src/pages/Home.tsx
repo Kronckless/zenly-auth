@@ -283,14 +283,26 @@ export default function Home() {
 
   const latestNewsItems = feedNews.slice(0, 6);
   const latestNewsUrls = new Set(latestNewsItems.map((item) => item.sourceUrl));
-  const integralNewsItems = feedNews
-    .filter((item) =>
-      matchesNewsCategory(item, "Na Íntegra", "Vermelho - Movimentos"),
-    )
-    .slice(0, 4);
-  const agroCategoryNews = feedNews.filter((item) =>
+  const generalNewsItems = feedNews.filter((item) =>
+    matchesNewsCategory(item, "Geral", "Geral"),
+  );
+  const fallbackNewsItems =
+    generalNewsItems.length > 0 ? generalNewsItems : feedNews;
+  const integralCategoryNewsItems = feedNews.filter((item) =>
+    matchesNewsCategory(item, "Na Íntegra", "Vermelho - Movimentos"),
+  );
+  const integralNewsItems = (
+    integralCategoryNewsItems.length > 0
+      ? integralCategoryNewsItems
+      : fallbackNewsItems
+  ).slice(0, 4);
+  const agroCategoryNewsItems = feedNews.filter((item) =>
     matchesNewsCategory(item, "Agronegócio", "Brasil 247 - Agro"),
   );
+  const agroCategoryNews =
+    agroCategoryNewsItems.length > 0
+      ? agroCategoryNewsItems
+      : fallbackNewsItems;
   const displayedNewsUrls = new Set(
     [...latestNewsItems, ...integralNewsItems].map((item) => item.sourceUrl),
   );
