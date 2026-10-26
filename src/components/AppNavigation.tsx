@@ -61,7 +61,7 @@ export default function AppNavigation() {
   const waveRadiusY = 22;
   const waveSide = Math.max(0, waveHalfWidth - waveRadius);
   const wavePath = `M -2 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 0 ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth + 2}`;
-  const waveBorderPath = `M ${waveCenter - waveHalfWidth} 16 C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius - waveSide * 0.12} ${waveCenterY} ${waveCenter - waveRadius} ${waveCenterY} M ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius + waveSide * 0.12} ${waveCenterY} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16`;
+  const waveBorderPath = `M ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 1 ${waveCenter + waveRadius} ${waveCenterY}`;
 
   return (
     <>
