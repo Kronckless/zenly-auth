@@ -74,6 +74,7 @@ type NewsItem = {
   imageUrl?: string;
   publishedAt?: string;
   categories?: string[];
+  summary?: string;
   rewritten?: boolean;
   subtitle?: string;
 };
@@ -177,11 +178,11 @@ export default function Home() {
             if (!response.ok) {
               throw new Error(`API de notícias respondeu com status ${response.status}`);
             }
-            const data = (await response.json()) as NewsResponse;
+            const data = (await response.json()) as NewsItem[];
             console.log(data);
 
             if (isCurrent) {
-              const items = Array.isArray(data.items) ? data.items : [];
+              const items = Array.isArray(data) ? data : [];
               setNewsItems(
                 items.map((item) => ({
                   ...item,
@@ -569,7 +570,7 @@ async function openNews(item: NewsItem) {
                   </CardHeader>
                   <CardContent className="space-y-3 px-4 pb-4">
                     <p className="line-clamp-2 text-sm text-muted-foreground">
-                      {item.content}
+                      {item.summary || item.content}
                     </p>
                     <div className="flex items-center justify-between gap-3">
                       <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
