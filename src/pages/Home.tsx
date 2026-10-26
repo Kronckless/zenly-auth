@@ -166,14 +166,19 @@ export default function Home() {
 
       try {
         for (let attempt = 1; attempt <= 3; attempt += 1) {
+          const controller = new AbortController();
+          const timeout = window.setTimeout(() => controller.abort(), 10000);
+
           try {
             const response = await fetch("https://zenly-auth-8osq.onrender.com/api/news", {
               mode: "cors",
+              signal: controller.signal,
             });
             if (!response.ok) {
               throw new Error(`API de notícias respondeu com status ${response.status}`);
             }
             const data = (await response.json()) as NewsResponse;
+            console.log(data);
 
             if (isCurrent) {
               const items = Array.isArray(data.items) ? data.items : [];
@@ -194,6 +199,8 @@ export default function Home() {
             if (attempt < 3) {
               await new Promise((resolve) => window.setTimeout(resolve, 700 * attempt));
             }
+          } finally {
+            window.clearTimeout(timeout);
           }
         }
 
