@@ -312,8 +312,6 @@ export default function Home() {
       matchesNewsCategory(item, "No Seu Radar", "No Seu Radar"),
     )
     .filter((item) => {
-      if (displayedNewsUrls.has(item.sourceUrl)) return false;
-
       const normalizeText = (value = "") =>
         value
           .normalize("NFD")
