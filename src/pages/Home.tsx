@@ -74,6 +74,8 @@ type NewsItem = {
   imageUrl?: string;
   publishedAt?: string;
   categories?: string[];
+  category?: string;
+  source?: string;
   summary?: string;
   rewritten?: boolean;
   subtitle?: string;
@@ -99,17 +101,29 @@ function hideSourceTerms(value = "") {
     .trim();
 }
 
-function removeOestePhrases(value = "") {
-  return value
-    .split(/(?<=[.!?])\s+|\n+/)
-    .filter(
-      (phrase) =>
-        !/\boeste\b/i.test(phrase) &&
-        !/\+?\s*entenda\b.*\bagroneg[oó]cio\b/i.test(phrase),
-    )
-    .join(" ")
-    .replace(/[ \t]+/g, " ")
-    .trim();
+function matchesNewsCategory(
+  item: NewsItem,
+  category: string,
+  source: string,
+) {
+  const normalize = (value = "") =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+
+  const labels = [
+    ...(item.categories || []),
+    item.category,
+    item.source,
+  ].filter(Boolean);
+
+  return labels.some(
+    (label) =>
+      normalize(label) === normalize(category) ||
+      normalize(label) === normalize(source),
+  );
 }
 
 function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }) {
@@ -151,9 +165,6 @@ export default function Home() {
   const [newsError, setNewsError] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [saberNews, setSaberNews] = useState<NewsItem[]>([]);
-  const [agroNews, setAgroNews] = useState<NewsItem[]>([]);
-  const [agroNewsLoading, setAgroNewsLoading] = useState(true);
-  const [agroNewsError, setAgroNewsError] = useState(false);
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyPoint[]>([]);
   const [fallbackLoading, setFallbackLoading] = useState(false);
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
@@ -221,57 +232,6 @@ export default function Home() {
   }, [refreshKey]);
 
 
-  useEffect(() => {
-    let isCurrent = true;
-
-    async function loadAgroNews() {
-      setAgroNewsLoading(true);
-      setAgroNewsError(false);
-
-      try {
-        for (let attempt = 1; attempt <= 3; attempt += 1) {
-          try {
-            const response = await fetch("https://zenly-auth-8osq.onrender.com/api/agronegocio");
-            if (!response.ok) {
-              throw new Error(`API de Agronegócio respondeu com status ${response.status}`);
-            }
-            const data = (await response.json()) as NewsResponse;
-
-            if (isCurrent) {
-              setAgroNews(
-                Array.isArray(data.items)
-                  ? data.items.slice(0, 8).map((item) => ({
-                      ...item,
-                      title: removeOestePhrases(item.title),
-                      subtitle: removeOestePhrases(item.subtitle),
-                      content: removeOestePhrases(item.content),
-                      categories: item.categories
-                        ?.map(removeOestePhrases)
-                        .filter(Boolean),
-                    }))
-                  : [],
-              );
-            }
-            return;
-          } catch (error) {
-            console.error(`[agronegócio] Tentativa ${attempt}/3 falhou:`, error);
-            if (attempt < 3) {
-              await new Promise((resolve) => window.setTimeout(resolve, 700 * attempt));
-            }
-          }
-        }
-
-        if (isCurrent) setAgroNewsError(true);
-      } finally {
-        if (isCurrent) setAgroNewsLoading(false);
-      }
-    }
-
-    loadAgroNews();
-    return () => {
-      isCurrent = false;
-    };
-  }, []);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -290,9 +250,7 @@ export default function Home() {
   const editionBulletinPattern =
     /\b(?:jornal|noticiário)\b.*\b(?:edição|assista|acompanhe)\b|\b(?:assista|acompanhe)\s+(?:ao\s+)?(?:noticiário|jornal)\b|\b(?:primeira|segunda|terceira|quarta|última)\s+edição\b/i;
   const seenNews = new Set<string>();
-  const agronegocioUrls = new Set(agroNews.map((item) => item.sourceUrl));
   const feedNews = (Array.isArray(newsItems) ? newsItems : []).filter((item) => {
-    if (agronegocioUrls.has(item.sourceUrl)) return false;
     if (editionBulletinPattern.test(item.title || "")) return false;
 
     const normalizedTitle = (item.title || "")
@@ -325,26 +283,14 @@ export default function Home() {
 
   const latestNewsItems = feedNews.slice(0, 6);
   const latestNewsUrls = new Set(latestNewsItems.map((item) => item.sourceUrl));
-  const remainingNews = feedNews.filter(
-    (item) => !latestNewsUrls.has(item.sourceUrl),
+  const integralNewsItems = feedNews
+    .filter((item) =>
+      matchesNewsCategory(item, "Na Íntegra", "Vermelho - Movimentos"),
+    )
+    .slice(0, 4);
+  const agroCategoryNews = feedNews.filter((item) =>
+    matchesNewsCategory(item, "Agronegócio", "Brasil 247 - Agro"),
   );
-  const noPontoMatches = remainingNews.filter((item) => {
-    const searchableText = [
-      item.title,
-      item.sourceUrl,
-      ...(item.categories || []),
-    ]
-      .join(" ")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[-_]+/g, " ")
-      .toLowerCase();
-
-    return searchableText.includes("no ponto");
-  });
-  const integralNewsItems = (
-    noPontoMatches.length > 0 ? noPontoMatches : remainingNews
-  ).slice(0, 4);
   const displayedNewsUrls = new Set(
     [...latestNewsItems, ...integralNewsItems].map((item) => item.sourceUrl),
   );
@@ -865,7 +811,7 @@ async function openNews(item: NewsItem) {
             </h2>
           </div>
 
-          {agroNewsLoading ? (
+          {newsLoading ? (
             <div className="space-y-4" role="status" aria-label="Carregando notícias do Agronegócio">
               {Array.from({ length: 4 }, (_, index) => (
                 <div key={index} className="flex flex-col gap-4 rounded-[20px] border border-border p-4 sm:flex-row">
@@ -878,17 +824,17 @@ async function openNews(item: NewsItem) {
                 </div>
               ))}
             </div>
-          ) : agroNewsError ? (
+          ) : newsError ? (
             <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
               Não foi possível carregar as notícias desta editoria no momento.
             </p>
-          ) : agroNews.length === 0 ? (
+          ) : agroCategoryNews.length === 0 ? (
             <p className="rounded-[20px] border border-border p-6 text-sm text-muted-foreground">
               Nenhuma notícia disponível nesta editoria no momento.
             </p>
           ) : (
             <div className="space-y-4">
-              {agroNews.slice(0, 8).map((item) => (
+              {agroCategoryNews.slice(0, 8).map((item) => (
                 <button
                   key={item.sourceUrl}
                   type="button"
