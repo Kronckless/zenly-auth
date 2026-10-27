@@ -92,7 +92,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "login" ? "default" : "ghost"}
-            className={`h-12 rounded-xl transition-all duration-200 ${mode === "login" ? "bg-white text-[#C6283D] shadow-sm" : "text-muted-foreground hover:bg-white/70 hover:text-foreground"}`}
+            className={`h-12 rounded-xl bg-[#C6283D] text-white transition-all duration-200 hover:bg-[#A91F32] ${mode === "login" ? "shadow-sm" : "opacity-80"}`}
             onClick={() => {
               setMode("login");
               setFeedback("");
@@ -103,7 +103,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "signup" ? "default" : "ghost"}
-            className={`h-12 rounded-xl transition-all duration-200 ${mode === "signup" ? "bg-white text-[#C6283D] shadow-sm" : "text-muted-foreground hover:bg-white/70 hover:text-foreground"}`}
+            className={`h-12 rounded-xl bg-[#C6283D] text-white transition-all duration-200 hover:bg-[#A91F32] ${mode === "signup" ? "shadow-sm" : "opacity-80"}`}
             onClick={() => {
               setMode("signup");
               setFeedback("");
