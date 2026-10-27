@@ -62,7 +62,7 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-[#681F2C] p-4 sm:p-6">
+    <main className="flex min-h-screen w-full items-center justify-center bg-[#F8F9FA] p-4 sm:p-6">
       <section className="w-full max-w-md rounded-3xl border border-white/20 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
         <div className="mb-8 flex justify-center">
           <svg
