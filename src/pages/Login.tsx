@@ -31,7 +31,7 @@ export default function Login() {
     try {
       if (mode === "signup") {
         const fullName = String(formData.get("fullName") || "").trim();
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: { data: { full_name: fullName } },
@@ -39,6 +39,11 @@ export default function Login() {
 
         if (error) {
           setFeedback("Não foi possível concluir a solicitação. Confira os dados e tente novamente.");
+          return;
+        }
+
+        if (data.session) {
+          navigate("/home");
           return;
         }
 
