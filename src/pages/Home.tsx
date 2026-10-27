@@ -493,7 +493,7 @@ async function openNews(item: NewsItem) {
                 Últimas notícias
               </p>
               <h2 className="mt-2 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                O dia em 24 histórias
+                O dia em 24 horas
               </h2>
             </div>
             <Button variant="ghost" className="hidden gap-2 sm:flex">
