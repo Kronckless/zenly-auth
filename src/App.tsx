@@ -10,10 +10,30 @@ import {
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "./lib/supabase";
 
+function isZenlyEditorPreview() {
+  if (typeof window === "undefined") return false;
+  if (window.location.hostname === "poderdaconsciencia.zenly.cloud") return false;
+  if (window.self === window.top) return false;
+
+  const ancestorOrigins = Array.from(window.location.ancestorOrigins ?? []);
+  return ancestorOrigins.some((origin) => {
+    try {
+      const hostname = new URL(origin).hostname;
+      return hostname === "zenly.cloud" || hostname.endsWith(".zenly.cloud");
+    } catch {
+      return false;
+    }
+  });
+}
+
+function canSkipAuth() {
+  return !import.meta.env.PROD || isZenlyEditorPreview();
+}
+
 function RequireAuth({ session }: { session: Session | null | undefined }) {
   const location = useLocation();
 
-  if (!import.meta.env.PROD) {
+  if (canSkipAuth()) {
     return <Outlet />;
   }
 
@@ -29,7 +49,7 @@ function RequireAuth({ session }: { session: Session | null | undefined }) {
 }
 
 function GuestOnly({ session }: { session: Session | null | undefined }) {
-  if (!import.meta.env.PROD) {
+  if (canSkipAuth()) {
     return <Outlet />;
   }
 
