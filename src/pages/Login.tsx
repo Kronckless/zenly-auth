@@ -1,6 +1,6 @@
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LockKeyhole, Mail, Star, User } from "lucide-react";
+import { Eye, EyeOff, LockKeyhole, Mail, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,9 +65,16 @@ export default function Login() {
     <main className="flex min-h-screen w-full items-center justify-center bg-[#681F2C] p-4 sm:p-6">
       <section className="w-full max-w-md rounded-3xl border border-white/20 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
         <div className="mb-8 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#C6283D] text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md">
-            <Star className="h-6 w-6 fill-current text-white" />
-          </div>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 100 100"
+            className="h-11 w-11 text-[#C6283D]"
+          >
+            <polygon
+              fill="currentColor"
+              points="50,4 61,36 95,36 68,56 78,89 50,69 22,89 32,56 5,36 39,36"
+            />
+          </svg>
         </div>
 
         <div className="text-center">
