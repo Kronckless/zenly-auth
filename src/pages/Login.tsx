@@ -65,8 +65,8 @@ export default function Login() {
     <main className="flex min-h-screen w-full items-center justify-center bg-[#681F2C] p-4 sm:p-6">
       <section className="w-full max-w-md rounded-3xl border border-white/20 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
         <div className="mb-8 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FCEBED] text-[#C6283D] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#F8DDE1] hover:shadow-md">
-            <Star className="h-6 w-6 fill-current text-[#C6283D]" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#C6283D] text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md">
+            <Star className="h-6 w-6 fill-current text-white" />
           </div>
         </div>
 
