@@ -13,6 +13,10 @@ import { supabase } from "./lib/supabase";
 function RequireAuth({ session }: { session: Session | null | undefined }) {
   const location = useLocation();
 
+  if (!import.meta.env.PROD) {
+    return <Outlet />;
+  }
+
   if (session === undefined) {
     return <div className="min-h-screen bg-background" role="status" aria-label="Verificando acesso" />;
   }
@@ -25,6 +29,10 @@ function RequireAuth({ session }: { session: Session | null | undefined }) {
 }
 
 function GuestOnly({ session }: { session: Session | null | undefined }) {
+  if (!import.meta.env.PROD) {
+    return <Outlet />;
+  }
+
   if (session === undefined) {
     return <div className="min-h-screen bg-background" role="status" aria-label="Verificando acesso" />;
   }
