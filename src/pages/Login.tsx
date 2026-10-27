@@ -65,7 +65,7 @@ export default function Login() {
     <main className="flex min-h-screen items-center justify-center bg-muted/30 px-4 py-10 sm:px-6">
       <section className="w-full max-w-md rounded-2xl border border-border/70 bg-card p-6 shadow-xl shadow-foreground/5 sm:p-8">
         <div className="mb-8 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-sm">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#e11d48] text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#be123c] hover:shadow-md">
             <ShieldCheck className="h-6 w-6 text-primary-foreground" />
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "login" ? "default" : "ghost"}
-            className="transition-all duration-200"
+            className={`transition-all duration-200 ${mode === "login" ? "bg-[#e11d48] text-white hover:bg-[#be123c]" : ""}`}
             onClick={() => {
               setMode("login");
               setFeedback("");
@@ -96,7 +96,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "signup" ? "default" : "ghost"}
-            className="transition-all duration-200"
+            className={`transition-all duration-200 ${mode === "signup" ? "bg-[#e11d48] text-white hover:bg-[#be123c]" : ""}`}
             onClick={() => {
               setMode("signup");
               setFeedback("");
@@ -128,7 +128,7 @@ export default function Login() {
                 type="email"
                 autoComplete="email"
                 placeholder="voce@empresa.com"
-                className="pl-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
+                className="pl-9 transition-shadow focus-visible:border-[#e11d48] focus-visible:ring-2 focus-visible:ring-[#e11d48]/30"
                 required
               />
             </div>
@@ -153,7 +153,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 placeholder="Digite sua senha"
-                className="px-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
+                className="px-9 transition-shadow focus-visible:border-[#e11d48] focus-visible:ring-2 focus-visible:ring-[#e11d48]/30"
                 required
               />
               <button
@@ -183,7 +183,7 @@ export default function Login() {
 
           <Button
             type="submit"
-            className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.99]"
+            className="w-full bg-[#e11d48] text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#be123c] hover:shadow-md active:translate-y-0 active:scale-[0.99]"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Aguarde…" : "Entrar"}
@@ -201,7 +201,7 @@ export default function Login() {
                   type="text"
                   autoComplete="name"
                   placeholder="Seu nome"
-                  className="pl-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
+                  className="pl-9 transition-shadow focus-visible:border-[#e11d48] focus-visible:ring-2 focus-visible:ring-[#e11d48]/30"
                   required
                   maxLength={100}
                 />
@@ -217,7 +217,7 @@ export default function Login() {
                   type="email"
                   autoComplete="email"
                   placeholder="voce@exemplo.com"
-                  className="pl-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
+                  className="pl-9 transition-shadow focus-visible:border-[#e11d48] focus-visible:ring-2 focus-visible:ring-[#e11d48]/30"
                   required
                 />
               </div>
@@ -232,7 +232,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   placeholder="Mínimo de 8 caracteres"
-                  className="px-9 transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
+                  className="px-9 transition-shadow focus-visible:border-[#e11d48] focus-visible:ring-2 focus-visible:ring-[#e11d48]/30"
                   minLength={8}
                   required
                 />
@@ -248,7 +248,7 @@ export default function Login() {
             </div>
             <Button
               type="submit"
-              className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.99]"
+              className="w-full bg-[#e11d48] text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#be123c] hover:shadow-md active:translate-y-0 active:scale-[0.99]"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Aguarde…" : "Criar conta"}
