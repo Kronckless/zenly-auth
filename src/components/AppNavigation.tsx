@@ -77,7 +77,7 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.25rem)] z-50 flex h-14 rounded-full border border-border bg-background shadow-lg sm:hidden"
+        className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-50 flex h-16 rounded-full border border-border bg-background px-1.5 shadow-lg sm:hidden"
       >
         {[tabs[2], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => (
           <NavLink
@@ -85,7 +85,7 @@ export default function AppNavigation() {
             to={to}
             end={to === "/"}
             className={({ isActive }) =>
-              `relative flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[10px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
+              `relative flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[10px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
                 isActive ? "font-semibold text-destructive" : "text-muted-foreground"
               }`
             }

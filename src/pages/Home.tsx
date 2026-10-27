@@ -433,7 +433,7 @@ async function openNews(item: NewsItem) {
   }
 
   return (
-    <main className="min-h-screen bg-background pb-16 sm:pb-0">
+    <main className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] max-sm:overflow-x-clip sm:pb-0">
       <AppNavigation />
 
 

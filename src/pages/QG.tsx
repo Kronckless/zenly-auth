@@ -161,7 +161,7 @@ export default function QG() {
   }, [retryKey]);
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] pb-16 sm:pb-0">
+    <main className="min-h-screen bg-[#F8FAFC] pb-[calc(5rem+env(safe-area-inset-bottom))] max-sm:overflow-x-clip sm:pb-0">
       <AppNavigation />
 
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-12">
