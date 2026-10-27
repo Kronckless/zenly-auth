@@ -62,11 +62,11 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#681F2C] px-4 py-10 sm:px-6">
-      <section className="w-full max-w-md rounded-[2rem] border border-white/20 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
+    <main className="flex min-h-screen w-full items-center justify-center bg-[#681F2C] p-4 sm:p-6">
+      <section className="w-full max-w-md rounded-3xl border border-white/20 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
         <div className="mb-8 flex justify-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#C6283D] text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md">
-            <Star className="h-6 w-6 fill-current text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FCEBED] text-[#C6283D] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#F8DDE1] hover:shadow-md">
+            <Star className="h-6 w-6 fill-current text-[#C6283D]" />
           </div>
         </div>
 
@@ -81,11 +81,11 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-2 rounded-xl bg-[#F7F3F4] p-1">
+        <div className="mt-8 grid grid-cols-2 gap-1 rounded-2xl bg-[#F1F1F3] p-1">
           <Button
             type="button"
             variant={mode === "login" ? "default" : "ghost"}
-            className={`rounded-lg transition-all duration-200 ${mode === "login" ? "bg-[#C6283D] text-white shadow-sm hover:bg-[#A91F32]" : "text-muted-foreground hover:bg-white hover:text-foreground"}`}
+            className={`h-12 rounded-xl transition-all duration-200 ${mode === "login" ? "bg-white text-[#C6283D] shadow-sm" : "text-muted-foreground hover:bg-white/70 hover:text-foreground"}`}
             onClick={() => {
               setMode("login");
               setFeedback("");
@@ -96,7 +96,7 @@ export default function Login() {
           <Button
             type="button"
             variant={mode === "signup" ? "default" : "ghost"}
-            className={`rounded-lg transition-all duration-200 ${mode === "signup" ? "bg-[#C6283D] text-white shadow-sm hover:bg-[#A91F32]" : "text-muted-foreground hover:bg-white hover:text-foreground"}`}
+            className={`h-12 rounded-xl transition-all duration-200 ${mode === "signup" ? "bg-white text-[#C6283D] shadow-sm" : "text-muted-foreground hover:bg-white/70 hover:text-foreground"}`}
             onClick={() => {
               setMode("signup");
               setFeedback("");
@@ -108,7 +108,7 @@ export default function Login() {
 
         <div
           role="note"
-          className="mt-5 rounded-xl border border-[#EBD0D4] bg-[#FFF8F8] px-4 py-3 text-sm leading-relaxed text-foreground"
+          className="mt-5 rounded-2xl border border-[#F0DADD] bg-[#FFF7F8] px-4 py-4 text-sm leading-relaxed text-foreground"
         >
           <p className="font-semibold">⚠️ IMPORTANTE:</p>
           <p className="mt-1 font-medium text-foreground">
@@ -128,7 +128,7 @@ export default function Login() {
                 type="email"
                 autoComplete="email"
                 placeholder="voce@empresa.com"
-                className="rounded-xl border-[#E5DFE1] bg-white pl-9 transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
+                className="h-14 rounded-2xl border-[#E5DFE1] bg-white pl-10 text-base transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
                 required
               />
             </div>
@@ -153,7 +153,7 @@ export default function Login() {
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
                 placeholder="Digite sua senha"
-                className="rounded-xl border-[#E5DFE1] bg-white px-9 transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
+                className="h-14 rounded-2xl border-[#E5DFE1] bg-white px-10 text-base transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
                 required
               />
               <button
@@ -183,7 +183,7 @@ export default function Login() {
 
           <Button
             type="submit"
-            className="w-full rounded-xl bg-[#C6283D] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md active:translate-y-0 active:scale-[0.99]"
+            className="h-14 w-full rounded-2xl bg-[#C6283D] text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
             disabled={isSubmitting}
           >
             {isSubmitting ? "Aguarde…" : "Entrar"}
@@ -201,7 +201,7 @@ export default function Login() {
                   type="text"
                   autoComplete="name"
                   placeholder="Seu nome"
-                  className="rounded-xl border-[#E5DFE1] bg-white pl-9 transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
+                  className="h-14 rounded-2xl border-[#E5DFE1] bg-white pl-10 text-base transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
                   required
                   maxLength={100}
                 />
@@ -217,7 +217,7 @@ export default function Login() {
                   type="email"
                   autoComplete="email"
                   placeholder="voce@exemplo.com"
-                  className="rounded-xl border-[#E5DFE1] bg-white pl-9 transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
+                  className="h-14 rounded-2xl border-[#E5DFE1] bg-white pl-10 text-base transition-shadow focus-visible:border-[#C6283D] focus-visible:ring-2 focus-visible:ring-[#C6283D]/25"
                   required
                 />
               </div>
@@ -248,7 +248,7 @@ export default function Login() {
             </div>
             <Button
               type="submit"
-              className="w-full rounded-xl bg-[#C6283D] font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md active:translate-y-0 active:scale-[0.99]"
+              className="h-14 w-full rounded-2xl bg-[#C6283D] text-base font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A91F32] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Aguarde…" : "Criar conta"}
