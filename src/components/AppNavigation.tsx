@@ -13,15 +13,6 @@ const tabs = [
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [viewportWidth, setViewportWidth] = useState(
-    () => (typeof window === "undefined" ? 1000 : window.innerWidth),
-  );
-
-  useEffect(() => {
-    const updateViewportWidth = () => setViewportWidth(window.innerWidth);
-    window.addEventListener("resize", updateViewportWidth);
-    return () => window.removeEventListener("resize", updateViewportWidth);
-  }, []);
 
   useEffect(() => {
     function updateUnreadCount() {
@@ -46,22 +37,6 @@ export default function AppNavigation() {
   }, []);
 
   const unreadLabel = unreadCount > 99 ? "+99" : String(unreadCount);
-  const location = useLocation();
-  const mobileTabs = [tabs[2], tabs[3], tabs[0], tabs[1]];
-  const activeMobileIndex = mobileTabs.findIndex(
-    ({ to }) =>
-      location.pathname === to ||
-      (to !== "/" && location.pathname.startsWith(`${to}/`)),
-  );
-  const waveIndex = activeMobileIndex >= 0 ? activeMobileIndex : 2;
-  const waveCenter = ((waveIndex + 0.5) / mobileTabs.length) * viewportWidth;
-  const waveHalfWidth = Math.min(52, waveCenter, viewportWidth - waveCenter);
-  const waveRadius = 22;
-  const waveCenterY = 12;
-  const waveRadiusY = 22;
-  const waveSide = Math.max(0, waveHalfWidth - waveRadius);
-  const wavePath = `M -2 16 H ${waveCenter - waveHalfWidth} C ${waveCenter - waveHalfWidth + waveSide * 0.35} 16 ${waveCenter - waveRadius} ${waveCenterY + 8} ${waveCenter - waveRadius} ${waveCenterY} A ${waveRadius} ${waveRadiusY} 0 0 0 ${waveCenter + waveRadius} ${waveCenterY} C ${waveCenter + waveRadius} ${waveCenterY + 8} ${waveCenter + waveHalfWidth - waveSide * 0.35} 16 ${waveCenter + waveHalfWidth} 16 H ${viewportWidth + 2}`;
-  const waveBorderPath = `M ${waveCenter - waveRadius} ${waveCenterY} C ${waveCenter - waveRadius + 7} ${waveCenterY} ${waveCenter - 12} ${waveCenterY - waveRadiusY} ${waveCenter} ${waveCenterY - waveRadiusY} C ${waveCenter + 12} ${waveCenterY - waveRadiusY} ${waveCenter + waveRadius - 7} ${waveCenterY} ${waveCenter + waveRadius} ${waveCenterY}`;
 
   return (
     <>
@@ -102,51 +77,32 @@ export default function AppNavigation() {
 
       <nav
         aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 z-50 flex h-[calc(4rem+env(safe-area-inset-bottom))] bg-transparent pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_16px_-12px_rgba(0,0,0,0.25)] sm:hidden"
+        className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.25rem)] z-50 flex h-14 rounded-full border border-border bg-background shadow-lg sm:hidden"
       >
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 h-full w-full"
-          preserveAspectRatio="none"
-          viewBox={`0 -28 ${viewportWidth} 92`}
-        >
-          <path d={`${wavePath} V 64 H 0 Z`} fill="var(--background)" />
-
-        </svg>
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute top-[-10px] z-10 size-11 -translate-x-1/2 rounded-full shadow-lg transition-[left] duration-[320ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-          style={{
-            left: `${((waveIndex + 0.5) / mobileTabs.length) * 100}%`,
-            backgroundColor: "#DC2626",
-          }}
-        />
-        {mobileTabs.map(({ label, to, Icon }) => (
+        {[tabs[2], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => (
           <NavLink
             key={to}
             to={to}
             end={to === "/"}
             className={({ isActive }) =>
-              `relative z-20 flex min-h-16 min-w-0 flex-1 flex-col items-center justify-center gap-1 px-1 py-1 text-[11px] font-medium transition-colors duration-200 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-destructive ${
-                isActive ? "font-semibold text-[#DC2626]" : "text-muted-foreground"
+              `relative flex min-h-14 min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-full px-1 text-[10px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring ${
+                isActive ? "font-semibold text-destructive" : "text-muted-foreground"
               }`
             }
           >
             {({ isActive }) => (
               <>
                 <span
-                  className={`relative inline-flex items-center justify-center rounded-full transition-all duration-200 ${
-                    isActive
-                      ? "-mt-5 size-11 text-destructive-foreground"
-                      : "size-7"
+                  className={`relative inline-flex size-7 items-center justify-center rounded-full transition-colors ${
+                    isActive ? "bg-destructive text-destructive-foreground" : ""
                   }`}
                 >
-                  <Icon className={isActive ? "h-6 w-6" : "h-5 w-5"} />
+                  <Icon className="size-[18px]" />
                 </span>
                 {to === "/comunidade" && unreadCount > 0 && (
                   <span
                     aria-label={`${unreadCount} mensagens não lidas`}
-                    className="absolute right-1/4 top-2 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
+                    className="absolute right-1/4 top-1 min-w-[18px] rounded-full bg-destructive px-1.5 py-0.5 text-center text-[10px] font-bold leading-none text-destructive-foreground"
                   >
                     {unreadLabel}
                   </span>
