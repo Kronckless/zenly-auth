@@ -498,14 +498,7 @@ async function openNews(item: NewsItem) {
                 O dia em 24 horas
               </h2>
             </div>
-            <Button
-              type="button"
-              variant="ghost"
-              className="flex shrink-0 gap-1 px-2 text-xs sm:gap-2 sm:px-4 sm:text-sm"
-              onClick={() => navigate("/todas-noticias")}
-            >
-              Ver todas <ArrowRight className="h-4 w-4" />
-            </Button>
+
           </div>
 
           {newsLoading ? (
@@ -602,9 +595,9 @@ async function openNews(item: NewsItem) {
               <Button
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
-                className="min-h-14 w-full translate-y-0 rounded-xl border-b-8 border-primary bg-gradient-to-r from-primary to-cta px-8 py-4 font-black uppercase tracking-wide text-primary-foreground shadow-xl transition-all active:translate-y-1 active:border-b-0 sm:w-auto"
+                className="w-full py-4 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-base rounded-xl border-b-4 border-amber-800 shadow-lg active:translate-y-1 active:border-b-0 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all"
               >
-                Ver todas <ArrowRight className="ml-2 size-4" />
+                VER TODAS <ArrowRight className="size-4" />
               </Button>
             </div>
           )}
