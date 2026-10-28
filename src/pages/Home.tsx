@@ -186,19 +186,6 @@ export default function Home() {
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
   const [showLongAllNewsLabel, setShowLongAllNewsLabel] = useState(false);
   const [allNewsLabelVisible, setAllNewsLabelVisible] = useState(true);
-  const [allNewsButtonVisible, setAllNewsButtonVisible] = useState(false);
-  const allNewsButtonRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setAllNewsButtonVisible(entry.isIntersecting),
-      { threshold: 0.25 },
-    );
-    const buttonContainer = allNewsButtonRef.current;
-    if (buttonContainer) observer.observe(buttonContainer);
-
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     let labelTimeout: number | undefined;
@@ -207,7 +194,7 @@ export default function Home() {
       labelTimeout = window.setTimeout(() => {
         setShowLongAllNewsLabel((current) => !current);
         setAllNewsLabelVisible(true);
-      }, 180);
+      }, 500);
     }, 6000);
 
     return () => {
@@ -623,16 +610,13 @@ async function openNews(item: NewsItem) {
           )}
           {!newsLoading && !newsError && feedNews.length > 0 && (
             <div
-              ref={allNewsButtonRef}
-              className={`mt-8 flex justify-center transition-transform duration-700 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
-                allNewsButtonVisible ? "scale-100" : "scale-[0.12]"
-              }`}
+              className="mt-8 flex w-full justify-center"
             >
               <Button
                 key="all-news-button"
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
-                className="w-full max-w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] relative overflow-hidden box-border"
+                className="w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between cursor-pointer transition-all relative overflow-hidden box-border"
               >
                 <svg
                   aria-hidden="true"
@@ -660,7 +644,7 @@ async function openNews(item: NewsItem) {
                 </svg>
                 <span
                   aria-live="polite"
-                  className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-200 ${
+                  className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-500 ${
                     allNewsLabelVisible ? "opacity-100" : "opacity-0"
                   }`}
                 >
