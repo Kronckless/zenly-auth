@@ -496,7 +496,10 @@ async function openNews(item: NewsItem) {
                 O dia em 24 horas
               </h2>
             </div>
-            <Button variant="ghost" className="hidden gap-2 sm:flex">
+            <Button
+              variant="ghost"
+              className="flex shrink-0 gap-1 px-2 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+            >
               Ver todas <ArrowRight className="h-4 w-4" />
             </Button>
           </div>
