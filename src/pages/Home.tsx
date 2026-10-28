@@ -184,6 +184,37 @@ export default function Home() {
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyPoint[]>([]);
   const [fallbackLoading, setFallbackLoading] = useState(false);
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
+  const [showLongAllNewsLabel, setShowLongAllNewsLabel] = useState(false);
+  const [allNewsLabelVisible, setAllNewsLabelVisible] = useState(true);
+  const [allNewsButtonVisible, setAllNewsButtonVisible] = useState(false);
+  const allNewsButtonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setAllNewsButtonVisible(entry.isIntersecting),
+      { threshold: 0.25 },
+    );
+    const buttonContainer = allNewsButtonRef.current;
+    if (buttonContainer) observer.observe(buttonContainer);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    let labelTimeout: number | undefined;
+    const labelInterval = window.setInterval(() => {
+      setAllNewsLabelVisible(false);
+      labelTimeout = window.setTimeout(() => {
+        setShowLongAllNewsLabel((current) => !current);
+        setAllNewsLabelVisible(true);
+      }, 180);
+    }, 6000);
+
+    return () => {
+      window.clearInterval(labelInterval);
+      if (labelTimeout !== undefined) window.clearTimeout(labelTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     let isCurrent = true;
@@ -591,15 +622,54 @@ async function openNews(item: NewsItem) {
             </div>
           )}
           {!newsLoading && !newsError && feedNews.length > 0 && (
-            <div className="mt-8 flex justify-center">
+            <div
+              ref={allNewsButtonRef}
+              className={`mt-8 flex justify-center transition-transform duration-700 [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)] ${
+                allNewsButtonVisible ? "scale-100" : "scale-[0.12]"
+              }`}
+            >
               <Button
+                key="all-news-button"
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
                 className="w-full max-w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] relative overflow-hidden box-border"
               >
-                <span className="pl-2 font-bold text-white">Ver todas</span>
-                <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0">
-                  <ArrowRight className="size-4" />
+                <svg
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  viewBox="0 0 400 56"
+                  preserveAspectRatio="none"
+                >
+                  <defs>
+                    <linearGradient id="all-news-button-shine" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="white" stopOpacity="0" />
+                      <stop offset="50%" stopColor="white" stopOpacity="0.38" />
+                      <stop offset="100%" stopColor="white" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <g transform="rotate(20 200 28)">
+                    <rect x="-120" y="-100" width="70" height="250" fill="url(#all-news-button-shine)">
+                      <animate
+                        attributeName="x"
+                        values="-120;520"
+                        dur="6s"
+                        repeatCount="indefinite"
+                      />
+                    </rect>
+                  </g>
+                </svg>
+                <span
+                  aria-live="polite"
+                  className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-200 ${
+                    allNewsLabelVisible ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  {showLongAllNewsLabel ? "Ver todas as notícias de hoje" : "Ver todas"}
+                </span>
+                <span className="relative z-10">
+                  <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0">
+                    <ArrowRight className="size-4" />
+                  </span>
                 </span>
               </Button>
             </div>
