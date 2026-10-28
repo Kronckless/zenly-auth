@@ -595,9 +595,9 @@ async function openNews(item: NewsItem) {
               <Button
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
-                className="w-full py-4 px-6 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-base rounded-xl border-b-4 border-amber-800 shadow-lg active:translate-y-1 active:border-b-0 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer transition-all"
+                className="w-full py-3.5 px-6 bg-gradient-to-b from-amber-400 to-amber-500 text-slate-900 font-extrabold text-base rounded-2xl border-b-4 border-amber-700 shadow-md active:translate-y-1 active:border-b-0 flex items-center justify-center gap-2 cursor-pointer transition-all normal-case"
               >
-                VER TODAS <ArrowRight className="size-4" />
+                Ver todas <ArrowRight className="size-4" />
               </Button>
             </div>
           )}
