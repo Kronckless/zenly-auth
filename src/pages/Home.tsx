@@ -486,9 +486,7 @@ async function openNews(item: NewsItem) {
               <h1 className="max-w-3xl font-display text-2xl font-bold leading-tight sm:text-3xl md:text-5xl">
                 {story.title}
               </h1>
-              <p className="mt-4 text-xs text-background/60">
-                Foto: {story.credit} / Pexels
-              </p>
+
             </div>
             <div className="absolute bottom-4 right-4 flex gap-1.5 sm:bottom-6 sm:right-6">
               {carouselStories.map((item, index) => (
