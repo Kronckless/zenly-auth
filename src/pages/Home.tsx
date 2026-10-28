@@ -595,9 +595,9 @@ async function openNews(item: NewsItem) {
               <Button
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
-                className="w-full h-14 px-5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] relative text-white font-bold text-base normal-case"
+                className="w-full h-14 px-8 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between cursor-pointer transition-all active:scale-[0.98] relative text-white font-bold text-base normal-case"
               >
-                <span>Ver todas</span>
+                <span className="px-4">Ver todas</span>
                 <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0">
                   <ArrowRight className="size-4" />
                 </span>
