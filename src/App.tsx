@@ -129,6 +129,7 @@ function GuestOnly() {
 }
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import AllNews from "./pages/AllNews";
 import Community from "./pages/Community";
 import QG from "./pages/QG";
 import Explore from "./pages/Explore";
@@ -144,6 +145,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/todas-noticias" element={<AllNews />} />
             <Route path="/comunidade" element={<Community />} />
             <Route path="/qg" element={<QG />} />
             <Route path="/explorar" element={<Explore />} />

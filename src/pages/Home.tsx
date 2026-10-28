@@ -497,8 +497,12 @@ async function openNews(item: NewsItem) {
               </h2>
             </div>
             <Button
+              type="button"
               variant="ghost"
               className="flex shrink-0 gap-1 px-2 text-xs sm:gap-2 sm:px-4 sm:text-sm"
+              onClick={() => {
+                window.location.href = "/todas-noticias";
+              }}
             >
               Ver todas <ArrowRight className="h-4 w-4" />
             </Button>
