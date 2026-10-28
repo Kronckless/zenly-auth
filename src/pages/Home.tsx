@@ -613,22 +613,27 @@ async function openNews(item: NewsItem) {
           )}
           {!newsLoading && !newsError && feedNews.length > 0 && (
             <div className="mt-8 flex justify-center">
-              <div className="mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-full bg-gradient-to-b from-orange-200/80 via-orange-300/40 to-orange-400/20 p-1.5 shadow-[0_8px_20px_rgba(249,115,22,0.25),inset_0_1px_2px_rgba(255,255,255,0.8)]">
+              <div className="mx-auto w-full max-w-[340px] rounded-full bg-gradient-to-b from-orange-200/80 via-orange-300/40 to-orange-400/20 p-1.5 shadow-[0_8px_20px_rgba(249,115,22,0.25),inset_0_1px_2px_rgba(255,255,255,0.8)] sm:max-w-[380px]">
                 <Button
                   key="all-news-button"
                   type="button"
                   onClick={() => navigate("/todas-noticias")}
-                  className={`flex h-14 w-fit max-w-full items-center justify-between gap-2 rounded-full border-2 px-4 text-sm font-bold text-white transition-all duration-500 sm:px-6 sm:text-base ${
+                  className={`flex h-14 w-full items-center justify-between gap-2 rounded-full border-2 px-6 text-sm font-bold text-white transition-all duration-500 sm:text-base ${
                     comDestaque
                       ? "border-orange-300 bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 shadow-orange-500/50 shadow-xl"
-                      : "border-orange-400 bg-gradient-to-b from-orange-500 via-orange-600 to-amber-700"
+                      : "border-orange-400 bg-gradient-to-b from-orange-500 via-orange-600 to-amber-700 shadow-lg"
                   }`}
                 >
-                  <span
-                    aria-live="polite"
-                    className="whitespace-nowrap pl-2 transition-opacity duration-300"
-                  >
-                    {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
+                  <span className="relative flex min-w-0 flex-1 items-center justify-center">
+                    <span className="invisible whitespace-nowrap pl-2">
+                      Ver todas as notícias de hoje
+                    </span>
+                    <span
+                      aria-live="polite"
+                      className="absolute inset-0 flex items-center justify-center whitespace-nowrap pl-2 transition-opacity duration-300"
+                    >
+                      {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
+                    </span>
                   </span>
                   <span className="ml-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-white to-slate-100 text-orange-600 shadow-[0_3px_8px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,1)]">
                     <ArrowRight className="size-4" />
