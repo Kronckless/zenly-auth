@@ -472,7 +472,7 @@ async function openNews(item: NewsItem) {
             </span>
           </div>
 
-          <div className="relative overflow-hidden rounded-2xl bg-foreground">
+          <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden rounded-none bg-foreground">
             <img
               src={story.image}
               alt={story.title}
