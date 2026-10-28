@@ -105,7 +105,7 @@ export default function AllNews() {
           <Button
             type="button"
             variant="outline"
-            className="min-h-11 shrink-0 gap-2 px-3"
+            className="min-h-11 shrink-0 gap-2 border-orange-400 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 px-3 text-white shadow-lg hover:border-orange-300 hover:from-orange-400 hover:via-amber-400 hover:to-orange-500 hover:text-white"
             onClick={() => navigate(-1)}
           >
             <ArrowLeft className="size-4" />
