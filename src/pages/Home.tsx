@@ -185,24 +185,24 @@ export default function Home() {
   const [fallbackLoading, setFallbackLoading] = useState(false);
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
   const [textoIndex, setTextoIndex] = useState(0);
-  const [comBrilho, setComBrilho] = useState(false);
+  const [comDestaque, setComDestaque] = useState(false);
   const [allNewsButtonVisible, setAllNewsButtonVisible] = useState(false);
   const allNewsButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let shineTimeout: number | undefined;
+    let destaqueTimeout: number | undefined;
 
     const labelInterval = window.setInterval(() => {
-      setComBrilho(true);
+      setComDestaque(true);
       setTextoIndex((current) => (current === 0 ? 1 : 0));
 
-      if (shineTimeout !== undefined) window.clearTimeout(shineTimeout);
-      shineTimeout = window.setTimeout(() => setComBrilho(false), 1000);
+      if (destaqueTimeout !== undefined) window.clearTimeout(destaqueTimeout);
+      destaqueTimeout = window.setTimeout(() => setComDestaque(false), 900);
     }, 6000);
 
     return () => {
       window.clearInterval(labelInterval);
-      if (shineTimeout !== undefined) window.clearTimeout(shineTimeout);
+      if (destaqueTimeout !== undefined) window.clearTimeout(destaqueTimeout);
     };
   }, []);
 
@@ -651,7 +651,7 @@ async function openNews(item: NewsItem) {
                 <span
                   aria-live="polite"
                   className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-300 ${
-                    comBrilho ? "opacity-90" : "opacity-100"
+                    comDestaque ? "opacity-90" : "opacity-100"
                   }`}
                 >
                   {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
