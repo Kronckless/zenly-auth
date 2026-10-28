@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
 import {
   Area,
@@ -169,6 +170,7 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
 }
 
 export default function Home() {
+  const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
@@ -500,9 +502,7 @@ async function openNews(item: NewsItem) {
               type="button"
               variant="ghost"
               className="flex shrink-0 gap-1 px-2 text-xs sm:gap-2 sm:px-4 sm:text-sm"
-              onClick={() => {
-                window.location.href = "/todas-noticias";
-              }}
+              onClick={() => navigate("/todas-noticias")}
             >
               Ver todas <ArrowRight className="h-4 w-4" />
             </Button>
