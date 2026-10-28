@@ -631,11 +631,7 @@ async function openNews(item: NewsItem) {
           {!newsLoading && !newsError && feedNews.length > 0 && (
             <div
               ref={allNewsButtonRef}
-              className={`mt-8 flex w-full justify-center transition-all duration-700 ${
-                allNewsButtonVisible
-                  ? "translate-y-0 opacity-100"
-                  : "translate-y-3 opacity-0"
-              }`}
+              className="mt-8 flex w-full justify-center opacity-100"
             >
               <Button
                 key="all-news-button"
@@ -643,10 +639,12 @@ async function openNews(item: NewsItem) {
                 onClick={() => navigate("/todas-noticias")}
                 className="w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-transform active:scale-[0.98] box-border"
               >
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute top-0 -left-full z-0 h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/35 to-transparent animate-button-shine"
-                />
+                <div className="absolute inset-0 z-0 h-full w-full overflow-hidden rounded-full pointer-events-none">
+                  <div
+                    aria-hidden="true"
+                    className="absolute top-0 -left-[100%] h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-button-shine"
+                  />
+                </div>
                 <span
                   aria-live="polite"
                   className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-500 ${
