@@ -97,6 +97,7 @@ function hideSourceTerms(value = "") {
   return value
     .replace(/\brevista\s+oeste\b/gi, "a publicação")
     .replace(/\b(?:revista|oeste)\b/gi, "a publicação")
+    .replace(/&#8211;|&ndash;/gi, "–")
     .replace(/[ \t]+/g, " ")
     .replace(/ *([,.;:!?])/g, "$1")
     .trim();
@@ -611,29 +612,29 @@ async function openNews(item: NewsItem) {
             </div>
           )}
           {!newsLoading && !newsError && feedNews.length > 0 && (
-            <div className="mt-8 flex w-full justify-center">
-              <Button
-                key="all-news-button"
-                type="button"
-                onClick={() => navigate("/todas-noticias")}
-                className={`w-full h-14 px-6 rounded-full border-2 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-all duration-500 opacity-100 z-10 ${
-                  comDestaque
-                    ? "bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 border-orange-300 shadow-orange-500/50 shadow-xl"
-                    : "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 border-orange-400 shadow-lg"
-                }`}
-              >
-                <span
-                  aria-live="polite"
-                  className={`pl-2 font-bold text-white z-10 transition-opacity duration-300 ${
-                    comDestaque ? "opacity-90" : "opacity-100"
+            <div className="mt-8 flex justify-center">
+              <div className="mx-auto w-fit max-w-[calc(100vw-2rem)] rounded-full bg-gradient-to-b from-orange-200/80 via-orange-300/40 to-orange-400/20 p-1.5 shadow-[0_8px_20px_rgba(249,115,22,0.25),inset_0_1px_2px_rgba(255,255,255,0.8)]">
+                <Button
+                  key="all-news-button"
+                  type="button"
+                  onClick={() => navigate("/todas-noticias")}
+                  className={`flex h-14 w-fit max-w-full items-center justify-between gap-2 rounded-full border-2 px-4 text-sm font-bold text-white transition-all duration-500 sm:px-6 sm:text-base ${
+                    comDestaque
+                      ? "border-orange-300 bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 shadow-orange-500/50 shadow-xl"
+                      : "border-orange-400 bg-gradient-to-b from-orange-500 via-orange-600 to-amber-700"
                   }`}
                 >
-                  {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
-                </span>
-                <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0 z-10">
-                  <ArrowRight className="size-4" />
-                </span>
-              </Button>
+                  <span
+                    aria-live="polite"
+                    className="whitespace-nowrap pl-2 transition-opacity duration-300"
+                  >
+                    {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
+                  </span>
+                  <span className="ml-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-b from-white to-slate-100 text-orange-600 shadow-[0_3px_8px_rgba(0,0,0,0.2),inset_0_1px_1px_rgba(255,255,255,1)]">
+                    <ArrowRight className="size-4" />
+                  </span>
+                </Button>
+              </div>
             </div>
           )}
         </section>
