@@ -186,8 +186,6 @@ export default function Home() {
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
   const [textoIndex, setTextoIndex] = useState(0);
   const [comDestaque, setComDestaque] = useState(false);
-  const [allNewsButtonVisible, setAllNewsButtonVisible] = useState(false);
-  const allNewsButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let destaqueTimeout: number | undefined;
@@ -206,23 +204,6 @@ export default function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    const button = allNewsButtonRef.current;
-    if (!button) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setAllNewsButtonVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.2 },
-    );
-
-    observer.observe(button);
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     let isCurrent = true;
@@ -630,36 +611,27 @@ async function openNews(item: NewsItem) {
             </div>
           )}
           {!newsLoading && !newsError && feedNews.length > 0 && (
-            <div
-              ref={allNewsButtonRef}
-              className="mt-8 flex w-full justify-center opacity-100"
-            >
+            <div className="mt-8 flex w-full justify-center">
               <Button
                 key="all-news-button"
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
-                className="w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-transform active:scale-[0.98] box-border"
+                className={`w-full h-14 px-6 rounded-full border-2 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-all duration-500 opacity-100 z-10 ${
+                  comDestaque
+                    ? "bg-gradient-to-r from-red-500 via-rose-500 to-red-600 border-red-400"
+                    : "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 border-orange-400"
+                }`}
               >
-                <div className="absolute inset-0 h-full w-full overflow-hidden rounded-full pointer-events-none">
-                  <div
-                    aria-hidden="true"
-                    className={`pointer-events-none absolute top-0 h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-1000 ease-in-out ${
-                      comBrilho ? "left-[150%]" : "-left-[100%]"
-                    }`}
-                  />
-                </div>
                 <span
                   aria-live="polite"
-                  className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-300 ${
+                  className={`pl-2 font-bold text-white z-10 transition-opacity duration-300 ${
                     comDestaque ? "opacity-90" : "opacity-100"
                   }`}
                 >
                   {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
                 </span>
-                <span className="relative z-10">
-                  <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0">
-                    <ArrowRight className="size-4" />
-                  </span>
+                <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0 z-10">
+                  <ArrowRight className="size-4" />
                 </span>
               </Button>
             </div>
