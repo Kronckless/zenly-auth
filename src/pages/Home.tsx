@@ -184,24 +184,25 @@ export default function Home() {
   const [currencyHistory, setCurrencyHistory] = useState<CurrencyPoint[]>([]);
   const [fallbackLoading, setFallbackLoading] = useState(false);
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
-  const [showLongAllNewsLabel, setShowLongAllNewsLabel] = useState(false);
-  const [allNewsLabelVisible, setAllNewsLabelVisible] = useState(true);
+  const [textoIndex, setTextoIndex] = useState(0);
+  const [comBrilho, setComBrilho] = useState(false);
   const [allNewsButtonVisible, setAllNewsButtonVisible] = useState(false);
   const allNewsButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let labelTimeout: number | undefined;
+    let shineTimeout: number | undefined;
+
     const labelInterval = window.setInterval(() => {
-      setAllNewsLabelVisible(false);
-      labelTimeout = window.setTimeout(() => {
-        setShowLongAllNewsLabel((current) => !current);
-        setAllNewsLabelVisible(true);
-      }, 500);
+      setComBrilho(true);
+      setTextoIndex((current) => (current === 0 ? 1 : 0));
+
+      if (shineTimeout !== undefined) window.clearTimeout(shineTimeout);
+      shineTimeout = window.setTimeout(() => setComBrilho(false), 1000);
     }, 6000);
 
     return () => {
       window.clearInterval(labelInterval);
-      if (labelTimeout !== undefined) window.clearTimeout(labelTimeout);
+      if (shineTimeout !== undefined) window.clearTimeout(shineTimeout);
     };
   }, []);
 
@@ -639,19 +640,21 @@ async function openNews(item: NewsItem) {
                 onClick={() => navigate("/todas-noticias")}
                 className="w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-transform active:scale-[0.98] box-border"
               >
-                <div className="absolute inset-0 z-0 h-full w-full overflow-hidden rounded-full pointer-events-none">
+                <div className="absolute inset-0 h-full w-full overflow-hidden rounded-full pointer-events-none">
                   <div
                     aria-hidden="true"
-                    className="absolute top-0 -left-[100%] h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-button-shine"
+                    className={`pointer-events-none absolute top-0 h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent transition-all duration-1000 ease-in-out ${
+                      comBrilho ? "left-[150%]" : "-left-[100%]"
+                    }`}
                   />
                 </div>
                 <span
                   aria-live="polite"
-                  className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-500 ${
-                    allNewsLabelVisible ? "opacity-100" : "opacity-0"
+                  className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-300 ${
+                    comBrilho ? "opacity-90" : "opacity-100"
                   }`}
                 >
-                  {showLongAllNewsLabel ? "Ver todas as notícias de hoje" : "Ver todas"}
+                  {textoIndex === 0 ? "Ver todas" : "Ver todas as notícias de hoje"}
                 </span>
                 <span className="relative z-10">
                   <span className="w-10 h-10 bg-gradient-to-br from-slate-100 to-slate-200 rounded-full flex items-center justify-center shadow-md border border-white/60 text-orange-600 shrink-0">
