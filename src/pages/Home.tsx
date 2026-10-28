@@ -618,8 +618,8 @@ async function openNews(item: NewsItem) {
                 onClick={() => navigate("/todas-noticias")}
                 className={`w-full h-14 px-6 rounded-full border-2 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-all duration-500 opacity-100 z-10 ${
                   comDestaque
-                    ? "bg-gradient-to-r from-red-500 via-rose-500 to-red-600 border-red-400"
-                    : "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 border-orange-400"
+                    ? "bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 border-orange-300 shadow-orange-500/50 shadow-xl"
+                    : "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 border-orange-400 shadow-lg"
                 }`}
               >
                 <span
