@@ -186,6 +186,8 @@ export default function Home() {
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
   const [showLongAllNewsLabel, setShowLongAllNewsLabel] = useState(false);
   const [allNewsLabelVisible, setAllNewsLabelVisible] = useState(true);
+  const [allNewsButtonVisible, setAllNewsButtonVisible] = useState(false);
+  const allNewsButtonRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let labelTimeout: number | undefined;
@@ -201,6 +203,24 @@ export default function Home() {
       window.clearInterval(labelInterval);
       if (labelTimeout !== undefined) window.clearTimeout(labelTimeout);
     };
+  }, []);
+
+  useEffect(() => {
+    const button = allNewsButtonRef.current;
+    if (!button) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setAllNewsButtonVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+
+    observer.observe(button);
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -610,38 +630,23 @@ async function openNews(item: NewsItem) {
           )}
           {!newsLoading && !newsError && feedNews.length > 0 && (
             <div
-              className="mt-8 flex w-full justify-center"
+              ref={allNewsButtonRef}
+              className={`mt-8 flex w-full justify-center transition-all duration-700 ${
+                allNewsButtonVisible
+                  ? "translate-y-0 opacity-100"
+                  : "translate-y-3 opacity-0"
+              }`}
             >
               <Button
                 key="all-news-button"
                 type="button"
                 onClick={() => navigate("/todas-noticias")}
-                className="w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between cursor-pointer transition-all relative overflow-hidden box-border"
+                className="w-full h-14 px-6 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 rounded-full border-2 border-orange-400 shadow-lg flex items-center justify-between relative overflow-hidden cursor-pointer transition-transform active:scale-[0.98] box-border"
               >
-                <svg
+                <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 h-full w-full"
-                  viewBox="0 0 400 56"
-                  preserveAspectRatio="none"
-                >
-                  <defs>
-                    <linearGradient id="all-news-button-shine" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="white" stopOpacity="0" />
-                      <stop offset="50%" stopColor="white" stopOpacity="0.38" />
-                      <stop offset="100%" stopColor="white" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <g transform="rotate(20 200 28)">
-                    <rect x="-120" y="-100" width="70" height="250" fill="url(#all-news-button-shine)">
-                      <animate
-                        attributeName="x"
-                        values="-120;520"
-                        dur="6s"
-                        repeatCount="indefinite"
-                      />
-                    </rect>
-                  </g>
-                </svg>
+                  className="pointer-events-none absolute top-0 -left-full z-0 h-full w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/35 to-transparent animate-button-shine"
+                />
                 <span
                   aria-live="polite"
                   className={`relative z-10 pl-2 font-bold text-white transition-opacity duration-500 ${
