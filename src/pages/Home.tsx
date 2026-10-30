@@ -226,18 +226,26 @@ export default function Home() {
             if (!response.ok) {
               throw new Error(`API de notícias respondeu com status ${response.status}`);
             }
-            const data = (await response.json()) as NewsItem[];
-            console.log(data);
+            const payload: unknown = await response.json();
+            const responseItems = Array.isArray(payload)
+              ? payload
+              : payload && typeof payload === "object"
+                ? (payload as Record<string, unknown>).items ??
+                  (payload as Record<string, unknown>).data
+                : null;
+
+            if (!Array.isArray(responseItems)) {
+              throw new Error("Formato inesperado na resposta de notícias");
+            }
 
             if (isCurrent) {
-              const items = Array.isArray(data) ? data : [];
               setNewsItems(
-                items.map((item) => ({
-                  ...item,
-                  title: hideSourceTerms(item.title),
-                  content: hideSourceTerms(item.content),
-                  categories: Array.isArray(item.categories)
-                    ? item.categories.map(hideSourceTerms)
+                responseItems.map((item) => ({
+                  ...(item as NewsItem),
+                  title: hideSourceTerms((item as NewsItem).title),
+                  content: hideSourceTerms((item as NewsItem).content),
+                  categories: Array.isArray((item as NewsItem).categories)
+                    ? (item as NewsItem).categories!.map(hideSourceTerms)
                     : [],
                 })),
               );
