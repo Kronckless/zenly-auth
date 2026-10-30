@@ -57,7 +57,7 @@ function cleanRawText(text) {
   if (!text) return '';
   return text
     .replace(/O post .* apareceu primeiro em .*/gi, '') // Remove assinatura de RSS
-    .replace(/\[\.\.\.\]/g, '')                        // Remove [...]
+    .replace(/\[\.\.\.\]/g, '')                         // Remove [...]
     .replace(/<[^>]*>?/gm, '')                          // Remove tags HTML soltas
     .trim();
 }
@@ -74,7 +74,7 @@ async function rewriteWithGemini(title, contentSnippet) {
   }
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
     const prompt = `Você é um jornalista profissional. Reescreva a seguinte matéria de forma completa, fluida, clara e em tom jornalístico neutro e elegante.
 Elimine qualquer menção a feeds, blogs ou links.
