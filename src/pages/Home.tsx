@@ -240,14 +240,53 @@ export default function Home() {
 
             if (isCurrent) {
               setNewsItems(
-                responseItems.map((item) => ({
-                  ...(item as NewsItem),
-                  title: hideSourceTerms((item as NewsItem).title),
-                  content: hideSourceTerms((item as NewsItem).content),
-                  categories: Array.isArray((item as NewsItem).categories)
-                    ? (item as NewsItem).categories!.map(hideSourceTerms)
-                    : [],
-                })),
+                responseItems.map((item) => {
+                  const article = item as Record<string, unknown>;
+                  const category =
+                    typeof article.category === "string"
+                      ? hideSourceTerms(article.category)
+                      : "";
+                  const content =
+                    typeof article.content === "string"
+                      ? article.content
+                      : typeof article.fullContent === "string"
+                        ? article.fullContent
+                        : "";
+
+                  return {
+                    ...article,
+                    title: hideSourceTerms(
+                      typeof article.title === "string" ? article.title : "",
+                    ),
+                    content: hideSourceTerms(content),
+                    summary: hideSourceTerms(
+                      typeof article.summary === "string" ? article.summary : "",
+                    ),
+                    sourceUrl:
+                      typeof article.sourceUrl === "string"
+                        ? article.sourceUrl
+                        : typeof article.link === "string"
+                          ? article.link
+                          : "",
+                    publishedAt:
+                      typeof article.publishedAt === "string"
+                        ? article.publishedAt
+                        : typeof article.date === "string"
+                          ? article.date
+                          : undefined,
+                    imageUrl:
+                      typeof article.imageUrl === "string"
+                        ? article.imageUrl
+                        : undefined,
+                    categories: Array.isArray(article.categories)
+                      ? article.categories
+                          .filter((label): label is string => typeof label === "string")
+                          .map(hideSourceTerms)
+                      : category
+                        ? [category]
+                        : [],
+                  } as NewsItem;
+                }),
               );
             }
             return;
