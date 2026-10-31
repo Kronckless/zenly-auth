@@ -569,14 +569,14 @@ async function openNews(item: NewsItem) {
 
           {newsLoading ? (
             <div
-              className="flex flex-col gap-3"
+              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
               role="status"
               aria-label="Carregando notícias"
             >
               {Array.from({ length: 6 }, (_, index) => (
                 <Card key={index} className="gap-0 overflow-hidden rounded-[20px] border-border">
                   <div className="px-3 pt-3">
-                    <Skeleton className="aspect-video w-full rounded-lg" />
+                    <Skeleton className="h-48 w-full rounded-lg" />
                   </div>
                   <CardHeader className="space-y-3 p-4">
                     <Skeleton className="h-5 w-full" />
@@ -608,14 +608,14 @@ async function openNews(item: NewsItem) {
               Nenhuma notícia está disponível no feed no momento.
             </p>
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {latestNewsItems.map((item) => (
                 <Card
                   key={item.sourceUrl}
                   className="gap-0 overflow-hidden rounded-[20px] border-border transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                 >
                   <div className="px-3 pt-3">
-                    <div className="aspect-video overflow-hidden rounded-lg">
+                    <div className="h-48 overflow-hidden rounded-lg">
                       <NewsThumbnail imageUrl={item.imageUrl} title={item.title} />
                     </div>
                   </div>
