@@ -569,7 +569,7 @@ async function openNews(item: NewsItem) {
 
           {newsLoading ? (
             <div
-              className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
+              className="flex flex-col gap-3"
               role="status"
               aria-label="Carregando notícias"
             >
@@ -608,7 +608,7 @@ async function openNews(item: NewsItem) {
               Nenhuma notícia está disponível no feed no momento.
             </p>
           ) : (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-col gap-3">
               {latestNewsItems.map((item) => (
                 <Card
                   key={item.sourceUrl}
