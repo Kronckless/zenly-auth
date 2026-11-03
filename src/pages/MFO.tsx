@@ -1,11 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import { Download, FileText, Paperclip, Plus, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { FileText, Link2, Newspaper, Plus, Search, Sparkles, X } from "lucide-react";
 import AppNavigation from "@/components/AppNavigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { supabase } from "@/lib/supabase";
 
 type CommunityMessage = {
@@ -20,6 +28,29 @@ type CommunityMessage = {
   dossier_size: number | null;
   isExample?: boolean;
 };
+
+type PortalNews = {
+  categoria: string;
+  titulo: string;
+  resumo: string;
+  conteudo_completo: string;
+  created_at: string;
+};
+
+function encodePortalNews(news: PortalNews) {
+  return `portal-news:${encodeURIComponent(JSON.stringify(news))}`;
+}
+
+function decodePortalNews(value: string | null): PortalNews | null {
+  if (!value?.startsWith("portal-news:")) return null;
+
+  try {
+    const news = JSON.parse(decodeURIComponent(value.slice("portal-news:".length))) as PortalNews;
+    return typeof news.titulo === "string" ? news : null;
+  } catch {
+    return null;
+  }
+}
 
 function isPreviewOrDevelopment() {
   if (typeof window === "undefined") return false;
@@ -57,8 +88,12 @@ export default function MFO() {
   const [loading, setLoading] = useState(true);
   const [postText, setPostText] = useState("");
   const [hasCategory, setHasCategory] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedNews, setSelectedNews] = useState<PortalNews | null>(null);
+  const [newsOptions, setNewsOptions] = useState<PortalNews[]>([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [newsSearch, setNewsSearch] = useState("");
+  const [newsPickerOpen, setNewsPickerOpen] = useState(false);
+  const [openedNews, setOpenedNews] = useState<PortalNews | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -114,40 +149,109 @@ export default function MFO() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!newsPickerOpen) return;
+
+    let active = true;
+
+    async function loadPortalNews() {
+      if (!supabase) {
+        setNewsOptions([]);
+        return;
+      }
+
+      setNewsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("panoramas")
+          .select("categoria, titulo, resumo, conteudo_completo, created_at")
+          .order("created_at", { ascending: false })
+          .limit(40);
+
+        if (!active) return;
+        setNewsOptions(
+          error
+            ? []
+            : (data ?? []).map((row) => ({
+                categoria: row.categoria ?? "",
+                titulo: row.titulo ?? "",
+                resumo: row.resumo ?? "",
+                conteudo_completo: row.conteudo_completo ?? "",
+                created_at: row.created_at ?? "",
+              })),
+        );
+      } catch {
+        if (active) setNewsOptions([]);
+      } finally {
+        if (active) setNewsLoading(false);
+      }
+    }
+
+    void loadPortalNews();
+    return () => {
+      active = false;
+    };
+  }, [newsPickerOpen]);
+
   async function publishPost() {
     const content = postText.trim();
-    if ((!content && !selectedFile) || !supabase) return;
+    const previewMode = isPreviewOrDevelopment();
+    if ((!content && !selectedNews) || (!supabase && !previewMode)) return;
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+    let user = null;
+    if (supabase) {
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+      user = currentUser;
+    }
 
-    if (!user) return;
+    const messageContent = `${hasCategory ? "#Análise " : ""}${content || "Notícia vinculada."}`;
+    const linkedNewsUrl = selectedNews ? encodePortalNews(selectedNews) : null;
 
-    const { data, error: publishError } = await supabase
-      .from("mensagens_comunidade")
-      .insert({
-        user_id: user.id,
-        nome_usuario:
-          user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
-        conteudo: `${hasCategory ? "#Análise " : ""}${content || "Dossiê compartilhado."}`,
-        is_super_chat: false,
-        dossier_url: null,
-        dossier_name: selectedFile?.name ?? null,
-        dossier_size: selectedFile?.size ?? null,
-      })
-      .select(
-        "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
-      )
-      .single();
+    if (!user && previewMode) {
+      setMessages((current) => [
+        {
+          id: `preview-${Date.now()}`,
+          user_id: "preview-user",
+          nome_usuario: "Você",
+          conteudo: messageContent,
+          created_at: new Date().toISOString(),
+          is_super_chat: false,
+          dossier_url: linkedNewsUrl,
+          dossier_name: selectedNews?.titulo ?? null,
+          dossier_size: null,
+          isExample: true,
+        },
+        ...current,
+      ]);
+    } else if (!user || !supabase) {
+      return;
+    } else {
+      const { data, error: publishError } = await supabase
+        .from("mensagens_comunidade")
+        .insert({
+          user_id: user.id,
+          nome_usuario:
+            user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
+          conteudo: messageContent,
+          is_super_chat: false,
+          dossier_url: linkedNewsUrl,
+          dossier_name: selectedNews?.titulo ?? null,
+          dossier_size: null,
+        })
+        .select(
+          "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
+        )
+        .single();
 
-    if (publishError || !data) return;
+      if (publishError || !data) return;
+      setMessages((current) => [data as CommunityMessage, ...current]);
+    }
 
-    setMessages((current) => [data as CommunityMessage, ...current]);
     setPostText("");
-    setSelectedFile(null);
+    setSelectedNews(null);
     setHasCategory(false);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   return (
@@ -187,11 +291,27 @@ export default function MFO() {
                 />
               </div>
 
-              {selectedFile && (
-                <div className="ml-11 flex items-center gap-2 text-sm text-muted-foreground">
-                  <FileText className="size-4" aria-hidden="true" />
-                  <span className="min-w-0 truncate">{selectedFile.name}</span>
-                  <span>({formatFileSize(selectedFile.size)})</span>
+              {selectedNews && (
+                <div className="ml-11 flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-2">
+                  <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-background text-primary">
+                    <Newspaper className="size-6" aria-hidden="true" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2 text-sm font-semibold">{selectedNews.titulo}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {selectedNews.categoria || "Notícia do portal"}
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 shrink-0"
+                    aria-label="Remover notícia vinculada"
+                    onClick={() => setSelectedNews(null)}
+                  >
+                    <X className="size-4" />
+                  </Button>
                 </div>
               )}
 
@@ -201,22 +321,14 @@ export default function MFO() {
 
               <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
                 <div className="flex flex-wrap gap-2">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="application/pdf,.pdf"
-                    className="hidden"
-                    aria-label="Anexar dossiê em PDF"
-                    onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)}
-                  />
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => setNewsPickerOpen(true)}
                   >
-                    <Paperclip className="size-4" aria-hidden="true" />
-                    Anexar Dossiê (PDF)
+                    <Link2 className="size-4" aria-hidden="true" />
+                    Vincular Notícia do Portal
                   </Button>
                   <Button
                     type="button"
@@ -233,7 +345,7 @@ export default function MFO() {
                   type="button"
                   size="sm"
                   onClick={publishPost}
-                  disabled={!postText.trim() && !selectedFile}
+                  disabled={!postText.trim() && !selectedNews}
                 >
                   Publicar
                 </Button>
@@ -252,7 +364,9 @@ export default function MFO() {
           </p>
         ) : (
           <section aria-label="Dossiês e destaques da comunidade" className="space-y-4">
-            {messages.map((message) => (
+            {messages.map((message) => {
+              const linkedNews = decodePortalNews(message.dossier_url);
+              return (
               <Card
                 key={message.id}
                 className={
@@ -287,46 +401,126 @@ export default function MFO() {
                     </p>
                   )}
 
-                  {message.dossier_url && (
-                    <a
-                      href={message.dossier_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-3 rounded-xl border border-primary/25 bg-primary/5 p-3 transition-colors hover:bg-primary/10"
+                  {linkedNews && (
+                    <button
+                      type="button"
+                      onClick={() => setOpenedNews(linkedNews)}
+                      className="flex w-full items-center gap-3 rounded-xl border border-border bg-muted/40 p-2 text-left transition-colors hover:bg-muted"
+                      aria-label={`Abrir notícia: ${linkedNews.titulo}`}
                     >
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                        <FileText className="size-5" aria-hidden="true" />
+                      <span className="flex size-16 shrink-0 items-center justify-center rounded-lg bg-background text-primary">
+                        <Newspaper className="size-7" aria-hidden="true" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold">
-                          {message.dossier_name || "Dossiê anexado"}
+                        <span className="block line-clamp-2 text-sm font-semibold">
+                          {linkedNews.titulo}
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {message.dossier_size ? formatFileSize(message.dossier_size) : "Arquivo"}
-                        </span>
-                      </span>
-                      <Download className="size-4 shrink-0 text-primary" aria-hidden="true" />
-                    </a>
-                  )}
-
-                  {!message.dossier_url && message.dossier_name && (
-                    <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3">
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background text-primary">
-                        <FileText className="size-5" aria-hidden="true" />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-semibold">{message.dossier_name}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {message.dossier_size ? formatFileSize(message.dossier_size) : "Arquivo anexado"}
+                        <span className="mt-1 block text-xs text-muted-foreground">
+                          {linkedNews.categoria || "Notícia do portal"} · Ler notícia completa
                         </span>
                       </span>
-                    </div>
+                      <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                    </button>
                   )}
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </section>
         )}
+
+        <Dialog open={newsPickerOpen} onOpenChange={setNewsPickerOpen}>
+          <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Vincular notícia do portal</DialogTitle>
+              <DialogDescription>
+                Pesquise e selecione uma notícia para incluir na sua publicação.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={newsSearch}
+                onChange={(event) => setNewsSearch(event.target.value)}
+                placeholder="Buscar por manchete ou categoria..."
+                aria-label="Buscar notícias do portal"
+                className="pl-9"
+              />
+            </div>
+            <div className="space-y-2">
+              {newsLoading ? (
+                <p className="py-6 text-center text-sm text-muted-foreground" role="status">
+                  Carregando notícias...
+                </p>
+              ) : newsOptions.filter((news) =>
+                  `${news.titulo} ${news.categoria} ${news.resumo}`
+                    .toLocaleLowerCase("pt-BR")
+                    .includes(newsSearch.trim().toLocaleLowerCase("pt-BR")),
+                ).length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  Nenhuma notícia disponível para selecionar.
+                </p>
+              ) : (
+                newsOptions
+                  .filter((news) =>
+                    `${news.titulo} ${news.categoria} ${news.resumo}`
+                      .toLocaleLowerCase("pt-BR")
+                      .includes(newsSearch.trim().toLocaleLowerCase("pt-BR")),
+                  )
+                  .map((news, index) => (
+                    <button
+                      key={`${news.created_at}-${index}`}
+                      type="button"
+                      onClick={() => {
+                        setSelectedNews(news);
+                        setNewsPickerOpen(false);
+                        setNewsSearch("");
+                      }}
+                      className="flex w-full items-start gap-3 rounded-xl border border-border bg-card p-3 text-left transition-colors hover:bg-muted"
+                    >
+                      <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-primary">
+                        <Newspaper className="size-5" aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-xs font-medium text-muted-foreground">
+                          {news.categoria || "Notícia"}
+                        </span>
+                        <span className="mt-1 block text-sm font-semibold leading-snug">
+                          {news.titulo}
+                        </span>
+                        {news.resumo && (
+                          <span className="mt-1 block line-clamp-2 text-xs text-muted-foreground">
+                            {news.resumo}
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  ))
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={openedNews !== null} onOpenChange={(open) => !open && setOpenedNews(null)}>
+          <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-2xl">
+            {openedNews && (
+              <>
+                <DialogHeader>
+                  <Badge variant="secondary" className="mb-2 w-fit">
+                    {openedNews.categoria || "Notícia"}
+                  </Badge>
+                  <DialogTitle className="text-xl leading-snug sm:text-2xl">
+                    {openedNews.titulo}
+                  </DialogTitle>
+                  <DialogDescription>{openedNews.resumo}</DialogDescription>
+                </DialogHeader>
+                <article className="whitespace-pre-wrap text-sm leading-7 text-foreground sm:text-base">
+                  {openedNews.conteudo_completo || openedNews.resumo}
+                </article>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </main>
   );
