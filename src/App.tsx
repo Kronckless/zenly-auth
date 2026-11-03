@@ -31,6 +31,7 @@ const AuthContext = createContext<{
   user: User | null;
   session: Session | null;
   loading: boolean;
+  hasMfo: boolean;
 } | null>(null);
 
 function canSkipAuth() {
@@ -56,6 +57,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasMfo, setHasMfo] = useState(false);
 
   useEffect(() => {
     if (!supabase) {
@@ -86,8 +88,35 @@ function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadProfileFlag() {
+      if (!supabase || !user) {
+        setHasMfo(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("has_mfo")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (active) {
+        setHasMfo(!error && data?.has_mfo === true);
+      }
+    }
+
+    void loadProfileFlag();
+
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={{ user, session, loading }}>
+    <AuthContext.Provider value={{ user, session, loading, hasMfo }}>
       {children}
     </AuthContext.Provider>
   );
