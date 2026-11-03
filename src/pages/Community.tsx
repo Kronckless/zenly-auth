@@ -11,7 +11,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { LockKeyhole, MessageSquare, Send, Smile, Sparkles, UsersRound } from "lucide-react";
+import {
+  Download,
+  FileText,
+  LockKeyhole,
+  MessageSquare,
+  Paperclip,
+  Send,
+  Smile,
+  Sparkles,
+  UsersRound,
+} from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 type CommunityMessage = {
@@ -21,7 +31,15 @@ type CommunityMessage = {
   conteudo: string;
   created_at: string;
   is_super_chat: boolean;
+  dossier_url: string | null;
+  dossier_name: string | null;
+  dossier_size: number | null;
 };
+
+function formatFileSize(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
 
 export default function Community() {
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
@@ -29,6 +47,7 @@ export default function Community() {
   const [profileName, setProfileName] = useState("");
   const [hasMfo, setHasMfo] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [superChatEnabled, setSuperChatEnabled] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -36,6 +55,7 @@ export default function Community() {
   const [error, setError] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const messageListRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const quickEmojis = ["😀", "😂", "❤️", "👍", "🎉", "🙏"];
 
   useEffect(() => {
@@ -57,7 +77,7 @@ export default function Community() {
 
     const { data, error: fetchError } = await supabase
       .from("mensagens_comunidade")
-      .select("id, user_id, nome_usuario, conteudo, created_at, is_super_chat")
+      .select("id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size")
       .gte("created_at", sevenDaysAgo)
       .order("created_at", { ascending: true });
 
@@ -138,7 +158,7 @@ export default function Community() {
     event.preventDefault();
     const content = messageText.trim();
 
-    if (!content || sending) return;
+    if ((!content && !selectedFile) || sending) return;
 
     if (!supabase) {
       setError("O serviço de mensagens não está configurado.");
@@ -153,6 +173,44 @@ export default function Community() {
     setSending(true);
     setError("");
 
+    let dossierUrl: string | null = null;
+    let dossierName: string | null = null;
+    let dossierSize: number | null = null;
+    let uploadedPath: string | null = null;
+
+    if (selectedFile) {
+      if (!hasMfo) {
+        setError("O envio de Dossiês é exclusivo do Modo Formador de Opinião.");
+        setSending(false);
+        return;
+      }
+
+      if (selectedFile.size > 20 * 1024 * 1024) {
+        setError("O arquivo deve ter no máximo 20 MB.");
+        setSending(false);
+        return;
+      }
+
+      const safeName = selectedFile.name.replace(/[\\/]/g, "_");
+      uploadedPath = `${userId}/${crypto.randomUUID()}-${safeName}`;
+      const { error: uploadError } = await supabase.storage
+        .from("dossiers")
+        .upload(uploadedPath, selectedFile, {
+          contentType: selectedFile.type || "application/octet-stream",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        setError("Não foi possível enviar o arquivo. Tente novamente.");
+        setSending(false);
+        return;
+      }
+
+      dossierUrl = supabase.storage.from("dossiers").getPublicUrl(uploadedPath).data.publicUrl;
+      dossierName = selectedFile.name;
+      dossierSize = selectedFile.size;
+    }
+
     const { error: sendError } = await supabase
       .from("mensagens_comunidade")
       .insert({
@@ -160,13 +218,20 @@ export default function Community() {
         nome_usuario: profileName || "Membro",
         conteudo: content,
         is_super_chat: hasMfo && superChatEnabled,
+        dossier_url: dossierUrl,
+        dossier_name: dossierName,
+        dossier_size: dossierSize,
         created_at: new Date().toISOString(),
       });
 
     if (sendError) {
+      if (uploadedPath) {
+        await supabase.storage.from("dossiers").remove([uploadedPath]);
+      }
       setError("Não foi possível enviar sua mensagem. Tente novamente.");
     } else {
       setMessageText("");
+      setSelectedFile(null);
       setSuperChatEnabled(false);
       await loadMessages();
     }
@@ -230,10 +295,35 @@ export default function Community() {
                           </Badge>
                         )}
                       </h2>
+                      {message.dossier_url && (
+                        <a
+                          href={message.dossier_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mb-2 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10"
+                        >
+                          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <FileText className="size-5" aria-hidden="true" />
+                          </span>
+                          <span className="min-w-0 flex-1">
+                            <span className="block truncate text-sm font-semibold">
+                              {message.dossier_name || "Dossiê anexado"}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {message.dossier_size
+                                ? formatFileSize(message.dossier_size)
+                                : "Arquivo"}
+                            </span>
+                          </span>
+                          <Download className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                        </a>
+                      )}
                       <div className="flex items-end gap-3">
-                        <p className="min-w-0 whitespace-pre-wrap break-words text-sm leading-relaxed">
-                          {message.conteudo}
-                        </p>
+                        {message.conteudo && (
+                          <p className="min-w-0 whitespace-pre-wrap break-words text-sm leading-relaxed">
+                            {message.conteudo}
+                          </p>
+                        )}
                         <time
                           dateTime={message.created_at}
                           className="shrink-0 pb-0.5 text-[10px] text-muted-foreground"
@@ -310,6 +400,45 @@ export default function Community() {
               ))}
             </div>
           )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.xls,.xlsx,.ppt,.pptx,image/*"
+            className="sr-only"
+            onChange={(event) => {
+              const file = event.target.files?.[0] ?? null;
+              if (file && file.size > 20 * 1024 * 1024) {
+                setError("O arquivo deve ter no máximo 20 MB.");
+                setSelectedFile(null);
+              } else {
+                setError("");
+                setSelectedFile(file);
+              }
+              event.currentTarget.value = "";
+            }}
+          />
+          <Button
+            type="button"
+            variant={hasMfo ? "ghost" : "outline"}
+            size="icon"
+            aria-label={hasMfo ? "Anexar Dossiê" : "Dossiê exclusivo do Modo Formador de Opinião"}
+            title={hasMfo ? "Anexar Dossiê" : "Recurso exclusivo do Modo Formador de Opinião"}
+            disabled={sending}
+            onClick={() => {
+              if (!hasMfo) {
+                setUpgradeDialogOpen(true);
+                return;
+              }
+              fileInputRef.current?.click();
+            }}
+            className="shrink-0 rounded-full text-muted-foreground"
+          >
+            {hasMfo ? (
+              <Paperclip className="size-5" aria-hidden="true" />
+            ) : (
+              <LockKeyhole className="size-5" aria-hidden="true" />
+            )}
+          </Button>
           <Button
             type="button"
             variant="ghost"
@@ -322,20 +451,36 @@ export default function Community() {
           >
             <Smile className="size-5" />
           </Button>
-          <Input
-            value={messageText}
-            onChange={(event) => setMessageText(event.target.value)}
-            placeholder="Mensagem"
-            aria-label="Sua mensagem"
-            maxLength={2000}
-            disabled={sending}
-            className="h-11 rounded-full bg-muted/50 px-4"
-          />
+          <div className="min-w-0 flex-1">
+            {selectedFile && (
+              <div className="mb-1 flex items-center gap-2 px-3 text-xs text-muted-foreground">
+                <FileText className="size-3.5 shrink-0" aria-hidden="true" />
+                <span className="truncate">{selectedFile.name}</span>
+                <button
+                  type="button"
+                  className="font-semibold text-destructive"
+                  aria-label="Remover arquivo anexado"
+                  onClick={() => setSelectedFile(null)}
+                >
+                  Remover
+                </button>
+              </div>
+            )}
+            <Input
+              value={messageText}
+              onChange={(event) => setMessageText(event.target.value)}
+              placeholder="Mensagem"
+              aria-label="Sua mensagem"
+              maxLength={2000}
+              disabled={sending}
+              className="h-11 rounded-full bg-muted/50 px-4"
+            />
+          </div>
           <Button
             type="submit"
             size="icon"
             aria-label="Enviar mensagem"
-            disabled={!messageText.trim() || sending}
+            disabled={(!messageText.trim() && !selectedFile) || sending}
             className="size-10 shrink-0 rounded-full"
           >
             <Send className="size-4" />
@@ -348,8 +493,7 @@ export default function Community() {
           <DialogHeader>
             <DialogTitle>Super Chat exclusivo</DialogTitle>
             <DialogDescription>
-              O Super Chat é exclusivo do Modo Formador de Opinião. Faça o
-              upgrade para destacar suas mensagens no chat.
+              O Super Chat e o envio de Dossiês são exclusivos do Modo Formador de Opinião. Faça o upgrade para acessar esses recursos.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

@@ -11,7 +11,30 @@ alter table public.profiles
   add column if not exists has_mfo boolean not null default false;
 
 alter table public.mensagens_comunidade
-  add column if not exists is_super_chat boolean not null default false;
+  add column if not exists is_super_chat boolean not null default false,
+  add column if not exists dossier_url text,
+  add column if not exists dossier_name text,
+  add column if not exists dossier_size bigint;
+
+insert into storage.buckets (id, name, public)
+values ('dossiers', 'dossiers', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "MFO pode enviar dossies" on storage.objects;
+create policy "MFO pode enviar dossies"
+  on storage.objects
+  for insert
+  to authenticated
+  with check (
+    bucket_id = 'dossiers'
+    and (storage.foldername(name))[1] = (select auth.uid())::text
+    and exists (
+      select 1
+      from public.profiles
+      where id = (select auth.uid())
+        and has_mfo = true
+    )
+  );
 
 alter table public.profiles enable row level security;
 
