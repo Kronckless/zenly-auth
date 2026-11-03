@@ -476,12 +476,12 @@ export default function Community() {
           <div
             role="group"
             aria-label="Modo de visualização do chat"
-            className="relative grid h-10 w-[4.75rem] shrink-0 grid-cols-2 rounded-full border border-border bg-muted/70 p-1 shadow-inner"
+            className="relative grid h-[52px] w-[104px] shrink-0 grid-cols-2 rounded-full border border-border bg-muted/70 p-1 shadow-inner"
           >
             <span
               aria-hidden="true"
-              className={`pointer-events-none absolute left-1 top-1 size-8 rounded-full bg-primary shadow-[inset_0_1px_2px_hsl(var(--background)/0.35),0_1px_4px_hsl(var(--foreground)/0.12)] transition-transform duration-300 ease-out ${
-                mfoFilterEnabled ? "translate-x-8" : "translate-x-0"
+              className={`pointer-events-none absolute left-1 top-1 size-11 rounded-full bg-primary shadow-[inset_0_1px_2px_hsl(var(--background)/0.35),0_1px_4px_hsl(var(--foreground)/0.12)] transition-transform duration-300 ease-out ${
+                mfoFilterEnabled ? "translate-x-11" : "translate-x-0"
               }`}
             />
             <button
@@ -489,7 +489,7 @@ export default function Community() {
               aria-label="Chat geral"
               aria-pressed={!mfoFilterEnabled}
               onClick={() => setMfoFilterEnabled(false)}
-              className={`relative z-10 flex size-8 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`relative z-10 flex size-11 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 !mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -500,7 +500,7 @@ export default function Community() {
               aria-label="Modo Foco MFO"
               aria-pressed={mfoFilterEnabled}
               onClick={() => setMfoFilterEnabled(true)}
-              className={`relative z-10 flex size-8 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+              className={`relative z-10 flex size-11 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                 mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
