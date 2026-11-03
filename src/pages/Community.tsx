@@ -1,4 +1,5 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,7 @@ import {
   Smile,
   Sparkles,
   UsersRound,
+  Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
@@ -42,6 +44,7 @@ function formatFileSize(bytes: number) {
 }
 
 export default function Community() {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [profileName, setProfileName] = useState("");
@@ -50,6 +53,7 @@ export default function Community() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [superChatEnabled, setSuperChatEnabled] = useState(false);
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState<"super-chat" | "dossier">("super-chat");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -363,6 +367,7 @@ export default function Community() {
             }
             onClick={() => {
               if (!hasMfo) {
+                setUpgradeFeature("super-chat");
                 setUpgradeDialogOpen(true);
                 return;
               }
@@ -371,11 +376,12 @@ export default function Community() {
             disabled={sending}
             className="shrink-0 gap-1.5 rounded-full px-3"
           >
-            {hasMfo ? (
-              <Sparkles className="size-4" aria-hidden="true" />
-            ) : (
-              <LockKeyhole className="size-4" aria-hidden="true" />
-            )}
+            <span className="relative inline-flex">
+              <Zap className="size-4" aria-hidden="true" />
+              {!hasMfo && (
+                <LockKeyhole className="absolute -bottom-1 -right-1 size-2.5 rounded-full bg-background" aria-hidden="true" />
+              )}
+            </span>
             <span className="hidden text-xs sm:inline">Super Chat</span>
           </Button>
           {emojiPickerOpen && (
@@ -426,6 +432,7 @@ export default function Community() {
             disabled={sending}
             onClick={() => {
               if (!hasMfo) {
+                setUpgradeFeature("dossier");
                 setUpgradeDialogOpen(true);
                 return;
               }
@@ -433,11 +440,12 @@ export default function Community() {
             }}
             className="shrink-0 rounded-full text-muted-foreground"
           >
-            {hasMfo ? (
+            <span className="relative inline-flex">
               <Paperclip className="size-5" aria-hidden="true" />
-            ) : (
-              <LockKeyhole className="size-5" aria-hidden="true" />
-            )}
+              {!hasMfo && (
+                <LockKeyhole className="absolute -bottom-1 -right-1 size-2.5 rounded-full bg-background" aria-hidden="true" />
+              )}
+            </span>
           </Button>
           <Button
             type="button"
@@ -491,14 +499,25 @@ export default function Community() {
       <Dialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>Super Chat exclusivo</DialogTitle>
+            <DialogTitle>
+              {upgradeFeature === "super-chat"
+                ? "Super Chat Exclusivo"
+                : "Envio de Dossiês Exclusivo"}
+            </DialogTitle>
             <DialogDescription>
-              O Super Chat e o envio de Dossiês são exclusivos do Modo Formador de Opinião. Faça o upgrade para acessar esses recursos.
+              {upgradeFeature === "super-chat"
+                ? "Destaque visualmente suas mensagens no chat para ter mais visibilidade."
+                : "Anexe documentos e fontes oficiais para embasar seus argumentos."}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button onClick={() => setUpgradeDialogOpen(false)}>
-              Entendi
+            <Button
+              onClick={() => {
+                setUpgradeDialogOpen(false);
+                navigate("/explorar");
+              }}
+            >
+              Ver opções de upgrade
             </Button>
           </DialogFooter>
         </DialogContent>

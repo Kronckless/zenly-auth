@@ -37,6 +37,17 @@ create policy "MFO pode enviar dossies"
   );
 
 alter table public.profiles enable row level security;
+alter table public.mensagens_comunidade enable row level security;
+
+grant select on public.mensagens_comunidade to authenticated;
+
+drop policy if exists "Usuários autenticados podem ler mensagens da comunidade"
+  on public.mensagens_comunidade;
+create policy "Usuários autenticados podem ler mensagens da comunidade"
+  on public.mensagens_comunidade
+  for select
+  to authenticated
+  using (true);
 
 revoke all on public.profiles from anon;
 grant select, insert, update on public.profiles to authenticated;
