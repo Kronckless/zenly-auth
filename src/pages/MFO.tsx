@@ -26,7 +26,6 @@ function formatFileSize(bytes: number) {
 
 export default function MFO() {
   const navigate = useNavigate();
-  const [hasMfo, setHasMfo] = useState(false);
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,28 +49,6 @@ export default function MFO() {
 
       if (userError || !user) {
         setError("Entre na sua conta para acessar esta área.");
-        setLoading(false);
-        return;
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("has_mfo")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (!active) return;
-
-      if (profileError) {
-        setError("Não foi possível verificar seu acesso ao MFO.");
-        setLoading(false);
-        return;
-      }
-
-      const member = profile?.has_mfo === true;
-      setHasMfo(member);
-
-      if (!member) {
         setLoading(false);
         return;
       }
@@ -127,30 +104,6 @@ export default function MFO() {
           <div className="rounded-xl border border-border p-5">
             <p className="text-sm text-destructive" role="alert">{error}</p>
           </div>
-        ) : !hasMfo ? (
-          <Card className="border-border shadow-sm">
-            <CardHeader>
-              <div className="mb-2 flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground">
-                <LockKeyhole className="size-5" aria-hidden="true" />
-              </div>
-              <CardTitle className="font-display text-2xl">
-                Um espaço para ampliar sua voz
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="leading-relaxed text-muted-foreground">
-                O Modo Formador de Opinião reúne dossiês e destaques da comunidade,
-                além de liberar recursos especiais no chat.
-              </p>
-              <Button
-                type="button"
-                className="mt-5"
-                onClick={() => navigate("/explorar")}
-              >
-                Conhecer opções de upgrade
-              </Button>
-            </CardContent>
-          </Card>
         ) : messages.length === 0 ? (
           <p className="rounded-xl border border-border p-6 text-sm text-muted-foreground">
             Ainda não há dossiês ou destaques para exibir.

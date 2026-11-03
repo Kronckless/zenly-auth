@@ -1,34 +1,8 @@
 import { useEffect, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Award, House, MessageSquare, Search, Shield } from "lucide-react";
-import { supabase } from "@/lib/supabase";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
-
-function isDevelopmentPreview() {
-  if (typeof window === "undefined") return false;
-
-  const hostname = window.location.hostname.toLowerCase();
-  const isLocalOrSandbox =
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname.includes("stackblitz") ||
-    hostname.includes("webcontainer") ||
-    hostname.includes("codesandbox");
-
-  const isZenlyPreview = Array.from(window.location.ancestorOrigins ?? []).some(
-    (origin) => {
-      try {
-        const ancestorHostname = new URL(origin).hostname;
-        return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
-      } catch {
-        return false;
-      }
-    },
-  );
-
-  return import.meta.env.DEV || isLocalOrSandbox || isZenlyPreview;
-}
 
 const tabs = [
   { label: "Início", to: "/", Icon: House },
@@ -40,49 +14,6 @@ const tabs = [
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [hasMfo, setHasMfo] = useState(false);
-  const [isDevTestEnabled, setIsDevTestEnabled] = useState(isDevelopmentPreview);
-
-  useEffect(() => {
-    if (isDevelopmentPreview()) return;
-
-    if (!supabase) {
-      setHasMfo(false);
-      return;
-    }
-
-    let active = true;
-
-    async function loadMfoAccess(userId: string | null) {
-      if (!userId) {
-        if (active) setHasMfo(false);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("has_mfo")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (active) setHasMfo(!error && data?.has_mfo === true);
-    }
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      void loadMfoAccess(session?.user.id ?? null);
-    });
-
-    void supabase.auth.getUser().then(({ data: { user } }) => {
-      void loadMfoAccess(user?.id ?? null);
-    });
-
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, []);
 
   useEffect(() => {
     function updateUnreadCount() {
@@ -107,13 +38,7 @@ export default function AppNavigation() {
   }, []);
 
   const unreadLabel = unreadCount > 99 ? "+99" : String(unreadCount);
-  const mobileTabs = [
-    tabs[2],
-    ...(hasMfo || (isDevelopmentPreview() && isDevTestEnabled) ? [tabs[4]] : []),
-    tabs[3],
-    tabs[0],
-    tabs[1],
-  ];
+  const mobileTabs = [tabs[2], tabs[4], tabs[3], tabs[0], tabs[1]];
 
   return (
     <>
@@ -152,16 +77,6 @@ export default function AppNavigation() {
         </nav>
       </header>
 
-      {isDevelopmentPreview() && (
-        <button
-          type="button"
-          aria-pressed={isDevTestEnabled}
-          onClick={() => setIsDevTestEnabled((current) => !current)}
-          className="fixed right-4 top-[calc(env(safe-area-inset-top)+1rem)] z-[9999] rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          Teste MFO: {isDevTestEnabled ? "Ativo" : "Inativo"}
-        </button>
-      )}
 
       <nav
         aria-label="Navegação principal"
