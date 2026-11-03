@@ -378,7 +378,7 @@ export default function Community() {
       }
       setError("Não foi possível enviar sua mensagem. Tente novamente.");
     } else {
-      if (isSuperChatMessage && insertedMessage?.id) {
+      if (isSuperChatMessage && insertedMessage?.id && !mfoFilterEnabled) {
         setPinnedSuperChatId(insertedMessage.id);
         setAnimatingSuperChatId(insertedMessage.id);
 
@@ -430,7 +430,7 @@ export default function Community() {
     setSending(false);
   };
 
-  const orderedMessages = pinnedSuperChatId
+  const orderedMessages = pinnedSuperChatId && !mfoFilterEnabled
     ? [
         ...messages.filter((message) => message.id === pinnedSuperChatId),
         ...messages.filter((message) => message.id !== pinnedSuperChatId),
@@ -540,15 +540,19 @@ export default function Community() {
                   <article
                     key={message.id}
                     className={`flex ${isOwnMessage ? "justify-end" : "justify-start"} ${
-                      message.id === pinnedSuperChatId ? "sticky top-0 z-10" : ""
+                      !mfoFilterEnabled && message.id === pinnedSuperChatId
+                        ? "sticky top-0 z-10"
+                        : ""
                     }`}
                   >
                     <div
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%] ${
                         message.is_super_chat
-                          ? message.id === animatingSuperChatId
+                          ? !mfoFilterEnabled && message.id === animatingSuperChatId
                             ? "border-2 border-transparent bg-gradient-to-r from-primary via-destructive to-primary text-primary-foreground animate-[pulse_1.5s_ease-in-out]"
-                            : "border-2 border-destructive/70 bg-gradient-to-br from-primary/15 to-background text-foreground"
+                            : mfoFilterEnabled
+                              ? "border-2 border-destructive bg-gradient-to-br from-destructive/10 to-background text-foreground"
+                              : "border-2 border-destructive/70 bg-gradient-to-br from-primary/15 to-background text-foreground"
                           : isOwnMessage
                             ? "rounded-br-md bg-primary/15 text-foreground"
                             : "rounded-bl-md border border-border bg-card text-card-foreground"
