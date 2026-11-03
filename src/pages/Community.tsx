@@ -17,6 +17,7 @@ import {
   Download,
   FileText,
   LockKeyhole,
+  Crosshair,
   MessageSquare,
   Paperclip,
   Send,
@@ -468,30 +469,44 @@ export default function Community() {
             {mfoFilterEnabled && (
               <Badge variant="secondary" className="mt-1 h-5 gap-1 px-2 text-[10px]">
                 <Sparkles aria-hidden="true" />
-                Apenas análises MFO
+                FOCO ATIVADO
               </Badge>
             )}
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            aria-pressed={mfoFilterEnabled}
-            aria-label="Alternar Modo Foco MFO"
-            onClick={() => setMfoFilterEnabled((enabled) => !enabled)}
-            className={`h-9 shrink-0 gap-1.5 rounded-full px-3 text-xs transition-all duration-300 ease-out hover:scale-[1.02] active:scale-95 ${
-              mfoFilterEnabled
-                ? "border-primary/30 bg-primary/10 text-primary shadow-[inset_0_1px_0_hsl(var(--background)/0.7)] backdrop-blur-md hover:bg-primary/15"
-                : "border-border bg-muted/60 text-muted-foreground hover:bg-muted"
-            }`}
+          <div
+            role="group"
+            aria-label="Modo de visualização do chat"
+            className="relative grid h-10 w-[4.75rem] shrink-0 grid-cols-2 rounded-full border border-border bg-muted/70 p-1 shadow-inner"
           >
-            <Sparkles
+            <span
               aria-hidden="true"
-              className={`size-3.5 transition-all duration-300 ${
-                mfoFilterEnabled ? "scale-110 text-primary" : "text-muted-foreground"
+              className={`pointer-events-none absolute left-1 top-1 size-8 rounded-full bg-primary shadow-[inset_0_1px_2px_hsl(var(--background)/0.35),0_1px_4px_hsl(var(--foreground)/0.12)] transition-transform duration-300 ease-out ${
+                mfoFilterEnabled ? "translate-x-8" : "translate-x-0"
               }`}
             />
-            Modo Foco MFO
-          </Button>
+            <button
+              type="button"
+              aria-label="Chat geral"
+              aria-pressed={!mfoFilterEnabled}
+              onClick={() => setMfoFilterEnabled(false)}
+              className={`relative z-10 flex size-8 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                !mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <MessageSquare className="size-4" aria-hidden="true" />
+            </button>
+            <button
+              type="button"
+              aria-label="Modo Foco MFO"
+              aria-pressed={mfoFilterEnabled}
+              onClick={() => setMfoFilterEnabled(true)}
+              className={`relative z-10 flex size-8 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Crosshair className="size-4" aria-hidden="true" />
+            </button>
+          </div>
         </header>
 
         <div
