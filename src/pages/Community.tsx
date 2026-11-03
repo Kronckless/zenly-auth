@@ -440,10 +440,26 @@ export default function Community() {
     : orderedMessages;
 
   return (
-    <main className="flex h-dvh flex-col overflow-hidden bg-background">
+    <main
+      className={`flex h-dvh flex-col overflow-hidden transition-colors duration-300 ${
+        mfoFilterEnabled ? "bg-muted/50" : "bg-background"
+      }`}
+    >
       <AppNavigation />
-      <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x border-border bg-muted/30 pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
-        <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-4 py-3 sm:px-6">
+      <section
+        className={`mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x pb-[calc(5rem+env(safe-area-inset-bottom))] transition-all duration-300 sm:pb-0 ${
+          mfoFilterEnabled
+            ? "border-primary/20 bg-muted/40 shadow-xl ring-1 ring-inset ring-border/60 backdrop-blur-xl"
+            : "border-border bg-muted/30"
+        }`}
+      >
+        <header
+          className={`flex shrink-0 items-center gap-3 border-b border-border px-4 py-3 transition-all duration-300 sm:px-6 ${
+            mfoFilterEnabled
+              ? "bg-background/75 shadow-sm backdrop-blur-xl"
+              : "bg-background"
+          }`}
+        >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
             <UsersRound className="size-5" aria-hidden="true" />
           </div>
@@ -583,7 +599,11 @@ export default function Community() {
 
         <form
           onSubmit={sendMessage}
-          className="relative flex shrink-0 items-center gap-2 border-t border-border bg-background px-3 py-3 sm:px-5"
+          className={`relative flex shrink-0 items-center gap-2 border-t border-border px-3 py-3 transition-all duration-300 sm:px-5 ${
+            mfoFilterEnabled
+              ? "bg-background/75 shadow-[0_-4px_18px_hsl(var(--foreground)/0.04)] backdrop-blur-xl"
+              : "bg-background"
+          }`}
         >
           <Button
             type="button"
