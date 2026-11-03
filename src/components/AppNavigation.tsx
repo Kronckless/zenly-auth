@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Award, House, MessageSquare, Search, Shield } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
 
@@ -14,6 +15,46 @@ const tabs = [
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
+  const [hasMfo, setHasMfo] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) {
+      setHasMfo(false);
+      return;
+    }
+
+    let active = true;
+
+    async function loadMfoAccess(userId: string | null) {
+      if (!userId) {
+        if (active) setHasMfo(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("has_mfo")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (active) setHasMfo(!error && data?.has_mfo === true);
+    }
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      void loadMfoAccess(session?.user.id ?? null);
+    });
+
+    void supabase.auth.getUser().then(({ data: { user } }) => {
+      void loadMfoAccess(user?.id ?? null);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     function updateUnreadCount() {
@@ -38,6 +79,13 @@ export default function AppNavigation() {
   }, []);
 
   const unreadLabel = unreadCount > 99 ? "+99" : String(unreadCount);
+  const mobileTabs = [
+    tabs[2],
+    ...(hasMfo ? [tabs[4]] : []),
+    tabs[3],
+    tabs[0],
+    tabs[1],
+  ];
 
   return (
     <>
@@ -80,7 +128,7 @@ export default function AppNavigation() {
         aria-label="Navegação principal"
         className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-50 flex h-16 rounded-full border border-[#D9D9DE] bg-[#F5F5F7] px-1.5 shadow-[0_4px_18px_rgba(0,0,0,0.10)] sm:hidden"
       >
-        {[tabs[2], tabs[4], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => (
+        {mobileTabs.map(({ label, to, Icon }) => (
           <NavLink
             key={to}
             to={to}

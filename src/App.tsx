@@ -32,6 +32,7 @@ const AuthContext = createContext<{
   session: Session | null;
   loading: boolean;
   hasMfo: boolean;
+  hasMfoLoading: boolean;
 } | null>(null);
 
 function canSkipAuth() {
@@ -58,6 +59,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasMfo, setHasMfo] = useState(false);
+  const [hasMfoLoading, setHasMfoLoading] = useState(true);
 
   useEffect(() => {
     if (!supabase) {
@@ -94,9 +96,11 @@ function AuthProvider({ children }: { children: ReactNode }) {
     async function loadProfileFlag() {
       if (!supabase || !user) {
         setHasMfo(false);
+        setHasMfoLoading(false);
         return;
       }
 
+      setHasMfoLoading(true);
       const { data, error } = await supabase
         .from("profiles")
         .select("has_mfo")
@@ -105,6 +109,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
 
       if (active) {
         setHasMfo(!error && data?.has_mfo === true);
+        setHasMfoLoading(false);
       }
     }
 
@@ -116,7 +121,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, hasMfo }}>
+    <AuthContext.Provider value={{ user, session, loading, hasMfo, hasMfoLoading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -156,6 +161,16 @@ function GuestOnly() {
 
   return user ? <Navigate to="/home" replace /> : <Outlet />;
 }
+
+function MfoOnlyRoute() {
+  const { hasMfo, hasMfoLoading } = useAuth();
+
+  if (hasMfoLoading) {
+    return <div className="min-h-screen bg-background" role="status" aria-label="Verificando acesso ao MFO" />;
+  }
+
+  return hasMfo ? <Outlet /> : <Navigate to="/" replace />;
+}
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import AllNews from "./pages/AllNews";
@@ -179,7 +194,9 @@ export default function App() {
             <Route path="/comunidade" element={<Community />} />
             <Route path="/qg" element={<QG />} />
             <Route path="/explorar" element={<Explore />} />
-            <Route path="/mfo" element={<MFO />} />
+            <Route element={<MfoOnlyRoute />}>
+              <Route path="/mfo" element={<MFO />} />
+            </Route>
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
