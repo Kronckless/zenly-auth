@@ -12,7 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
+
 import {
   Download,
   FileText,
@@ -472,14 +472,26 @@ export default function Community() {
               </Badge>
             )}
           </div>
-          <label className="flex shrink-0 items-center gap-2 text-xs font-medium text-muted-foreground">
-            <span className="hidden sm:inline">Somente MFO</span>
-            <Switch
-              checked={mfoFilterEnabled}
-              onCheckedChange={setMfoFilterEnabled}
-              aria-label="Filtrar mensagens para mostrar somente participantes MFO"
+          <Button
+            type="button"
+            variant="outline"
+            aria-pressed={mfoFilterEnabled}
+            aria-label="Alternar Modo Foco MFO"
+            onClick={() => setMfoFilterEnabled((enabled) => !enabled)}
+            className={`h-9 shrink-0 gap-1.5 rounded-full px-3 text-xs transition-all duration-300 ease-out hover:scale-[1.02] active:scale-95 ${
+              mfoFilterEnabled
+                ? "border-primary/30 bg-primary/10 text-primary shadow-[inset_0_1px_0_hsl(var(--background)/0.7)] backdrop-blur-md hover:bg-primary/15"
+                : "border-border bg-muted/60 text-muted-foreground hover:bg-muted"
+            }`}
+          >
+            <Sparkles
+              aria-hidden="true"
+              className={`size-3.5 transition-all duration-300 ${
+                mfoFilterEnabled ? "scale-110 text-primary" : "text-muted-foreground"
+              }`}
             />
-          </label>
+            Modo Foco MFO
+          </Button>
         </header>
 
         <div
