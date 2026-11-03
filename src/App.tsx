@@ -162,6 +162,7 @@ import AllNews from "./pages/AllNews";
 import Community from "./pages/Community";
 import QG from "./pages/QG";
 import Explore from "./pages/Explore";
+import MFO from "./pages/MFO";
 
 export default function App() {
   return (
@@ -178,6 +179,7 @@ export default function App() {
             <Route path="/comunidade" element={<Community />} />
             <Route path="/qg" element={<QG />} />
             <Route path="/explorar" element={<Explore />} />
+            <Route path="/mfo" element={<MFO />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

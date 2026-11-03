@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { House, MessageSquare, Search, Shield } from "lucide-react";
+import { Award, House, MessageSquare, Search, Shield } from "lucide-react";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
 
@@ -9,6 +9,7 @@ const tabs = [
   { label: "Chat", to: "/comunidade", Icon: MessageSquare },
   { label: "QG", to: "/qg", Icon: Shield },
   { label: "Explorar", to: "/explorar", Icon: Search },
+  { label: "MFO", to: "/mfo", Icon: Award },
 ];
 
 export default function AppNavigation() {
@@ -45,7 +46,7 @@ export default function AppNavigation() {
           aria-label="Navegação principal"
           className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:gap-8 sm:px-5 lg:px-8"
         >
-          {tabs.map(({ label, to, Icon }) => (
+          {tabs.filter(({ to }) => to !== "/mfo").map(({ label, to, Icon }) => (
             <NavLink
               key={to}
               to={to}
@@ -79,7 +80,7 @@ export default function AppNavigation() {
         aria-label="Navegação principal"
         className="fixed inset-x-3 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-50 flex h-16 rounded-full border border-[#D9D9DE] bg-[#F5F5F7] px-1.5 shadow-[0_4px_18px_rgba(0,0,0,0.10)] sm:hidden"
       >
-        {[tabs[2], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => (
+        {[tabs[2], tabs[4], tabs[3], tabs[0], tabs[1]].map(({ label, to, Icon }) => (
           <NavLink
             key={to}
             to={to}
