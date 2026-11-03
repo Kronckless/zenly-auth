@@ -469,7 +469,11 @@ export default function Community() {
         <div
           ref={messageListRef}
           aria-live="polite"
-          className="min-h-0 flex-1 overflow-y-auto px-3 py-5 sm:px-6"
+          className={`min-h-0 flex-1 overflow-y-auto px-3 py-5 transition-all duration-300 ease-in-out sm:px-6 ${
+            mfoFilterEnabled
+              ? "bg-background/70 backdrop-blur-md"
+              : "bg-transparent backdrop-blur-0"
+          }`}
         >
           {loading ? (
             <p className="py-4 text-center text-sm text-muted-foreground">
