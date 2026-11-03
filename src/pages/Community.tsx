@@ -43,6 +43,52 @@ function formatFileSize(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
+const SUPER_CHAT_DAILY_LIMIT = 10;
+
+type SuperChatUsage = {
+  day: string;
+  count: number;
+  lastSentAt: number;
+};
+
+function getLocalDayKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function getSuperChatStorageKey(userId: string) {
+  return `community-super-chat-usage-${userId}`;
+}
+
+function readSuperChatUsage(userId: string): SuperChatUsage {
+  const today = getLocalDayKey();
+
+  try {
+    const stored = JSON.parse(
+      window.localStorage.getItem(getSuperChatStorageKey(userId)) || "null",
+    ) as Partial<SuperChatUsage> | null;
+
+    if (!stored || stored.day !== today) {
+      return { day: today, count: 0, lastSentAt: 0 };
+    }
+
+    return {
+      day: today,
+      count: Math.max(0, Number(stored.count) || 0),
+      lastSentAt: Math.max(0, Number(stored.lastSentAt) || 0),
+    };
+  } catch {
+    return { day: today, count: 0, lastSentAt: 0 };
+  }
+}
+
+function formatCooldown(seconds: number) {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
 export default function Community() {
   const navigate = useNavigate();
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
@@ -52,6 +98,9 @@ export default function Community() {
   const [messageText, setMessageText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [superChatEnabled, setSuperChatEnabled] = useState(false);
+  const [superChatCooldownSeconds, setSuperChatCooldownSeconds] = useState(0);
+  const [dailySuperChatCount, setDailySuperChatCount] = useState(0);
+  const [superChatLimitMessage, setSuperChatLimitMessage] = useState("");
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<"super-chat" | "dossier">("super-chat");
   const [loading, setLoading] = useState(true);
@@ -61,6 +110,42 @@ export default function Community() {
   const messageListRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const quickEmojis = ["😀", "😂", "❤️", "👍", "🎉", "🙏"];
+
+  useEffect(() => {
+    if (!userId) {
+      setSuperChatCooldownSeconds(0);
+      setDailySuperChatCount(0);
+      setSuperChatLimitMessage("");
+      return;
+    }
+
+    const refreshSuperChatStatus = () => {
+      const usage = readSuperChatUsage(userId);
+      const remainingMs = Math.max(
+        0,
+        SUPER_CHAT_COOLDOWN_MS - (Date.now() - usage.lastSentAt),
+      );
+
+      setDailySuperChatCount(usage.count);
+      setSuperChatCooldownSeconds(Math.ceil(remainingMs / 1000));
+      setSuperChatLimitMessage(
+        usage.count >= SUPER_CHAT_DAILY_LIMIT
+          ? "Limite diário de 10 Super Chats atingido. Volte amanhã!"
+          : "",
+      );
+
+      if (
+        usage.count >= SUPER_CHAT_DAILY_LIMIT ||
+        remainingMs > 0
+      ) {
+        setSuperChatEnabled(false);
+      }
+    };
+
+    refreshSuperChatStatus();
+    const interval = window.setInterval(refreshSuperChatStatus, 1000);
+    return () => window.clearInterval(interval);
+  }, [userId]);
 
   useEffect(() => {
     const messageList = messageListRef.current;
@@ -174,6 +259,29 @@ export default function Community() {
       return;
     }
 
+    const isSuperChatMessage = hasMfo && superChatEnabled;
+    if (isSuperChatMessage) {
+      const usage = readSuperChatUsage(userId);
+      const remainingMs = Math.max(
+        0,
+        SUPER_CHAT_COOLDOWN_MS - (Date.now() - usage.lastSentAt),
+      );
+
+      if (usage.count >= SUPER_CHAT_DAILY_LIMIT) {
+        setSuperChatLimitMessage(
+          "Limite diário de 10 Super Chats atingido. Volte amanhã!",
+        );
+        setSuperChatEnabled(false);
+        return;
+      }
+
+      if (remainingMs > 0) {
+        setSuperChatCooldownSeconds(Math.ceil(remainingMs / 1000));
+        setSuperChatEnabled(false);
+        return;
+      }
+    }
+
     setSending(true);
     setError("");
 
@@ -221,7 +329,7 @@ export default function Community() {
         user_id: userId,
         nome_usuario: profileName || "Membro",
         conteudo: content,
-        is_super_chat: hasMfo && superChatEnabled,
+        is_super_chat: isSuperChatMessage,
         dossier_url: dossierUrl,
         dossier_name: dossierName,
         dossier_size: dossierSize,
@@ -237,6 +345,33 @@ export default function Community() {
       setMessageText("");
       setSelectedFile(null);
       setSuperChatEnabled(false);
+
+      if (isSuperChatMessage) {
+        const previousUsage = readSuperChatUsage(userId);
+        const nextUsage: SuperChatUsage = {
+          day: getLocalDayKey(),
+          count: previousUsage.count + 1,
+          lastSentAt: Date.now(),
+        };
+
+        try {
+          window.localStorage.setItem(
+            getSuperChatStorageKey(userId),
+            JSON.stringify(nextUsage),
+          );
+        } catch {
+          // Keep the chat usable if browser storage is unavailable.
+        }
+
+        setDailySuperChatCount(nextUsage.count);
+        setSuperChatCooldownSeconds(Math.ceil(SUPER_CHAT_COOLDOWN_MS / 1000));
+        setSuperChatLimitMessage(
+          nextUsage.count >= SUPER_CHAT_DAILY_LIMIT
+            ? "Limite diário de 10 Super Chats atingido. Volte amanhã!"
+            : "",
+        );
+      }
+
       await loadMessages();
     }
 
@@ -351,6 +486,11 @@ export default function Community() {
             {error}
           </p>
         )}
+        {superChatLimitMessage && (
+          <p role="status" className="shrink-0 px-4 pb-2 text-center text-xs text-muted-foreground">
+            {superChatLimitMessage}
+          </p>
+        )}
 
         <form
           onSubmit={sendMessage}
@@ -373,7 +513,12 @@ export default function Community() {
               }
               setSuperChatEnabled((enabled) => !enabled);
             }}
-            disabled={sending}
+            disabled={
+              sending ||
+              (hasMfo &&
+                (superChatCooldownSeconds > 0 ||
+                  dailySuperChatCount >= SUPER_CHAT_DAILY_LIMIT))
+            }
             className="shrink-0 gap-1.5 rounded-full px-3"
           >
             <span className="relative inline-flex">
@@ -382,7 +527,11 @@ export default function Community() {
                 <LockKeyhole className="absolute -bottom-1 -right-1 size-2.5 rounded-full bg-background" aria-hidden="true" />
               )}
             </span>
-            <span className="hidden text-xs sm:inline">Super Chat</span>
+            <span className="hidden text-xs sm:inline">
+              {superChatCooldownSeconds > 0
+                ? `Aguarde ${formatCooldown(superChatCooldownSeconds)}`
+                : "Super Chat"}
+            </span>
           </Button>
           {emojiPickerOpen && (
             <div
