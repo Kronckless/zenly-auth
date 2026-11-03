@@ -5,6 +5,31 @@ import { supabase } from "@/lib/supabase";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
 
+function isDevelopmentPreview() {
+  if (typeof window === "undefined") return false;
+
+  const hostname = window.location.hostname.toLowerCase();
+  const isLocalOrSandbox =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.includes("stackblitz") ||
+    hostname.includes("webcontainer") ||
+    hostname.includes("codesandbox");
+
+  const isZenlyPreview = Array.from(window.location.ancestorOrigins ?? []).some(
+    (origin) => {
+      try {
+        const ancestorHostname = new URL(origin).hostname;
+        return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
+      } catch {
+        return false;
+      }
+    },
+  );
+
+  return import.meta.env.DEV || isLocalOrSandbox || isZenlyPreview;
+}
+
 const tabs = [
   { label: "Início", to: "/", Icon: House },
   { label: "Chat", to: "/comunidade", Icon: MessageSquare },
@@ -15,9 +40,11 @@ const tabs = [
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [hasMfo, setHasMfo] = useState(false);
+  const [hasMfo, setHasMfo] = useState(isDevelopmentPreview);
 
   useEffect(() => {
+    if (isDevelopmentPreview()) return;
+
     if (!supabase) {
       setHasMfo(false);
       return;
@@ -123,6 +150,17 @@ export default function AppNavigation() {
           ))}
         </nav>
       </header>
+
+      {isDevelopmentPreview() && (
+        <button
+          type="button"
+          aria-pressed={hasMfo}
+          onClick={() => setHasMfo((current) => !current)}
+          className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] right-4 z-[60] rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          Teste MFO: {hasMfo ? "Ativo" : "Inativo"}
+        </button>
+      )}
 
       <nav
         aria-label="Navegação principal"
