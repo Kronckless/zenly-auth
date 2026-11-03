@@ -80,21 +80,25 @@ export default function MFO() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
+    <main className="min-h-screen bg-muted pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
       <AppNavigation />
-      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
-        <header className="mb-8">
-          <Badge variant="secondary" className="mb-3 gap-1.5">
-            <Sparkles className="size-3.5" aria-hidden="true" />
-            Modo Formador de Opinião
-          </Badge>
-          <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Mural MFO
-          </h1>
-          <p className="mt-2 text-muted-foreground">
-            Dossiês compartilhados e destaques da comunidade.
-          </p>
-        </header>
+      <div className="mx-auto max-w-2xl space-y-4 px-4 py-6 sm:px-6 sm:py-8">
+        <Card className="rounded-xl border-border bg-card shadow-sm">
+          <CardContent className="p-5 sm:p-6">
+            <header>
+              <Badge variant="secondary" className="mb-3 gap-1.5">
+                <Sparkles className="size-3.5" aria-hidden="true" />
+                Modo Formador de Opinião
+              </Badge>
+              <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+                Mural MFO
+              </h1>
+              <p className="mt-2 text-muted-foreground">
+                Dossiês compartilhados e destaques da comunidade.
+              </p>
+            </header>
+          </CardContent>
+        </Card>
 
         {loading ? (
           <p className="py-8 text-sm text-muted-foreground" role="status">
@@ -114,9 +118,7 @@ export default function MFO() {
               <Card
                 key={message.id}
                 className={
-                  message.is_super_chat
-                    ? "border-2 border-primary/40 bg-gradient-to-br from-primary/10 to-background"
-                    : "border-border"
+                  "rounded-xl border-border bg-card shadow-sm"
                 }
               >
                 <CardContent className="space-y-3 p-4 sm:p-5">
