@@ -156,7 +156,7 @@ export default function AppNavigation() {
           type="button"
           aria-pressed={hasMfo}
           onClick={() => setHasMfo((current) => !current)}
-          className="fixed bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] right-4 z-[60] rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="fixed right-4 top-[calc(env(safe-area-inset-top)+1rem)] z-[9999] rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Teste MFO: {hasMfo ? "Ativo" : "Inativo"}
         </button>
