@@ -65,70 +65,27 @@ export default function MFO() {
     let active = true;
 
     async function loadMfoFeed() {
-      if (isPreviewOrDevelopment()) {
-        const now = Date.now();
-        setMessages([
-          {
-            id: "mfo-example-1",
-            user_id: "example-user-1",
-            nome_usuario: "Marina Costa",
-            conteudo:
-              "Exemplo de publicação: quais sinais mostram que uma mudança econômica pode afetar o cotidiano? Compartilhe fontes e análises para abrir a conversa.",
-            created_at: new Date(now - 1000 * 60 * 18).toISOString(),
-            is_super_chat: false,
-            dossier_url: null,
-            dossier_name: null,
-            dossier_size: null,
-            isExample: true,
-          },
-          {
-            id: "mfo-example-2",
-            user_id: "example-user-2",
-            nome_usuario: "Rafael Mendes",
-            conteudo:
-              "Exemplo de dossiê: panorama de temas em debate, com contexto e perguntas para aprofundar a análise da comunidade.",
-            created_at: new Date(now - 1000 * 60 * 60 * 2).toISOString(),
-            is_super_chat: false,
-            dossier_url: null,
-            dossier_name: null,
-            dossier_size: null,
-            isExample: true,
-          },
-          {
-            id: "mfo-example-3",
-            user_id: "example-user-3",
-            nome_usuario: "Ana Ribeiro",
-            conteudo:
-              "Exemplo de publicação: uma boa análise começa por comparar diferentes perspectivas e conferir os dados disponíveis.",
-            created_at: new Date(now - 1000 * 60 * 60 * 5).toISOString(),
-            is_super_chat: false,
-            dossier_url: null,
-            dossier_name: null,
-            dossier_size: null,
-            isExample: true,
-          },
-        ]);
-        setLoading(false);
-        return;
-      }
+      const isPreview = isPreviewOrDevelopment();
 
       if (!supabase) {
-        setError("O serviço da comunidade não está configurado.");
+        if (!isPreview) setError("O serviço da comunidade não está configurado.");
         setLoading(false);
         return;
       }
 
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
+      if (!isPreview) {
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
 
-      if (!active) return;
+        if (!active) return;
 
-      if (userError || !user) {
-        setError("Entre na sua conta para acessar esta área.");
-        setLoading(false);
-        return;
+        if (userError || !user) {
+          setError("Entre na sua conta para acessar esta área.");
+          setLoading(false);
+          return;
+        }
       }
 
       const { data, error: messagesError } = await supabase
@@ -136,7 +93,6 @@ export default function MFO() {
         .select(
           "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
         )
-        .or("dossier_url.not.is.null,is_super_chat.eq.true")
         .order("created_at", { ascending: false })
         .limit(50);
 
@@ -157,24 +113,42 @@ export default function MFO() {
     };
   }, []);
 
-  function publishPost() {
+  async function publishPost() {
     const content = postText.trim();
-    if (!content && !selectedFile) return;
+    if ((!content && !selectedFile) || !supabase) return;
 
-    const now = new Date().toISOString();
-    const newPost: CommunityMessage = {
-      id: `local-post-${Date.now()}`,
-      user_id: "current-user",
-      nome_usuario: "Você",
-      conteudo: `${hasCategory ? "#Análise " : ""}${content || "Dossiê compartilhado."}`,
-      created_at: now,
-      is_super_chat: false,
-      dossier_url: null,
-      dossier_name: selectedFile?.name ?? null,
-      dossier_size: selectedFile?.size ?? null,
-    };
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    setMessages((current) => [newPost, ...current]);
+    if (!user) {
+      setError("Entre na sua conta para publicar.");
+      return;
+    }
+
+    const { data, error: publishError } = await supabase
+      .from("mensagens_comunidade")
+      .insert({
+        user_id: user.id,
+        nome_usuario:
+          user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
+        conteudo: `${hasCategory ? "#Análise " : ""}${content || "Dossiê compartilhado."}`,
+        is_super_chat: false,
+        dossier_url: null,
+        dossier_name: selectedFile?.name ?? null,
+        dossier_size: selectedFile?.size ?? null,
+      })
+      .select(
+        "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
+      )
+      .single();
+
+    if (publishError || !data) {
+      setError("Não foi possível publicar agora. Tente novamente.");
+      return;
+    }
+
+    setMessages((current) => [data as CommunityMessage, ...current]);
     setPostText("");
     setSelectedFile(null);
     setHasCategory(false);
@@ -212,7 +186,7 @@ export default function MFO() {
                 <Textarea
                   value={postText}
                   onChange={(event) => setPostText(event.target.value)}
-                  placeholder="No que você deseja analisar hoje?"
+                  placeholder="Qual é a sua opinião ou pauta hoje?"
                   aria-label="Escreva uma publicação"
                   className="min-h-20 resize-y rounded-xl bg-muted/40"
                 />
@@ -282,8 +256,8 @@ export default function MFO() {
             <p className="text-sm text-destructive" role="alert">{error}</p>
           </div>
         ) : messages.length === 0 ? (
-          <p className="rounded-xl border border-border p-6 text-sm text-muted-foreground">
-            Ainda não há dossiês ou destaques para exibir.
+          <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
+            Nenhuma opinião publicada ainda. Seja o primeiro a compartilhar!
           </p>
         ) : (
           <section aria-label="Dossiês e destaques da comunidade" className="space-y-4">
