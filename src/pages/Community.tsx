@@ -41,6 +41,14 @@ type CommunityMessage = {
   author_has_mfo?: boolean;
 };
 
+type PortalArticle = {
+  categoria: string;
+  titulo: string;
+  resumo: string;
+  conteudo_completo: string;
+  created_at: string;
+};
+
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -100,7 +108,11 @@ export default function Community() {
   const [hasMfo, setHasMfo] = useState(false);
   const [mfoFilterEnabled, setMfoFilterEnabled] = useState(false);
   const [messageText, setMessageText] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<PortalArticle | null>(null);
+  const [portalArticles, setPortalArticles] = useState<PortalArticle[]>([]);
+  const [articleDialogOpen, setArticleDialogOpen] = useState(false);
+  const [articleLoading, setArticleLoading] = useState(false);
+  const [articleError, setArticleError] = useState("");
   const [superChatEnabled, setSuperChatEnabled] = useState(false);
   const [superChatCooldownSeconds, setSuperChatCooldownSeconds] = useState(0);
   const [dailySuperChatCount, setDailySuperChatCount] = useState(0);
@@ -114,7 +126,6 @@ export default function Community() {
   const [error, setError] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const messageListRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const quickEmojis = ["😀", "😂", "❤️", "👍", "🎉", "🙏"];
   const pinTimeoutRef = useRef<number | null>(null);
   const animationTimeoutRef = useRef<number | null>(null);
@@ -125,6 +136,36 @@ export default function Community() {
       if (animationTimeoutRef.current !== null) window.clearTimeout(animationTimeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!articleDialogOpen || !supabase) return;
+
+    let active = true;
+    setArticleLoading(true);
+    setArticleError("");
+
+    const loadPortalArticles = async () => {
+      const { data, error: queryError } = await supabase
+        .from("panoramas")
+        .select("categoria, titulo, resumo, conteudo_completo, created_at")
+        .order("created_at", { ascending: false })
+        .limit(30);
+
+      if (!active) return;
+
+      if (queryError) {
+        setArticleError("Não foi possível carregar as matérias do portal.");
+      } else {
+        setPortalArticles((data ?? []) as PortalArticle[]);
+      }
+      setArticleLoading(false);
+    };
+
+    void loadPortalArticles();
+    return () => {
+      active = false;
+    };
+  }, [articleDialogOpen]);
 
   useEffect(() => {
     if (!userId) {
@@ -281,7 +322,7 @@ export default function Community() {
     event.preventDefault();
     const content = messageText.trim();
 
-    if ((!content && !selectedFile) || sending) return;
+    if ((!content && !selectedArticle) || sending) return;
 
     if (!supabase) {
       setError("O serviço de mensagens não está configurado.");
@@ -319,43 +360,9 @@ export default function Community() {
     setSending(true);
     setError("");
 
-    let dossierUrl: string | null = null;
-    let dossierName: string | null = null;
-    let dossierSize: number | null = null;
-    let uploadedPath: string | null = null;
-
-    if (selectedFile) {
-      if (!hasMfo) {
-        setError("O envio de Dossiês é exclusivo do Modo Formador de Opinião.");
-        setSending(false);
-        return;
-      }
-
-      if (selectedFile.size > 20 * 1024 * 1024) {
-        setError("O arquivo deve ter no máximo 20 MB.");
-        setSending(false);
-        return;
-      }
-
-      const safeName = selectedFile.name.replace(/[\\/]/g, "_");
-      uploadedPath = `${userId}/${crypto.randomUUID()}-${safeName}`;
-      const { error: uploadError } = await supabase.storage
-        .from("dossiers")
-        .upload(uploadedPath, selectedFile, {
-          contentType: selectedFile.type || "application/octet-stream",
-          upsert: false,
-        });
-
-      if (uploadError) {
-        setError("Não foi possível enviar o arquivo. Tente novamente.");
-        setSending(false);
-        return;
-      }
-
-      dossierUrl = supabase.storage.from("dossiers").getPublicUrl(uploadedPath).data.publicUrl;
-      dossierName = selectedFile.name;
-      dossierSize = selectedFile.size;
-    }
+    const dossierUrl: string | null = null;
+    const dossierName = selectedArticle?.titulo ?? null;
+    const dossierSize: number | null = null;
 
     const { data: insertedMessage, error: sendError } = await supabase
       .from("mensagens_comunidade")
@@ -373,9 +380,6 @@ export default function Community() {
       .single();
 
     if (sendError) {
-      if (uploadedPath) {
-        await supabase.storage.from("dossiers").remove([uploadedPath]);
-      }
       setError("Não foi possível enviar sua mensagem. Tente novamente.");
     } else {
       if (isSuperChatMessage && insertedMessage?.id && !mfoFilterEnabled) {
@@ -395,7 +399,7 @@ export default function Community() {
       }
 
       setMessageText("");
-      setSelectedFile(null);
+      setSelectedArticle(null);
       setSuperChatEnabled(false);
 
       if (isSuperChatMessage) {
@@ -570,28 +574,44 @@ export default function Community() {
                           </Badge>
                         )}
                       </h2>
-                      {message.dossier_url && (
-                        <a
-                          href={message.dossier_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mb-2 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10"
-                        >
-                          <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                            <FileText className="size-5" aria-hidden="true" />
-                          </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-semibold">
-                              {message.dossier_name || "Dossiê anexado"}
+                      {(message.dossier_url || message.dossier_name) && (
+                        message.dossier_url ? (
+                          <a
+                            href={message.dossier_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mb-2 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3 transition-colors hover:bg-primary/10"
+                          >
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                              <FileText className="size-5" aria-hidden="true" />
                             </span>
-                            <span className="text-xs text-muted-foreground">
-                              {message.dossier_size
-                                ? formatFileSize(message.dossier_size)
-                                : "Arquivo"}
+                            <span className="min-w-0 flex-1">
+                              <span className="block truncate text-sm font-semibold">
+                                {message.dossier_name || "Dossiê anexado"}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {message.dossier_size
+                                  ? formatFileSize(message.dossier_size)
+                                  : "Arquivo"}
+                              </span>
                             </span>
-                          </span>
-                          <Download className="size-4 shrink-0 text-primary" aria-hidden="true" />
-                        </a>
+                            <Download className="size-4 shrink-0 text-primary" aria-hidden="true" />
+                          </a>
+                        ) : (
+                          <div className="mb-2 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 p-3">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                              <FileText className="size-5" aria-hidden="true" />
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className="block text-[10px] font-semibold uppercase tracking-wide text-primary">
+                                Matéria do portal
+                              </span>
+                              <span className="block truncate text-sm font-semibold">
+                                {message.dossier_name}
+                              </span>
+                            </span>
+                          </div>
+                        )
                       )}
                       <div className="flex items-end gap-3">
                         {message.conteudo && (
@@ -695,29 +715,13 @@ export default function Community() {
               ))}
             </div>
           )}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept=".pdf,.doc,.docx,.odt,.rtf,.txt,.xls,.xlsx,.ppt,.pptx,image/*"
-            className="sr-only"
-            onChange={(event) => {
-              const file = event.target.files?.[0] ?? null;
-              if (file && file.size > 20 * 1024 * 1024) {
-                setError("O arquivo deve ter no máximo 20 MB.");
-                setSelectedFile(null);
-              } else {
-                setError("");
-                setSelectedFile(file);
-              }
-              event.currentTarget.value = "";
-            }}
-          />
+
           <Button
             type="button"
             variant={hasMfo ? "ghost" : "outline"}
             size="icon"
-            aria-label={hasMfo ? "Anexar Dossiê" : "Dossiê exclusivo do Modo Formador de Opinião"}
-            title={hasMfo ? "Anexar Dossiê" : "Recurso exclusivo do Modo Formador de Opinião"}
+            aria-label={hasMfo ? "Selecionar matéria do portal" : "Envio de Dossiês exclusivo do Modo Formador de Opinião"}
+            title={hasMfo ? "Selecionar matéria do portal" : "Recurso exclusivo do Modo Formador de Opinião"}
             disabled={sending}
             onClick={() => {
               if (!hasMfo) {
@@ -725,7 +729,7 @@ export default function Community() {
                 setUpgradeDialogOpen(true);
                 return;
               }
-              fileInputRef.current?.click();
+              setArticleDialogOpen(true);
             }}
             className="shrink-0 rounded-full text-muted-foreground"
           >
@@ -749,15 +753,15 @@ export default function Community() {
             <Smile className="size-5" />
           </Button>
           <div className="min-w-0 flex-1">
-            {selectedFile && (
+            {selectedArticle && (
               <div className="mb-1 flex items-center gap-2 px-3 text-xs text-muted-foreground">
                 <FileText className="size-3.5 shrink-0" aria-hidden="true" />
-                <span className="truncate">{selectedFile.name}</span>
+                <span className="truncate">{selectedArticle.titulo}</span>
                 <button
                   type="button"
                   className="font-semibold text-destructive"
-                  aria-label="Remover arquivo anexado"
-                  onClick={() => setSelectedFile(null)}
+                  aria-label="Remover matéria selecionada"
+                  onClick={() => setSelectedArticle(null)}
                 >
                   Remover
                 </button>
@@ -777,13 +781,70 @@ export default function Community() {
             type="submit"
             size="icon"
             aria-label="Enviar mensagem"
-            disabled={(!messageText.trim() && !selectedFile) || sending}
+            disabled={(!messageText.trim() && !selectedArticle) || sending}
             className="size-10 shrink-0 rounded-full"
           >
             <Send className="size-4" />
           </Button>
         </form>
       </section>
+
+      <Dialog open={articleDialogOpen} onOpenChange={setArticleDialogOpen}>
+        <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Selecionar matéria do portal</DialogTitle>
+            <DialogDescription>
+              Escolha uma notícia para citar e iniciar o debate no chat.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-2">
+            {articleLoading ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                Carregando matérias...
+              </p>
+            ) : articleError ? (
+              <p role="alert" className="py-4 text-sm text-destructive">
+                {articleError}
+              </p>
+            ) : portalArticles.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">
+                Nenhuma matéria disponível no momento.
+              </p>
+            ) : (
+              portalArticles.map((article, index) => (
+                <button
+                  key={`${article.created_at}-${index}`}
+                  type="button"
+                  onClick={() => {
+                    setSelectedArticle(article);
+                    setArticleDialogOpen(false);
+                  }}
+                  className="w-full rounded-xl border border-border p-3 text-left transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  {article.categoria && (
+                    <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-primary">
+                      {article.categoria}
+                    </span>
+                  )}
+                  <span className="block font-semibold leading-snug">
+                    {article.titulo}
+                  </span>
+                  {article.resumo && (
+                    <span className="mt-1 line-clamp-2 block text-sm text-muted-foreground">
+                      {article.resumo}
+                    </span>
+                  )}
+                </button>
+              ))
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setArticleDialogOpen(false)}>
+              Cancelar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
         <DialogContent className="sm:max-w-sm">
