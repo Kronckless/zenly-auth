@@ -100,6 +100,8 @@ export default function Community() {
   const [superChatEnabled, setSuperChatEnabled] = useState(false);
   const [superChatCooldownSeconds, setSuperChatCooldownSeconds] = useState(0);
   const [dailySuperChatCount, setDailySuperChatCount] = useState(0);
+  const [pinnedSuperChatId, setPinnedSuperChatId] = useState<string | null>(null);
+  const [animatingSuperChatId, setAnimatingSuperChatId] = useState<string | null>(null);
   const [superChatLimitMessage, setSuperChatLimitMessage] = useState("");
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<"super-chat" | "dossier">("super-chat");
@@ -110,6 +112,15 @@ export default function Community() {
   const messageListRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const quickEmojis = ["😀", "😂", "❤️", "👍", "🎉", "🙏"];
+  const pinTimeoutRef = useRef<number | null>(null);
+  const animationTimeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (pinTimeoutRef.current !== null) window.clearTimeout(pinTimeoutRef.current);
+      if (animationTimeoutRef.current !== null) window.clearTimeout(animationTimeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!userId) {
@@ -323,7 +334,7 @@ export default function Community() {
       dossierSize = selectedFile.size;
     }
 
-    const { error: sendError } = await supabase
+    const { data: insertedMessage, error: sendError } = await supabase
       .from("mensagens_comunidade")
       .insert({
         user_id: userId,
@@ -334,7 +345,9 @@ export default function Community() {
         dossier_name: dossierName,
         dossier_size: dossierSize,
         created_at: new Date().toISOString(),
-      });
+      })
+      .select("id")
+      .single();
 
     if (sendError) {
       if (uploadedPath) {
@@ -342,6 +355,22 @@ export default function Community() {
       }
       setError("Não foi possível enviar sua mensagem. Tente novamente.");
     } else {
+      if (isSuperChatMessage && insertedMessage?.id) {
+        setPinnedSuperChatId(insertedMessage.id);
+        setAnimatingSuperChatId(insertedMessage.id);
+
+        if (pinTimeoutRef.current !== null) window.clearTimeout(pinTimeoutRef.current);
+        if (animationTimeoutRef.current !== null) window.clearTimeout(animationTimeoutRef.current);
+
+        animationTimeoutRef.current = window.setTimeout(() => {
+          setAnimatingSuperChatId(null);
+        }, 1500);
+
+        pinTimeoutRef.current = window.setTimeout(() => {
+          setPinnedSuperChatId(null);
+        }, 3500);
+      }
+
       setMessageText("");
       setSelectedFile(null);
       setSuperChatEnabled(false);
@@ -378,6 +407,13 @@ export default function Community() {
     setSending(false);
   };
 
+  const orderedMessages = pinnedSuperChatId
+    ? [
+        ...messages.filter((message) => message.id === pinnedSuperChatId),
+        ...messages.filter((message) => message.id !== pinnedSuperChatId),
+      ]
+    : messages;
+
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-background">
       <AppNavigation />
@@ -405,18 +441,22 @@ export default function Community() {
             </div>
           ) : (
             <div className="space-y-3">
-              {messages.map((message) => {
+              {orderedMessages.map((message) => {
                 const isOwnMessage = message.user_id === userId;
 
                 return (
                   <article
                     key={message.id}
-                    className={`flex ${isOwnMessage ? "justify-end" : "justify-start"}`}
+                    className={`flex ${isOwnMessage ? "justify-end" : "justify-start"} ${
+                      message.id === pinnedSuperChatId ? "sticky top-0 z-10" : ""
+                    }`}
                   >
                     <div
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%] ${
                         message.is_super_chat
-                          ? "border-2 border-primary/60 bg-gradient-to-br from-primary/15 to-background text-foreground"
+                          ? message.id === animatingSuperChatId
+                            ? "border-2 border-transparent bg-gradient-to-r from-primary via-destructive to-primary text-primary-foreground animate-[pulse_1.5s_ease-in-out]"
+                            : "border-2 border-destructive/70 bg-gradient-to-br from-primary/15 to-background text-foreground"
                           : isOwnMessage
                             ? "rounded-br-md bg-primary/15 text-foreground"
                             : "rounded-bl-md border border-border bg-card text-card-foreground"
