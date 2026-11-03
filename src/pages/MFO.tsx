@@ -55,7 +55,6 @@ function formatFileSize(bytes: number) {
 export default function MFO() {
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [postText, setPostText] = useState("");
   const [hasCategory, setHasCategory] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -67,43 +66,45 @@ export default function MFO() {
     async function loadMfoFeed() {
       const isPreview = isPreviewOrDevelopment();
 
-      if (!supabase) {
-        if (!isPreview) setError("O serviço da comunidade não está configurado.");
-        setLoading(false);
-        return;
-      }
-
-      if (!isPreview) {
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (!active) return;
-
-        if (userError || !user) {
-          setError("Entre na sua conta para acessar esta área.");
+      try {
+        if (!supabase) {
+          setMessages([]);
           setLoading(false);
           return;
         }
+
+        if (!isPreview) {
+          const {
+            data: { user },
+            error: userError,
+          } = await supabase.auth.getUser();
+
+          if (!active) return;
+
+          if (userError || !user) {
+            setMessages([]);
+            setLoading(false);
+            return;
+          }
+        }
+
+        const { data, error: messagesError } = await supabase
+          .from("mensagens_comunidade")
+          .select(
+            "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
+          )
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        if (!active) return;
+
+        setMessages(messagesError ? [] : ((data ?? []) as CommunityMessage[]));
+        setLoading(false);
+      } catch {
+        if (!active) return;
+        setMessages([]);
+        setLoading(false);
       }
-
-      const { data, error: messagesError } = await supabase
-        .from("mensagens_comunidade")
-        .select(
-          "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
-        )
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-      if (!active) return;
-
-      if (messagesError) {
-        setError("Não foi possível carregar o mural agora.");
-      } else {
-        setMessages((data ?? []) as CommunityMessage[]);
-      }
-      setLoading(false);
     }
 
     void loadMfoFeed();
@@ -121,10 +122,7 @@ export default function MFO() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-      setError("Entre na sua conta para publicar.");
-      return;
-    }
+    if (!user) return;
 
     const { data, error: publishError } = await supabase
       .from("mensagens_comunidade")
@@ -143,10 +141,7 @@ export default function MFO() {
       )
       .single();
 
-    if (publishError || !data) {
-      setError("Não foi possível publicar agora. Tente novamente.");
-      return;
-    }
+    if (publishError || !data) return;
 
     setMessages((current) => [data as CommunityMessage, ...current]);
     setPostText("");
@@ -176,7 +171,7 @@ export default function MFO() {
           </CardContent>
         </Card>
 
-        {!loading && !error && (
+        {(
           <Card className="rounded-xl border-border bg-card shadow-sm">
             <CardContent className="space-y-4 p-4 sm:p-5">
               <div className="flex items-start gap-3">
@@ -251,10 +246,6 @@ export default function MFO() {
           <p className="py-8 text-sm text-muted-foreground" role="status">
             Verificando seu acesso...
           </p>
-        ) : error ? (
-          <div className="rounded-xl border border-border p-5">
-            <p className="text-sm text-destructive" role="alert">{error}</p>
-          </div>
         ) : messages.length === 0 ? (
           <p className="rounded-xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
             Nenhuma opinião publicada ainda. Seja o primeiro a compartilhar!
