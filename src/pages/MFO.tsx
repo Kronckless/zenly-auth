@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FileText, Link2, Newspaper, Plus, Search, Sparkles, X } from "lucide-react";
+import { FileText, Link2, Loader2, Newspaper, Plus, Search, Sparkles, X } from "lucide-react";
 import AppNavigation from "@/components/AppNavigation";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,7 @@ type CommunityMessage = {
   dossier_name: string | null;
   dossier_size: number | null;
   isExample?: boolean;
+  isNew?: boolean;
 };
 
 type PortalNews = {
@@ -87,6 +88,7 @@ export default function MFO() {
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [postText, setPostText] = useState("");
+  const [posting, setPosting] = useState(false);
   const [hasCategory, setHasCategory] = useState(false);
   const [selectedNews, setSelectedNews] = useState<PortalNews | null>(null);
   const [newsOptions, setNewsOptions] = useState<PortalNews[]>([]);
@@ -196,62 +198,73 @@ export default function MFO() {
   async function publishPost() {
     const content = postText.trim();
     const previewMode = isPreviewOrDevelopment();
-    if ((!content && !selectedNews) || (!supabase && !previewMode)) return;
+    if (posting || (!content && !selectedNews) || (!supabase && !previewMode)) return;
 
-    let user = null;
-    if (supabase) {
-      const {
-        data: { user: currentUser },
-      } = await supabase.auth.getUser();
-      user = currentUser;
+    setPosting(true);
+    let published = false;
+
+    try {
+      let user = null;
+      if (supabase) {
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
+        user = currentUser;
+      }
+
+      const messageContent = `${hasCategory ? "#Análise " : ""}${content || "Notícia vinculada."}`;
+      const linkedNewsUrl = selectedNews ? encodePortalNews(selectedNews) : null;
+
+      if (!user && previewMode) {
+        setMessages((current) => [
+          {
+            id: `preview-${Date.now()}`,
+            user_id: "preview-user",
+            nome_usuario: "Você",
+            conteudo: messageContent,
+            created_at: new Date().toISOString(),
+            is_super_chat: false,
+            dossier_url: linkedNewsUrl,
+            dossier_name: selectedNews?.titulo ?? null,
+            dossier_size: null,
+            isExample: true,
+            isNew: true,
+          },
+          ...current,
+        ]);
+        published = true;
+      } else if (user && supabase) {
+        const { data, error: publishError } = await supabase
+          .from("mensagens_comunidade")
+          .insert({
+            user_id: user.id,
+            nome_usuario:
+              user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
+            conteudo: messageContent,
+            is_super_chat: false,
+            dossier_url: linkedNewsUrl,
+            dossier_name: selectedNews?.titulo ?? null,
+            dossier_size: null,
+          })
+          .select(
+            "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
+          )
+          .single();
+
+        if (publishError || !data) return;
+        setMessages((current) => [{ ...(data as CommunityMessage), isNew: true }, ...current]);
+        published = true;
+      }
+    } catch {
+      // Mantém o texto e a notícia vinculada para que a publicação possa ser tentada novamente.
+    } finally {
+      if (published) {
+        setPostText("");
+        setSelectedNews(null);
+        setHasCategory(false);
+      }
+      setPosting(false);
     }
-
-    const messageContent = `${hasCategory ? "#Análise " : ""}${content || "Notícia vinculada."}`;
-    const linkedNewsUrl = selectedNews ? encodePortalNews(selectedNews) : null;
-
-    if (!user && previewMode) {
-      setMessages((current) => [
-        {
-          id: `preview-${Date.now()}`,
-          user_id: "preview-user",
-          nome_usuario: "Você",
-          conteudo: messageContent,
-          created_at: new Date().toISOString(),
-          is_super_chat: false,
-          dossier_url: linkedNewsUrl,
-          dossier_name: selectedNews?.titulo ?? null,
-          dossier_size: null,
-          isExample: true,
-        },
-        ...current,
-      ]);
-    } else if (!user || !supabase) {
-      return;
-    } else {
-      const { data, error: publishError } = await supabase
-        .from("mensagens_comunidade")
-        .insert({
-          user_id: user.id,
-          nome_usuario:
-            user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
-          conteudo: messageContent,
-          is_super_chat: false,
-          dossier_url: linkedNewsUrl,
-          dossier_name: selectedNews?.titulo ?? null,
-          dossier_size: null,
-        })
-        .select(
-          "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
-        )
-        .single();
-
-      if (publishError || !data) return;
-      setMessages((current) => [data as CommunityMessage, ...current]);
-    }
-
-    setPostText("");
-    setSelectedNews(null);
-    setHasCategory(false);
   }
 
   return (
@@ -292,12 +305,14 @@ export default function MFO() {
               </div>
 
               {selectedNews && (
-                <div className="ml-11 flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-2">
-                  <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-background text-primary">
+                <div className="relative ml-11 flex items-center gap-3 rounded-xl border border-border bg-card p-3 pr-11 shadow-sm">
+                  <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted text-primary">
                     <Newspaper className="size-6" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 text-sm font-semibold">{selectedNews.titulo}</p>
+                    <p className="line-clamp-2 text-sm font-bold leading-snug">
+                      {selectedNews.titulo}
+                    </p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {selectedNews.categoria || "Notícia do portal"}
                     </p>
@@ -306,7 +321,7 @@ export default function MFO() {
                     type="button"
                     variant="ghost"
                     size="icon"
-                    className="size-8 shrink-0"
+                    className="absolute right-2 top-2 size-7"
                     aria-label="Remover notícia vinculada"
                     onClick={() => setSelectedNews(null)}
                   >
@@ -345,9 +360,10 @@ export default function MFO() {
                   type="button"
                   size="sm"
                   onClick={publishPost}
-                  disabled={!postText.trim() && !selectedNews}
+                  disabled={posting || (!postText.trim() && !selectedNews)}
                 >
-                  Publicar
+                  {posting && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                  {posting ? "Publicando..." : "Publicar"}
                 </Button>
               </div>
             </CardContent>
@@ -369,9 +385,9 @@ export default function MFO() {
               return (
               <Card
                 key={message.id}
-                className={
-                  "rounded-xl border-border bg-card shadow-sm"
-                }
+                className={`rounded-xl border-border bg-card shadow-sm ${
+                  message.isNew ? "animate-mfo-post-enter" : ""
+                }`}
               >
                 <CardContent className="space-y-3 p-4 sm:p-5">
                   <div className="flex flex-wrap items-center justify-between gap-2">

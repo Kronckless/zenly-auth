@@ -194,6 +194,21 @@
   color: #166534;
 }
 
+.animate-mfo-post-enter {
+  animation: mfo-post-enter 420ms ease-out both;
+}
+
+@keyframes mfo-post-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .animate-button-shine {
   animation: button-shine 6s ease-in-out infinite;
 }
