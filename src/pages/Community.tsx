@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import {
   Download,
   FileText,
@@ -36,6 +37,7 @@ type CommunityMessage = {
   dossier_url: string | null;
   dossier_name: string | null;
   dossier_size: number | null;
+  author_has_mfo?: boolean;
 };
 
 function formatFileSize(bytes: number) {
@@ -95,6 +97,7 @@ export default function Community() {
   const [userId, setUserId] = useState<string | null>(null);
   const [profileName, setProfileName] = useState("");
   const [hasMfo, setHasMfo] = useState(false);
+  const [mfoFilterEnabled, setMfoFilterEnabled] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [superChatEnabled, setSuperChatEnabled] = useState(false);
@@ -186,7 +189,26 @@ export default function Community() {
       return;
     }
 
-    setMessages((data ?? []) as CommunityMessage[]);
+    const loadedMessages = (data ?? []) as CommunityMessage[];
+    const authorIds = [...new Set(loadedMessages.map((message) => message.user_id))];
+    let mfoUserIds = new Set<string>();
+
+    if (authorIds.length > 0) {
+      const { data: mfoProfiles } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("has_mfo", true)
+        .in("id", authorIds);
+
+      mfoUserIds = new Set((mfoProfiles ?? []).map((profile) => profile.id));
+    }
+
+    setMessages(
+      loadedMessages.map((message) => ({
+        ...message,
+        author_has_mfo: mfoUserIds.has(message.user_id),
+      })),
+    );
     setError("");
     setLoading(false);
   }, []);
@@ -413,16 +435,35 @@ export default function Community() {
         ...messages.filter((message) => message.id !== pinnedSuperChatId),
       ]
     : messages;
+  const visibleMessages = mfoFilterEnabled
+    ? orderedMessages.filter((message) => message.author_has_mfo)
+    : orderedMessages;
 
   return (
     <main className="flex h-dvh flex-col overflow-hidden bg-background">
       <AppNavigation />
       <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x border-border bg-muted/30 pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
         <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-4 py-3 sm:px-6">
-          <div className="flex size-10 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
             <UsersRound className="size-5" aria-hidden="true" />
           </div>
-
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-sm font-semibold">Chat da comunidade</h1>
+            {mfoFilterEnabled && (
+              <Badge variant="secondary" className="mt-1 h-5 gap-1 px-2 text-[10px]">
+                <Sparkles aria-hidden="true" />
+                Apenas análises MFO
+              </Badge>
+            )}
+          </div>
+          <label className="flex shrink-0 items-center gap-2 text-xs font-medium text-muted-foreground">
+            <span className="hidden sm:inline">Somente MFO</span>
+            <Switch
+              checked={mfoFilterEnabled}
+              onCheckedChange={setMfoFilterEnabled}
+              aria-label="Filtrar mensagens para mostrar somente participantes MFO"
+            />
+          </label>
         </header>
 
         <div
@@ -434,14 +475,18 @@ export default function Community() {
             <p className="py-4 text-center text-sm text-muted-foreground">
               Carregando mensagens...
             </p>
-          ) : messages.length === 0 ? (
+          ) : visibleMessages.length === 0 ? (
             <div className="flex h-full min-h-32 flex-col items-center justify-center gap-2 text-center">
               <MessageSquare className="size-6 text-muted-foreground" aria-hidden="true" />
-
+              <p className="text-sm text-muted-foreground">
+                {mfoFilterEnabled && messages.length > 0
+                  ? "Nenhuma mensagem de Formador de Opinião para exibir."
+                  : "Ainda não há mensagens. Seja o primeiro a participar!"}
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
-              {orderedMessages.map((message) => {
+              {visibleMessages.map((message) => {
                 const isOwnMessage = message.user_id === userId;
 
                 return (
