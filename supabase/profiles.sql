@@ -10,6 +10,9 @@ create table if not exists public.profiles (
 alter table public.profiles
   add column if not exists has_mfo boolean not null default false;
 
+alter table public.mensagens_comunidade
+  add column if not exists is_super_chat boolean not null default false;
+
 alter table public.profiles enable row level security;
 
 revoke all on public.profiles from anon;

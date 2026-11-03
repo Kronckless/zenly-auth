@@ -2,7 +2,16 @@ import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageSquare, Send, Smile, UsersRound } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { LockKeyhole, MessageSquare, Send, Smile, Sparkles, UsersRound } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 type CommunityMessage = {
@@ -11,13 +20,17 @@ type CommunityMessage = {
   nome_usuario: string;
   conteudo: string;
   created_at: string;
+  is_super_chat: boolean;
 };
 
 export default function Community() {
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [profileName, setProfileName] = useState("");
+  const [hasMfo, setHasMfo] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [superChatEnabled, setSuperChatEnabled] = useState(false);
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -44,7 +57,7 @@ export default function Community() {
 
     const { data, error: fetchError } = await supabase
       .from("mensagens_comunidade")
-      .select("id, user_id, nome_usuario, conteudo, created_at")
+      .select("id, user_id, nome_usuario, conteudo, created_at, is_super_chat")
       .gte("created_at", sevenDaysAgo)
       .order("created_at", { ascending: true });
 
@@ -77,7 +90,7 @@ export default function Community() {
 
         const { data: profile } = await supabase
           .from("profiles")
-          .select("display_name")
+          .select("display_name, has_mfo")
           .eq("id", user.id)
           .maybeSingle();
 
@@ -87,7 +100,10 @@ export default function Community() {
               user.user_metadata?.full_name ||
               "Membro",
           );
+          setHasMfo(profile?.has_mfo === true);
         }
+      } else if (active) {
+        setHasMfo(false);
       }
 
       if (active) {
@@ -143,6 +159,7 @@ export default function Community() {
         user_id: userId,
         nome_usuario: profileName || "Membro",
         conteudo: content,
+        is_super_chat: hasMfo && superChatEnabled,
         created_at: new Date().toISOString(),
       });
 
@@ -150,6 +167,7 @@ export default function Community() {
       setError("Não foi possível enviar sua mensagem. Tente novamente.");
     } else {
       setMessageText("");
+      setSuperChatEnabled(false);
       await loadMessages();
     }
 
@@ -193,16 +211,25 @@ export default function Community() {
                   >
                     <div
                       className={`max-w-[88%] rounded-2xl px-3.5 py-2 shadow-sm sm:max-w-[75%] ${
-                        isOwnMessage
-                          ? "rounded-br-md bg-primary/15 text-foreground"
-                          : "rounded-bl-md border border-border bg-card text-card-foreground"
+                        message.is_super_chat
+                          ? "border-2 border-primary/60 bg-gradient-to-br from-primary/15 to-background text-foreground"
+                          : isOwnMessage
+                            ? "rounded-br-md bg-primary/15 text-foreground"
+                            : "rounded-bl-md border border-border bg-card text-card-foreground"
                       }`}
                     >
-                      {!isOwnMessage && (
-                        <h2 className="mb-1 text-xs font-semibold text-primary">
-                          {message.nome_usuario}
-                        </h2>
-                      )}
+                      <h2 className="mb-1 flex flex-wrap items-center gap-1.5 text-xs font-semibold text-primary">
+                        <span>{message.nome_usuario}</span>
+                        {isOwnMessage && hasMfo && (
+                          <Badge
+                            variant="secondary"
+                            className="h-5 gap-1 px-1.5 text-[10px] font-medium"
+                          >
+                            <Sparkles aria-hidden="true" />
+                            Formador de Opinião
+                          </Badge>
+                        )}
+                      </h2>
                       <div className="flex items-end gap-3">
                         <p className="min-w-0 whitespace-pre-wrap break-words text-sm leading-relaxed">
                           {message.conteudo}
@@ -235,6 +262,32 @@ export default function Community() {
           onSubmit={sendMessage}
           className="relative flex shrink-0 items-center gap-2 border-t border-border bg-background px-3 py-3 sm:px-5"
         >
+          <Button
+            type="button"
+            variant={superChatEnabled ? "default" : "outline"}
+            aria-pressed={hasMfo ? superChatEnabled : undefined}
+            aria-label={
+              hasMfo
+                ? "Ativar ou desativar Super Chat"
+                : "Super Chat exclusivo do Modo Formador de Opinião"
+            }
+            onClick={() => {
+              if (!hasMfo) {
+                setUpgradeDialogOpen(true);
+                return;
+              }
+              setSuperChatEnabled((enabled) => !enabled);
+            }}
+            disabled={sending}
+            className="shrink-0 gap-1.5 rounded-full px-3"
+          >
+            {hasMfo ? (
+              <Sparkles className="size-4" aria-hidden="true" />
+            ) : (
+              <LockKeyhole className="size-4" aria-hidden="true" />
+            )}
+            <span className="hidden text-xs sm:inline">Super Chat</span>
+          </Button>
           {emojiPickerOpen && (
             <div
               role="group"
@@ -289,6 +342,23 @@ export default function Community() {
           </Button>
         </form>
       </section>
+
+      <Dialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Super Chat exclusivo</DialogTitle>
+            <DialogDescription>
+              O Super Chat é exclusivo do Modo Formador de Opinião. Faça o
+              upgrade para destacar suas mensagens no chat.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setUpgradeDialogOpen(false)}>
+              Entendi
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
