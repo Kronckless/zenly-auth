@@ -40,7 +40,8 @@ const tabs = [
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
-  const [hasMfo, setHasMfo] = useState(isDevelopmentPreview);
+  const [hasMfo, setHasMfo] = useState(false);
+  const [isDevTestEnabled, setIsDevTestEnabled] = useState(isDevelopmentPreview);
 
   useEffect(() => {
     if (isDevelopmentPreview()) return;
@@ -108,7 +109,7 @@ export default function AppNavigation() {
   const unreadLabel = unreadCount > 99 ? "+99" : String(unreadCount);
   const mobileTabs = [
     tabs[2],
-    ...(hasMfo ? [tabs[4]] : []),
+    ...(hasMfo || (isDevelopmentPreview() && isDevTestEnabled) ? [tabs[4]] : []),
     tabs[3],
     tabs[0],
     tabs[1],
@@ -154,11 +155,11 @@ export default function AppNavigation() {
       {isDevelopmentPreview() && (
         <button
           type="button"
-          aria-pressed={hasMfo}
-          onClick={() => setHasMfo((current) => !current)}
+          aria-pressed={isDevTestEnabled}
+          onClick={() => setIsDevTestEnabled((current) => !current)}
           className="fixed right-4 top-[calc(env(safe-area-inset-top)+1rem)] z-[9999] rounded-full border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground shadow-md transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          Teste MFO: {hasMfo ? "Ativo" : "Inativo"}
+          Teste MFO: {isDevTestEnabled ? "Ativo" : "Inativo"}
         </button>
       )}
 
