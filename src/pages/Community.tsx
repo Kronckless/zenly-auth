@@ -471,8 +471,8 @@ export default function Community() {
           aria-live="polite"
           className={`min-h-0 flex-1 overflow-y-auto px-3 py-5 transition-all duration-300 ease-in-out sm:px-6 ${
             mfoFilterEnabled
-              ? "bg-background/70 backdrop-blur-md"
-              : "bg-transparent backdrop-blur-0"
+              ? "bg-muted/60 backdrop-blur-md"
+              : "bg-background backdrop-blur-0"
           }`}
         >
           {loading ? (
