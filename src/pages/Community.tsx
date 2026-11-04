@@ -24,6 +24,7 @@ import {
   Smile,
   Sparkles,
   UsersRound,
+  X,
   Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -864,8 +865,14 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className="max-h-[90dvh] overflow-y-auto border border-border/70 bg-gradient-to-br from-background via-background to-muted/60 text-foreground shadow-2xl backdrop-blur-2xl sm:max-w-lg"
+          className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !h-dvh !w-screen !max-w-none !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl [&>[data-slot=dialog-close]]:hidden sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
         >
+          <DialogClose
+            aria-label="Fechar modal MFO"
+            className="fixed right-4 top-4 z-50 flex size-12 items-center justify-center rounded-full border border-border/70 bg-background/90 text-foreground shadow-lg backdrop-blur-xl transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-6 sm:top-6"
+          >
+            <X className="size-5" aria-hidden="true" />
+          </DialogClose>
           {upgradeStep === 1 ? (
             <>
               <DialogHeader>
