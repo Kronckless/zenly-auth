@@ -861,14 +861,13 @@ export default function Community() {
           -webkit-backdrop-filter: blur(40px);
         }
 
-        .mfo-email-stage {
-          position: relative;
+        .mfo-email-modal-border {
           isolation: isolate;
         }
 
-        .mfo-email-stage::before {
+        .mfo-email-modal-border::before {
           position: absolute;
-          inset: -2px;
+          inset: 0;
           z-index: 0;
           padding: 2px;
           border-radius: inherit;
@@ -890,7 +889,7 @@ export default function Community() {
           animation: mfo-email-border-entry 2.5s ease-out both;
         }
 
-        .mfo-email-stage > * {
+        .mfo-email-modal-border > * {
           position: relative;
           z-index: 1;
         }
@@ -921,7 +920,9 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className="!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
+          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20 ${
+            upgradeStep === 2 ? "mfo-email-modal-border" : ""
+          }`}
         >
           <DialogClose
             aria-label="Fechar"
@@ -968,7 +969,7 @@ export default function Community() {
               </DialogFooter>
             </div>
           ) : upgradeStep === 2 ? (
-            <div className="mfo-email-stage w-full max-w-lg rounded-3xl border border-border bg-muted/70 p-6 shadow-xl sm:p-8">
+            <div className="w-full max-w-lg rounded-3xl border border-border bg-muted/70 p-6 shadow-xl sm:p-8">
               <DialogHeader className="text-left">
                 <DialogTitle className="text-xl font-bold text-foreground sm:text-2xl">
                   {firstName}, atenção ao seu e-mail!
