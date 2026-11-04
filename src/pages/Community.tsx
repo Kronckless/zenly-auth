@@ -863,9 +863,7 @@ export default function Community() {
                   Sua voz tem muito a somar por aqui.
                 </DialogTitle>
                 <DialogDescription className="text-background/75">
-                  Desbloqueie o Modo Formador de Opinião (MFO) por apenas R$ 197
-                  (pagamento único) para colocar suas opiniões em um alcance
-                  nunca antes visto!
+                  Desbloqueie o Modo Formador de Opinião (MFO) para colocar suas opiniões em um alcance nunca antes visto!
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
