@@ -450,6 +450,7 @@ export default function Community() {
     ? orderedMessages.filter((message) => message.author_has_mfo)
     : orderedMessages;
   const firstName = profileName.trim().split(/\s+/)[0] || "Membro";
+  const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailDraft.trim());
 
   return (
     <main
@@ -859,6 +860,16 @@ export default function Community() {
           backdrop-filter: blur(40px);
           -webkit-backdrop-filter: blur(40px);
         }
+
+        @keyframes community-button-shine {
+          from { transform: translateX(-150%) skewX(-12deg); }
+          to { transform: translateX(450%) skewX(-12deg); }
+        }
+
+        @keyframes community-button-pulse {
+          0%, 100% { box-shadow: 0 0 8px hsl(var(--primary) / 0.25); }
+          50% { box-shadow: 0 0 14px hsl(var(--primary) / 0.45); }
+        }
       `}</style>
       <Dialog
         open={upgradeDialogOpen}
@@ -938,13 +949,20 @@ export default function Community() {
                 />
                 <Button
                   type="submit"
-                  disabled={
-                    !emailDraft.trim() ||
-                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailDraft.trim())
-                  }
-                  className="h-12 w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
+                  disabled={!emailDraft.trim() || !emailIsValid}
+                  className={`h-12 w-full rounded-xl disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 ${
+                    emailIsValid
+                      ? "relative isolate overflow-hidden bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.3)] hover:bg-primary/90 animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                  }`}
                 >
-                  Continuar
+                  {emailIsValid && (
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-y-0 left-0 z-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[community-button-shine_1.5s_ease-in-out_infinite]"
+                    />
+                  )}
+                  <span className="relative z-10">Continuar</span>
                 </Button>
               </form>
             </div>
