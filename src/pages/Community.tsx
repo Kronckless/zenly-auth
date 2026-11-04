@@ -907,7 +907,10 @@ export default function Community() {
                   Desbloquear Modo Formador de Opinião
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground">
-                  Checkout seguro da Cakto · R$ 197, pagamento único.
+                  <span className="block">Duração: Vitalício</span>
+                  <span className="mt-2 block font-semibold text-destructive">
+                    ⚠️ Importante: Preencha a compra com o MESMO E-MAIL cadastrado no VOZ DO POVO para a liberação automática do seu acesso.
+                  </span>
                 </DialogDescription>
               </DialogHeader>
               {mfoCheckoutUrl ? (
