@@ -865,11 +865,11 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className="!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl [&>[data-slot=dialog-close]]:hidden sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
+          className="!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl [&>[data-slot=dialog-close]]:hidden sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
         >
           <DialogClose
             aria-label="Fechar"
-            className="fixed right-6 top-6 z-[9999] flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black backdrop-blur-md transition-all hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="absolute right-4 top-4 z-[9999] flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black backdrop-blur-md transition-all hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <svg
               className="size-5 stroke-current stroke-[2.5]"
