@@ -908,7 +908,7 @@ export default function Community() {
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground">
                   <span className="block">Duração: Vitalício</span>
-                  <span className="mt-2 block font-semibold text-destructive">
+                  <span className="mt-2 block font-bold text-destructive">
                     ⚠️ Importante: Preencha a compra com o MESMO E-MAIL cadastrado no VOZ DO POVO para a liberação automática do seu acesso.
                   </span>
                 </DialogDescription>
