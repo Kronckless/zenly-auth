@@ -861,6 +861,47 @@ export default function Community() {
           -webkit-backdrop-filter: blur(40px);
         }
 
+        .mfo-email-stage {
+          position: relative;
+          isolation: isolate;
+        }
+
+        .mfo-email-stage::before {
+          position: absolute;
+          inset: -2px;
+          z-index: 0;
+          padding: 2px;
+          border-radius: inherit;
+          background: conic-gradient(
+            from 0deg,
+            #833ab4,
+            #fd1d1d,
+            #fcb045,
+            #ffdc80,
+            #fd1d1d,
+            #833ab4
+          );
+          content: "";
+          pointer-events: none;
+          opacity: 0;
+          -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+          mask-composite: exclude;
+          animation: mfo-email-border-entry 2.5s ease-out both;
+        }
+
+        .mfo-email-stage > * {
+          position: relative;
+          z-index: 1;
+        }
+
+        @keyframes mfo-email-border-entry {
+          0% { opacity: 0; transform: rotate(0deg); }
+          12% { opacity: 1; }
+          82% { opacity: 1; transform: rotate(295deg); }
+          100% { opacity: 0; transform: rotate(360deg); }
+        }
+
         @keyframes community-button-shine {
           from { transform: translateX(-150%) skewX(-12deg); }
           to { transform: translateX(450%) skewX(-12deg); }
@@ -927,7 +968,7 @@ export default function Community() {
               </DialogFooter>
             </div>
           ) : upgradeStep === 2 ? (
-            <div className="w-full max-w-lg rounded-3xl border border-border bg-muted/70 p-6 shadow-xl sm:p-8">
+            <div className="mfo-email-stage w-full max-w-lg rounded-3xl border border-border bg-muted/70 p-6 shadow-xl sm:p-8">
               <DialogHeader className="text-left">
                 <DialogTitle className="text-xl font-bold text-foreground sm:text-2xl">
                   {firstName}, atenção ao seu e-mail!
