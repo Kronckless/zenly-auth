@@ -932,7 +932,7 @@ export default function Community() {
         >
           <DialogClose
             aria-label="Fechar"
-            className="absolute right-4 top-4 z-50 flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black backdrop-blur-md transition-all hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="!absolute !right-4 !top-4 z-50 flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black backdrop-blur-md transition-all hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <svg
               className="size-5 stroke-current stroke-[2.5]"
@@ -1009,10 +1009,10 @@ export default function Community() {
                 <Button
                   type="submit"
                   disabled={!emailDraft.trim() || !emailIsValid}
-                  className={`h-12 w-full rounded-xl disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 ${
+                  className={`h-12 w-full rounded-xl bg-[#5865F2] font-semibold text-white transition-colors hover:bg-[#4752C4] disabled:cursor-not-allowed disabled:bg-[#5865F2] disabled:text-white disabled:opacity-60 ${
                     emailIsValid
-                      ? "relative isolate cursor-pointer overflow-hidden bg-[#5865F2] font-semibold text-white shadow-[0_0_12px_rgba(88,101,242,0.3)] transition-colors hover:bg-[#4752C4] animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
-                      : "cursor-not-allowed bg-muted text-muted-foreground"
+                      ? "relative isolate cursor-pointer overflow-hidden shadow-[0_0_12px_rgba(88,101,242,0.3)] animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
+                      : ""
                   }`}
                 >
                   {emailIsValid && (
