@@ -900,7 +900,7 @@ export default function Community() {
             </svg>
           </DialogClose>
           {upgradeStep === 1 ? (
-            <>
+            <div className="-translate-y-4">
               <DialogHeader className="shrink-0 items-center text-center">
                 <DialogTitle className="text-center text-2xl leading-tight text-foreground sm:text-3xl">
                   Sua voz tem muito a somar por aqui.
@@ -909,13 +909,7 @@ export default function Community() {
                   Desbloqueie o Modo Formador de Opinião (MFO) para colocar suas opiniões em um alcance nunca antes visto!
                 </DialogDescription>
               </DialogHeader>
-              <ul
-                className="mt-6 w-full max-w-lg list-disc space-y-3 rounded-3xl p-6 pl-10 text-sm font-medium leading-relaxed text-white shadow-xl sm:p-8 sm:pl-12"
-                style={{
-                  background:
-                    "linear-gradient(to top right, #f9ce34, #ee2a7b, #6228d7)",
-                }}
-              >
+              <ul className="mt-5 w-full max-w-lg list-disc space-y-3.5 rounded-xl border border-border bg-muted/70 p-7 pl-11 text-sm font-medium leading-relaxed text-foreground sm:p-8 sm:pl-12">
                 <li>Dê voz às suas ideias</li>
                 <li>Super chats (destaque visual nas mensagens)</li>
                 <li>Cite dossiês no chat</li>
@@ -923,12 +917,15 @@ export default function Community() {
                 <li>Tag de Formador de Opinião vitalícia</li>
                 <li>Acesso imediato às ferramentas de opinião</li>
               </ul>
-              <DialogFooter className="mt-6 justify-center">
-                <Button onClick={() => setUpgradeStep(2)}>
+              <DialogFooter className="mt-5 justify-center">
+                <Button
+                  onClick={() => setUpgradeStep(2)}
+                  className="h-12 min-w-56 px-8 text-base"
+                >
                   Desbloquear MFO
                 </Button>
               </DialogFooter>
-            </>
+            </div>
           ) : upgradeStep === 2 ? (
             <div className="w-full max-w-lg rounded-3xl border border-border bg-muted/70 p-6 shadow-xl sm:p-8">
               <DialogHeader className="text-left">
