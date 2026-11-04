@@ -122,7 +122,9 @@ export default function Community() {
   const [animatingSuperChatId, setAnimatingSuperChatId] = useState<string | null>(null);
   const [superChatLimitMessage, setSuperChatLimitMessage] = useState("");
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
-  const [upgradeStep, setUpgradeStep] = useState<1 | 2>(1);
+  const [upgradeStep, setUpgradeStep] = useState<1 | 2 | 3>(1);
+  const [emailDraft, setEmailDraft] = useState("");
+  const [confirmedEmail, setConfirmedEmail] = useState("");
   const [upgradeFeature, setUpgradeFeature] = useState<"super-chat" | "dossier">("super-chat");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -274,6 +276,7 @@ export default function Community() {
 
       if (active && user) {
         setUserId(user.id);
+        setEmailDraft(user.email ?? "");
 
         const { data: profile } = await supabase
           .from("profiles")
@@ -446,6 +449,7 @@ export default function Community() {
   const visibleMessages = mfoFilterEnabled
     ? orderedMessages.filter((message) => message.author_has_mfo)
     : orderedMessages;
+  const firstName = profileName.trim().split(/\s+/)[0] || "Membro";
 
   return (
     <main
@@ -900,6 +904,43 @@ export default function Community() {
                 </Button>
               </DialogFooter>
             </>
+          ) : upgradeStep === 2 ? (
+            <div className="w-full max-w-lg rounded-3xl border border-border bg-muted/70 p-6 shadow-xl sm:p-8">
+              <DialogHeader className="text-left">
+                <DialogTitle className="text-xl font-bold text-foreground sm:text-2xl">
+                  {firstName}, atenção ao seu e-mail!
+                </DialogTitle>
+                <DialogDescription className="pt-2 leading-relaxed text-muted-foreground">
+                  Muitas pessoas que adquiriram o MFO preencheram com um e-mail diferente do que usam no VOZ DO POVO. Para garantir que seu acesso seja liberado automaticamente sem dificuldades, confirme seu e-mail abaixo:
+                </DialogDescription>
+              </DialogHeader>
+              <form
+                className="mt-6 space-y-4"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  const email = emailDraft.trim();
+                  if (!email) return;
+                  setConfirmedEmail(email);
+                  setUpgradeStep(3);
+                }}
+              >
+                <label htmlFor="mfo-confirm-email" className="block text-sm font-medium text-foreground">
+                  E-mail da sua conta
+                </label>
+                <Input
+                  id="mfo-confirm-email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={emailDraft}
+                  onChange={(event) => setEmailDraft(event.target.value)}
+                  className="h-12 rounded-xl bg-background"
+                />
+                <Button type="submit" className="h-12 w-full rounded-xl">
+                  Continuar para o Pagamento
+                </Button>
+              </form>
+            </div>
           ) : (
             <>
               <DialogHeader className="shrink-0 text-center">
@@ -916,7 +957,7 @@ export default function Community() {
               {mfoCheckoutUrl ? (
                 <iframe
                   title="Checkout MFO da Cakto"
-                  src={mfoCheckoutUrl}
+                  src={`${mfoCheckoutUrl}${mfoCheckoutUrl.includes("?") ? "&" : "?"}email=${encodeURIComponent(confirmedEmail)}`}
                   className="mt-4 min-h-[calc(100dvh-12rem)] w-full flex-1 rounded-xl border border-border bg-background"
                   allow="payment *"
                   referrerPolicy="strict-origin-when-cross-origin"
