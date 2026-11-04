@@ -861,6 +861,12 @@ export default function Community() {
           -webkit-backdrop-filter: blur(40px);
         }
 
+        @property --mfo-border-angle {
+          syntax: "<angle>";
+          inherits: false;
+          initial-value: 0deg;
+        }
+
         .mfo-email-modal-border {
           isolation: isolate;
         }
@@ -872,7 +878,7 @@ export default function Community() {
           padding: 2px;
           border-radius: inherit;
           background: conic-gradient(
-            from 0deg,
+            from var(--mfo-border-angle),
             #833ab4,
             #fd1d1d,
             #fcb045,
@@ -886,7 +892,7 @@ export default function Community() {
           -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
           mask-composite: exclude;
-          animation: mfo-email-border-entry 2.5s ease-out both;
+          animation: mfo-email-border-entry 2s cubic-bezier(0.22, 0.61, 0.36, 1) both;
         }
 
         .mfo-email-modal-border > * {
@@ -895,10 +901,10 @@ export default function Community() {
         }
 
         @keyframes mfo-email-border-entry {
-          0% { opacity: 0; transform: rotate(0deg); }
+          0% { opacity: 0; --mfo-border-angle: 0deg; }
           12% { opacity: 1; }
-          82% { opacity: 1; transform: rotate(295deg); }
-          100% { opacity: 0; transform: rotate(360deg); }
+          85% { opacity: 1; --mfo-border-angle: 310deg; }
+          100% { opacity: 0; --mfo-border-angle: 360deg; }
         }
 
         @keyframes community-button-shine {
