@@ -903,7 +903,7 @@ export default function Community() {
           ) : (
             <>
               <DialogHeader className="shrink-0 text-center">
-                <DialogTitle className="text-xl text-foreground">
+                <DialogTitle className="mx-auto max-w-[85%] px-10 text-xl text-foreground">
                   Desbloquear Modo Formador de Opinião
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground">
