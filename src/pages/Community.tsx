@@ -56,6 +56,7 @@ function formatFileSize(bytes: number) {
 
 const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
+const mfoCheckoutUrl = import.meta.env.VITE_CAKTO_MFO_CHECKOUT_URL;
 
 type SuperChatUsage = {
   day: string;
@@ -120,6 +121,7 @@ export default function Community() {
   const [animatingSuperChatId, setAnimatingSuperChatId] = useState<string | null>(null);
   const [superChatLimitMessage, setSuperChatLimitMessage] = useState("");
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [upgradeStep, setUpgradeStep] = useState<1 | 2>(1);
   const [upgradeFeature, setUpgradeFeature] = useState<"super-chat" | "dossier">("super-chat");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
@@ -846,30 +848,57 @@ export default function Community() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={upgradeDialogOpen} onOpenChange={setUpgradeDialogOpen}>
-        <DialogContent className="sm:max-w-sm">
-          <DialogHeader>
-            <DialogTitle>
-              {upgradeFeature === "super-chat"
-                ? "Super Chat Exclusivo"
-                : "Envio de Dossiês Exclusivo"}
-            </DialogTitle>
-            <DialogDescription>
-              {upgradeFeature === "super-chat"
-                ? "Destaque visualmente suas mensagens no chat para ter mais visibilidade."
-                : "Anexe documentos e fontes oficiais para embasar seus argumentos."}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button
-              onClick={() => {
-                setUpgradeDialogOpen(false);
-                navigate("/explorar");
-              }}
-            >
-              Ver opções de upgrade
-            </Button>
-          </DialogFooter>
+      <Dialog
+        open={upgradeDialogOpen}
+        onOpenChange={(open) => {
+          setUpgradeDialogOpen(open);
+          if (!open) setUpgradeStep(1);
+        }}
+      >
+        <DialogContent className="max-h-[90dvh] overflow-y-auto border border-background/20 bg-gradient-to-br from-foreground/95 via-foreground/90 to-foreground/80 text-background shadow-2xl backdrop-blur-2xl sm:max-w-lg">
+          {upgradeStep === 1 ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-xl text-background sm:text-2xl">
+                  Sua voz tem muito a somar por aqui.
+                </DialogTitle>
+                <DialogDescription className="text-background/75">
+                  Desbloqueie o Modo Formador de Opinião (MFO) por apenas R$ 197
+                  (pagamento único) para colocar suas opiniões em um alcance
+                  nunca antes visto!
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <Button onClick={() => setUpgradeStep(2)}>
+                  Desbloquear MFO
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-xl text-background">
+                  Desbloquear Modo Formador de Opinião
+                </DialogTitle>
+                <DialogDescription className="text-background/75">
+                  Checkout seguro da Cakto · R$ 197, pagamento único.
+                </DialogDescription>
+              </DialogHeader>
+              {mfoCheckoutUrl ? (
+                <iframe
+                  title="Checkout MFO da Cakto"
+                  src={mfoCheckoutUrl}
+                  className="h-[70dvh] min-h-[420px] w-full rounded-xl border border-background/20 bg-background"
+                  allow="payment *"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              ) : (
+                <p role="status" className="rounded-xl border border-background/20 bg-background/10 p-4 text-sm text-background/80">
+                  O checkout da Cakto ainda não está configurado.
+                </p>
+              )}
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </main>
