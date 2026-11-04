@@ -909,6 +909,20 @@ export default function Community() {
                   Desbloqueie o Modo Formador de Opinião (MFO) para colocar suas opiniões em um alcance nunca antes visto!
                 </DialogDescription>
               </DialogHeader>
+              <ul
+                className="mt-6 w-full max-w-lg list-disc space-y-3 rounded-3xl p-6 pl-10 text-sm font-medium leading-relaxed text-white shadow-xl sm:p-8 sm:pl-12"
+                style={{
+                  background:
+                    "linear-gradient(to top right, #f9ce34, #ee2a7b, #6228d7)",
+                }}
+              >
+                <li>Dê voz às suas ideias</li>
+                <li>Super chats (destaque visual nas mensagens)</li>
+                <li>Cite dossiês no chat</li>
+                <li>Espaço próprio para pendurar suas falas</li>
+                <li>Tag de Formador de Opinião vitalícia</li>
+                <li>Acesso imediato às ferramentas de opinião</li>
+              </ul>
               <DialogFooter className="mt-6 justify-center">
                 <Button onClick={() => setUpgradeStep(2)}>
                   Desbloquear MFO
@@ -952,8 +966,8 @@ export default function Community() {
                   disabled={!emailDraft.trim() || !emailIsValid}
                   className={`h-12 w-full rounded-xl disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 ${
                     emailIsValid
-                      ? "relative isolate overflow-hidden bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.3)] hover:bg-primary/90 animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                      ? "relative isolate cursor-pointer overflow-hidden bg-primary text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.3)] hover:bg-primary/90 animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
+                      : "cursor-not-allowed bg-muted text-muted-foreground"
                   }`}
                 >
                   {emailIsValid && (
