@@ -909,7 +909,7 @@ export default function Community() {
                   Desbloqueie o Modo Formador de Opinião (MFO) para colocar suas opiniões em um alcance nunca antes visto!
                 </DialogDescription>
               </DialogHeader>
-              <ul className="mt-5 w-full max-w-lg list-disc space-y-3.5 rounded-lg border border-[#FF4655]/70 bg-[#f4f5f7] p-7 pl-11 text-sm font-semibold leading-relaxed text-foreground shadow-xl sm:p-8 sm:pl-12">
+              <ul className="mt-5 w-full max-w-lg list-disc space-y-3.5 rounded-lg border border-border bg-[#f4f5f7] p-7 pl-11 text-sm font-semibold leading-relaxed text-foreground shadow-sm sm:p-8 sm:pl-12">
                 <li>Dê voz às suas ideias</li>
                 <li>Super chats (destaque visual nas mensagens)</li>
                 <li>Cite dossiês no chat</li>
