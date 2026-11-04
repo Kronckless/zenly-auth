@@ -56,7 +56,7 @@ function formatFileSize(bytes: number) {
 
 const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
-const mfoCheckoutUrl = import.meta.env.VITE_CAKTO_MFO_CHECKOUT_URL;
+const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 
 type SuperChatUsage = {
   day: string;
