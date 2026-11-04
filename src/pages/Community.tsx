@@ -936,8 +936,15 @@ export default function Community() {
                   onChange={(event) => setEmailDraft(event.target.value)}
                   className="h-12 rounded-xl bg-background"
                 />
-                <Button type="submit" className="h-12 w-full rounded-xl">
-                  Continuar para o Pagamento
+                <Button
+                  type="submit"
+                  disabled={
+                    !emailDraft.trim() ||
+                    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailDraft.trim())
+                  }
+                  className="h-12 w-full rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100"
+                >
+                  Continuar
                 </Button>
               </form>
             </div>
