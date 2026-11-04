@@ -25,7 +25,6 @@ import {
   Smile,
   Sparkles,
   UsersRound,
-  X,
   Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
@@ -869,10 +868,21 @@ export default function Community() {
           className="!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl [&>[data-slot=dialog-close]]:hidden sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
         >
           <DialogClose
-            aria-label="Fechar modal MFO"
-            className="fixed right-6 top-6 z-50 flex size-10 items-center justify-center rounded-full bg-black/5 text-black transition-colors hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label="Fechar"
+            className="fixed right-6 top-6 z-[9999] flex size-10 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black backdrop-blur-md transition-all hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <X className="size-5" aria-hidden="true" />
+            <svg
+              className="size-5 stroke-current stroke-[2.5]"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M18 6 6 18M6 6l12 12"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
           </DialogClose>
           {upgradeStep === 1 ? (
             <>
