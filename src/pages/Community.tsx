@@ -848,6 +848,13 @@ export default function Community() {
         </DialogContent>
       </Dialog>
 
+      <style>{`
+        body:has([data-mfo-upgrade-dialog="true"]) [data-slot="dialog-overlay"] {
+          background-color: hsl(var(--background) / 0.22) !important;
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+        }
+      `}</style>
       <Dialog
         open={upgradeDialogOpen}
         onOpenChange={(open) => {
@@ -855,14 +862,17 @@ export default function Community() {
           if (!open) setUpgradeStep(1);
         }}
       >
-        <DialogContent className="max-h-[90dvh] overflow-y-auto border border-background/20 bg-gradient-to-br from-foreground/95 via-foreground/90 to-foreground/80 text-background shadow-2xl backdrop-blur-2xl sm:max-w-lg">
+        <DialogContent
+          data-mfo-upgrade-dialog="true"
+          className="max-h-[90dvh] overflow-y-auto border border-border/70 bg-gradient-to-br from-background via-background to-muted/60 text-foreground shadow-2xl backdrop-blur-2xl sm:max-w-lg"
+        >
           {upgradeStep === 1 ? (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl text-background sm:text-2xl">
+                <DialogTitle className="text-xl text-foreground sm:text-2xl">
                   Sua voz tem muito a somar por aqui.
                 </DialogTitle>
-                <DialogDescription className="text-background/75">
+                <DialogDescription className="text-muted-foreground">
                   Desbloqueie o Modo Formador de Opinião (MFO) para colocar suas opiniões em um alcance nunca antes visto!
                 </DialogDescription>
               </DialogHeader>
@@ -875,10 +885,10 @@ export default function Community() {
           ) : (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl text-background">
+                <DialogTitle className="text-xl text-foreground">
                   Desbloquear Modo Formador de Opinião
                 </DialogTitle>
-                <DialogDescription className="text-background/75">
+                <DialogDescription className="text-muted-foreground">
                   Checkout seguro da Cakto · R$ 197, pagamento único.
                 </DialogDescription>
               </DialogHeader>
@@ -886,12 +896,12 @@ export default function Community() {
                 <iframe
                   title="Checkout MFO da Cakto"
                   src={mfoCheckoutUrl}
-                  className="h-[70dvh] min-h-[420px] w-full rounded-xl border border-background/20 bg-background"
+                  className="h-[70dvh] min-h-[420px] w-full rounded-xl border border-border bg-background"
                   allow="payment *"
                   referrerPolicy="strict-origin-when-cross-origin"
                 />
               ) : (
-                <p role="status" className="rounded-xl border border-background/20 bg-background/10 p-4 text-sm text-background/80">
+                <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
                   O checkout da Cakto ainda não está configurado.
                 </p>
               )}
