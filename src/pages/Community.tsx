@@ -869,7 +869,7 @@ export default function Community() {
           {upgradeStep === 1 ? (
             <>
               <DialogHeader>
-                <DialogTitle className="text-xl text-foreground sm:text-2xl">
+                <DialogTitle className="text-2xl leading-tight text-foreground sm:text-3xl">
                   Sua voz tem muito a somar por aqui.
                 </DialogTitle>
                 <DialogDescription className="text-muted-foreground">
