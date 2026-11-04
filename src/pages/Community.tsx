@@ -867,8 +867,8 @@ export default function Community() {
         }
 
         @keyframes community-button-pulse {
-          0%, 100% { box-shadow: 0 0 8px hsl(var(--destructive) / 0.25); }
-          50% { box-shadow: 0 0 14px hsl(var(--destructive) / 0.45); }
+          0%, 100% { box-shadow: 0 0 8px rgba(88, 101, 242, 0.25); }
+          50% { box-shadow: 0 0 14px rgba(88, 101, 242, 0.45); }
         }
       `}</style>
       <Dialog
@@ -920,7 +920,7 @@ export default function Community() {
               <DialogFooter className="mt-5 justify-center">
                 <Button
                   onClick={() => setUpgradeStep(2)}
-                  className="h-12 min-w-56 bg-destructive px-8 text-base font-semibold text-white transition-colors hover:bg-destructive/90"
+                  className="h-12 min-w-56 bg-[#5865F2] px-8 text-base font-semibold text-white transition-colors hover:bg-[#4752C4]"
                 >
                   Desbloquear MFO
                 </Button>
@@ -963,7 +963,7 @@ export default function Community() {
                   disabled={!emailDraft.trim() || !emailIsValid}
                   className={`h-12 w-full rounded-xl disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-100 ${
                     emailIsValid
-                      ? "relative isolate cursor-pointer overflow-hidden bg-destructive font-semibold text-white shadow-[0_0_12px_hsl(var(--destructive)/0.3)] transition-colors hover:bg-destructive/90 animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
+                      ? "relative isolate cursor-pointer overflow-hidden bg-[#5865F2] font-semibold text-white shadow-[0_0_12px_rgba(88,101,242,0.3)] transition-colors hover:bg-[#4752C4] animate-[community-button-pulse_0.5s_ease-in-out_infinite]"
                       : "cursor-not-allowed bg-muted text-muted-foreground"
                   }`}
                 >
