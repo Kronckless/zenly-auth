@@ -870,7 +870,7 @@ export default function Community() {
         >
           <DialogClose
             aria-label="Fechar modal MFO"
-            className="fixed right-4 top-4 z-50 flex size-12 items-center justify-center rounded-full border border-border/70 bg-background/90 text-foreground shadow-lg backdrop-blur-xl transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-6 sm:top-6"
+            className="fixed right-6 top-6 z-50 flex size-10 items-center justify-center rounded-full bg-black/5 text-black transition-colors hover:bg-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <X className="size-5" aria-hidden="true" />
           </DialogClose>
