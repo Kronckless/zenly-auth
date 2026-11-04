@@ -866,7 +866,7 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className="!fixed !inset-0 !left-0 !top-0 !translate-x-0 !translate-y-0 !h-dvh !w-screen !max-w-none !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl [&>[data-slot=dialog-close]]:hidden sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
+          className="!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl [&>[data-slot=dialog-close]]:hidden sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20"
         >
           <DialogClose
             aria-label="Fechar modal MFO"
@@ -876,15 +876,15 @@ export default function Community() {
           </DialogClose>
           {upgradeStep === 1 ? (
             <>
-              <DialogHeader>
-                <DialogTitle className="text-2xl leading-tight text-foreground sm:text-3xl">
+              <DialogHeader className="my-auto items-center text-center">
+                <DialogTitle className="text-center text-2xl leading-tight text-foreground sm:text-3xl">
                   Sua voz tem muito a somar por aqui.
                 </DialogTitle>
-                <DialogDescription className="text-muted-foreground">
+                <DialogDescription className="text-center text-muted-foreground">
                   Desbloqueie o Modo Formador de Opinião (MFO) para colocar suas opiniões em um alcance nunca antes visto!
                 </DialogDescription>
               </DialogHeader>
-              <DialogFooter>
+              <DialogFooter className="mt-6 justify-center">
                 <Button onClick={() => setUpgradeStep(2)}>
                   Desbloquear MFO
                 </Button>
@@ -892,7 +892,7 @@ export default function Community() {
             </>
           ) : (
             <>
-              <DialogHeader>
+              <DialogHeader className="shrink-0 text-center">
                 <DialogTitle className="text-xl text-foreground">
                   Desbloquear Modo Formador de Opinião
                 </DialogTitle>
@@ -904,7 +904,7 @@ export default function Community() {
                 <iframe
                   title="Checkout MFO da Cakto"
                   src={mfoCheckoutUrl}
-                  className="h-[70dvh] min-h-[420px] w-full rounded-xl border border-border bg-background"
+                  className="mt-4 min-h-[calc(100dvh-12rem)] w-full flex-1 rounded-xl border border-border bg-background"
                   allow="payment *"
                   referrerPolicy="strict-origin-when-cross-origin"
                 />
