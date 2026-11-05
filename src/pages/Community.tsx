@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, memo, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,30 @@ type PortalArticle = {
   conteudo_completo: string;
   created_at: string;
 };
+
+const MemoizedCheckoutFrame = memo(function MemoizedCheckoutFrame({
+  checkoutUrl,
+  email,
+}: {
+  checkoutUrl: string;
+  email: string;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const src = `${checkoutUrl}${checkoutUrl.includes("?") ? "&" : "?"}email=${encodeURIComponent(email)}`;
+
+  return (
+    <iframe
+      title="Checkout MFO da Cakto"
+      src={src}
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      onLoad={() => setLoaded(true)}
+      data-loaded={loaded}
+      className="mt-4 min-h-[calc(100dvh-12rem)] w-[98%] flex-1 self-center rounded-none border border-border bg-background"
+      allow="payment *"
+      referrerPolicy="strict-origin-when-cross-origin"
+    />
+  );
+});
 
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -122,6 +146,7 @@ export default function Community() {
   const [superChatLimitMessage, setSuperChatLimitMessage] = useState("");
   const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
   const [upgradeStep, setUpgradeStep] = useState<1 | 2 | 3>(1);
+  const [checkoutReady, setCheckoutReady] = useState(false);
   const [emailDraft, setEmailDraft] = useState("");
   const [confirmedEmail, setConfirmedEmail] = useState("");
   const [upgradeFeature, setUpgradeFeature] = useState<"super-chat" | "dossier">("super-chat");
@@ -140,6 +165,16 @@ export default function Community() {
       if (animationTimeoutRef.current !== null) window.clearTimeout(animationTimeoutRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (upgradeStep !== 3) {
+      setCheckoutReady(false);
+      return;
+    }
+
+    const frame = window.requestAnimationFrame(() => setCheckoutReady(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [upgradeStep]);
 
   useEffect(() => {
     if (!articleDialogOpen || !supabase) return;
@@ -1036,13 +1071,17 @@ export default function Community() {
                 </DialogDescription>
               </DialogHeader>
               {mfoCheckoutUrl ? (
-                <iframe
-                  title="Checkout MFO da Cakto"
-                  src={`${mfoCheckoutUrl}${mfoCheckoutUrl.includes("?") ? "&" : "?"}email=${encodeURIComponent(confirmedEmail)}`}
-                  className="mt-4 min-h-[calc(100dvh-12rem)] w-[98%] flex-1 self-center rounded-none border border-border bg-background"
-                  allow="payment *"
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
+                checkoutReady ? (
+                  <MemoizedCheckoutFrame
+                    checkoutUrl={mfoCheckoutUrl}
+                    email={confirmedEmail}
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    className="mt-4 min-h-[calc(100dvh-12rem)] w-[98%] flex-1 self-center border border-border bg-background"
+                  />
+                )
               ) : (
                 <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
                   O checkout da Cakto ainda não está configurado.
