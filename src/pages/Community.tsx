@@ -59,9 +59,8 @@ function formatFileSize(bytes: number) {
 
 const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
-const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 
-function CaktoEmbeddedCheckout() {
+function MfoStep3Checkout() {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const handleCheckout = () => {
@@ -73,7 +72,7 @@ function CaktoEmbeddedCheckout() {
   };
 
   return (
-    <div className="relative flex w-full flex-col items-center justify-center rounded-none bg-transparent p-6 text-center">
+    <div className="flex w-full flex-col items-center justify-center bg-transparent p-6 text-center">
       <p className="mb-6 text-sm text-muted-foreground">Duração: Vitalício</p>
 
       <div className="mb-6 w-full rounded-lg border border-destructive/30 bg-destructive/10 p-4">
@@ -1087,14 +1086,7 @@ export default function Community() {
               </DialogDescription>
             </DialogHeader>
           )}
-          {upgradeStep === 3 &&
-            (mfoCheckoutUrl ? (
-              <CaktoEmbeddedCheckout />
-            ) : (
-              <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
-                O checkout da Cakto ainda não está configurado.
-              </p>
-            ))}
+          {upgradeStep === 3 && <MfoStep3Checkout />}
         </DialogContent>
       </Dialog>
     </main>
