@@ -1039,7 +1039,7 @@ export default function Community() {
                 <iframe
                   title="Checkout MFO da Cakto"
                   src={`${mfoCheckoutUrl}${mfoCheckoutUrl.includes("?") ? "&" : "?"}email=${encodeURIComponent(confirmedEmail)}`}
-                  className="mt-4 min-h-[calc(100dvh-12rem)] w-full flex-1 rounded-none border border-border bg-background"
+                  className="mt-4 min-h-[calc(100dvh-12rem)] w-[92%] flex-1 self-center rounded-none border border-border bg-background"
                   allow="payment *"
                   referrerPolicy="strict-origin-when-cross-origin"
                 />
