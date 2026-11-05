@@ -52,20 +52,42 @@ type PortalArticle = {
 const MemoizedCheckoutFrame = memo(function MemoizedCheckoutFrame({
   checkoutUrl,
   email,
+  active,
 }: {
   checkoutUrl: string;
   email: string;
+  active: boolean;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const src = `${checkoutUrl}${checkoutUrl.includes("?") ? "&" : "?"}email=${encodeURIComponent(email)}`;
 
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!active || !container || container.querySelector("iframe")) return;
+
+    const iframe = document.createElement("iframe");
+    iframe.title = "Checkout MFO da Cakto";
+    iframe.setAttribute(
+      "sandbox",
+      "allow-scripts allow-same-origin allow-forms allow-popups",
+    );
+    iframe.setAttribute("allow", "payment *");
+    iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+    iframe.className = "h-full min-h-[calc(100dvh-12rem)] w-full border-0 bg-background";
+    iframe.src = src;
+    container.appendChild(iframe);
+  }, [active, src]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    return () => container?.replaceChildren();
+  }, []);
+
   return (
-    <iframe
-      title="Checkout MFO da Cakto"
-      src={src}
-      sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-      className="mt-4 min-h-[calc(100dvh-12rem)] w-[98%] flex-1 self-center rounded-none border border-border bg-background"
-      allow="payment *"
-      referrerPolicy="strict-origin-when-cross-origin"
+    <div
+      ref={containerRef}
+      hidden={!active}
+      className="mt-4 min-h-[calc(100dvh-12rem)] w-[98%] flex-1 self-center overflow-hidden rounded-none border border-border bg-background"
     />
   );
 });
@@ -1045,30 +1067,29 @@ export default function Community() {
               </form>
             </div>
           ) : (
-            <>
-              <DialogHeader className="shrink-0 text-center">
-                <DialogTitle className="mx-auto max-w-[85%] px-10 text-xl font-bold text-foreground">
-                  Desbloquear Modo Formador de Opinião
-                </DialogTitle>
-                <DialogDescription className="text-muted-foreground">
-                  <span className="block">Duração: Vitalício</span>
-                  <span className="mt-2 block font-bold text-destructive">
-                    ⚠️ Importante: Preencha seus dados utilizando o MESMO E-MAIL cadastrado no VOZ DO POVO para a liberação automática do seu acesso.
-                  </span>
-                </DialogDescription>
-              </DialogHeader>
-              {mfoCheckoutUrl ? (
-                <MemoizedCheckoutFrame
-                  checkoutUrl={mfoCheckoutUrl}
-                  email={confirmedEmail}
-                />
-              ) : (
-                <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
-                  O checkout da Cakto ainda não está configurado.
-                </p>
-              )}
-            </>
+            <DialogHeader className="shrink-0 text-center">
+              <DialogTitle className="mx-auto max-w-[85%] px-10 text-xl font-bold text-foreground">
+                Desbloquear Modo Formador de Opinião
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground">
+                <span className="block">Duração: Vitalício</span>
+                <span className="mt-2 block font-bold text-destructive">
+                  ⚠️ Importante: Preencha seus dados utilizando o MESMO E-MAIL cadastrado no VOZ DO POVO para a liberação automática do seu acesso.
+                </span>
+              </DialogDescription>
+            </DialogHeader>
           )}
+          {mfoCheckoutUrl ? (
+            <MemoizedCheckoutFrame
+              checkoutUrl={mfoCheckoutUrl}
+              email={confirmedEmail}
+              active={upgradeStep === 3}
+            />
+          ) : upgradeStep === 3 ? (
+            <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
+              O checkout da Cakto ainda não está configurado.
+            </p>
+          ) : null}
         </DialogContent>
       </Dialog>
     </main>
