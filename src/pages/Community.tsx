@@ -929,20 +929,22 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-20 ${
+          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-24 ${
             upgradeStep === 2 ? "mfo-email-modal-border" : ""
           }`}
         >
-          <button
-            type="button"
-            onClick={closeModal}
-            className="absolute top-4 right-4 z-50 p-2 text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
-            aria-label="Fechar modal"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="absolute inset-x-0 top-0 z-40 h-16 rounded-b-[2rem] rounded-br-[3rem] border-b border-border/60 bg-muted/70 shadow-sm sm:h-20">
+            <button
+              type="button"
+              onClick={closeModal}
+              className="absolute top-4 right-4 z-50 p-2 text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
+              aria-label="Fechar modal"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
           {upgradeStep === 1 ? (
             <div className="-translate-y-4">
