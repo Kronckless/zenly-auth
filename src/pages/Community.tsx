@@ -61,23 +61,13 @@ const SUPER_CHAT_DAILY_LIMIT = 10;
 const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 
 function CaktoEmbeddedCheckout() {
-  useEffect(() => {
-    if (document.getElementById("cakto-script-mfo")) return;
-
-    const script = document.createElement("script");
-    script.id = "cakto-script-mfo";
-    script.src = "https://pay.cakto.com.br/js/checkout.js";
-    script.setAttribute("data-checkout", "y5pewwd_1277398");
-    script.async = true;
-
-    document.getElementById("cakto-container")?.appendChild(script);
-  }, []);
-
   return (
-    <div className="mx-auto flex w-[92%] flex-col items-center justify-center rounded-none bg-transparent">
-      <div
-        id="cakto-container"
-        className="min-h-[550px] w-full rounded-none bg-transparent"
+    <div className="w-full rounded-none bg-transparent">
+      <iframe
+        src="https://pay.cakto.com.br/y5pewwd_1277398"
+        title="Checkout MFO da Cakto"
+        className="h-[600px] w-full rounded-none border-0 bg-transparent"
+        allow="payment"
       />
     </div>
   );
