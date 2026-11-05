@@ -69,10 +69,6 @@ const CaktoCheckoutEmbed = memo(function CaktoCheckoutEmbed() {
     iframe.className = "h-full min-h-[calc(100dvh-12rem)] w-full border-0 bg-transparent";
     iframe.src = mfoCheckoutUrl;
     container.appendChild(iframe);
-
-    return () => {
-      container.replaceChildren();
-    };
   }, []);
 
   return (
