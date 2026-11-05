@@ -60,6 +60,29 @@ const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
 const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 
+function CaktoEmbeddedCheckout() {
+  useEffect(() => {
+    if (document.getElementById("cakto-script-mfo")) return;
+
+    const script = document.createElement("script");
+    script.id = "cakto-script-mfo";
+    script.src = "https://pay.cakto.com.br/js/checkout.js";
+    script.setAttribute("data-checkout", "y5pewwd_1277398");
+    script.async = true;
+
+    document.getElementById("cakto-container")?.appendChild(script);
+  }, []);
+
+  return (
+    <div className="mx-auto flex w-[92%] flex-col items-center justify-center rounded-none bg-transparent">
+      <div
+        id="cakto-container"
+        className="min-h-[550px] w-full rounded-none bg-transparent"
+      />
+    </div>
+  );
+}
+
 type SuperChatUsage = {
   day: string;
   count: number;
@@ -1040,24 +1063,7 @@ export default function Community() {
           )}
           {upgradeStep === 3 &&
             (mfoCheckoutUrl ? (
-              <div className="mx-auto flex w-[92%] flex-col items-center justify-center gap-4 rounded-none bg-transparent py-6 text-center">
-                <Button
-                  type="button"
-                  onClick={() =>
-                    window.open(
-                      "https://pay.cakto.com.br/y5pewwd_1277398",
-                      "_blank",
-                      "noopener,noreferrer",
-                    )
-                  }
-                  className="h-auto min-h-14 w-full rounded-none bg-[#5865F2] px-5 py-4 text-base font-bold text-white hover:bg-[#4752C4] sm:text-lg"
-                >
-                  ⚡ FINALIZAR PAGAMENTO COM SEGURANÇA
-                </Button>
-                <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-                  O pagamento é processado em ambiente seguro da Cakto. Após a confirmação, o acesso é liberado automaticamente
-                </p>
-              </div>
+              <CaktoEmbeddedCheckout />
             ) : (
               <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
                 O checkout da Cakto ainda não está configurado.
