@@ -936,7 +936,7 @@ export default function Community() {
           <button
             type="button"
             onClick={closeModal}
-            className="absolute top-4 right-4 z-50 p-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            className="!absolute !top-4 !right-4 z-50 p-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
             aria-label="Fechar modal"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
