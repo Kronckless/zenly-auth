@@ -64,7 +64,7 @@ const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 function CaktoEmbeddedCheckout() {
   const [isNavigating, setIsNavigating] = useState(false);
 
-  const redirectToCheckout = () => {
+  const handleCheckout = () => {
     if (isNavigating) return;
     setIsNavigating(true);
     window.setTimeout(() => {
@@ -73,33 +73,39 @@ function CaktoEmbeddedCheckout() {
   };
 
   return (
-    <>
-      <div className="flex w-full flex-col items-center justify-center gap-5 rounded-none border border-border bg-muted p-6 text-center sm:p-8">
-        <p className="max-w-xl text-sm font-semibold leading-relaxed text-foreground sm:text-base">
-          Preencha os seus dados utilizando o MESMO E-MAIL cadastrado na VOZ DO POVO para a liberação automática do seu acesso.
+    <div className="relative flex w-full flex-col items-center justify-center rounded-none bg-transparent p-6 text-center">
+      <p className="mb-6 text-sm text-muted-foreground">Duração: Vitalício</p>
+
+      <div className="mb-6 w-full rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+        <p className="text-sm font-medium text-destructive">
+          ⚠️ <strong>Importante:</strong> Preencha os seus dados utilizando o{" "}
+          <strong>MESMO E-MAIL</strong> cadastrado na VOZ DO POVO para a
+          liberação automática do seu acesso.
         </p>
-        <Button
-          type="button"
-          onClick={redirectToCheckout}
-          disabled={isNavigating}
-          className="h-14 w-full max-w-md rounded-none px-6 text-base font-bold"
-        >
-          ⚡ FINALIZAR PAGAMENTO AGORA
-        </Button>
       </div>
+
+      <Button
+        type="button"
+        onClick={handleCheckout}
+        disabled={isNavigating}
+        className="h-14 w-full rounded-lg px-6 text-base font-bold uppercase tracking-wide"
+      >
+        {isNavigating ? "Conectando..." : "⚡ FINALIZAR PAGAMENTO AGORA"}
+      </Button>
+
       {isNavigating && (
         <div
           role="status"
           aria-live="polite"
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-5 bg-foreground/70 px-6 text-center text-background backdrop-blur-md"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-5 bg-foreground/80 px-6 text-center text-background backdrop-blur-md"
         >
           <LoaderCircle className="size-12 animate-spin" aria-hidden="true" />
-          <p className="text-base font-semibold sm:text-lg">
+          <p className="text-lg font-semibold">
             Redirecionando para o ambiente seguro de pagamento...
           </p>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
