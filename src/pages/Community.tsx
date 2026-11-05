@@ -49,22 +49,15 @@ type PortalArticle = {
   created_at: string;
 };
 
-const MemoizedCheckoutFrame = memo(function MemoizedCheckoutFrame({
-  checkoutUrl,
-  email,
-  active,
-}: {
-  checkoutUrl: string;
-  email: string;
-  active: boolean;
-}) {
+const CaktoCheckoutEmbed = memo(function CaktoCheckoutEmbed() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const src = `${checkoutUrl}${checkoutUrl.includes("?") ? "&" : "?"}email=${encodeURIComponent(email)}`;
+  const initialized = useRef(false);
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!active || !container || container.querySelector("iframe")) return;
+    if (initialized.current || !container) return;
 
+    initialized.current = true;
     const iframe = document.createElement("iframe");
     iframe.title = "Checkout MFO da Cakto";
     iframe.setAttribute(
@@ -73,24 +66,24 @@ const MemoizedCheckoutFrame = memo(function MemoizedCheckoutFrame({
     );
     iframe.setAttribute("allow", "payment *");
     iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-    iframe.className = "h-full min-h-[calc(100dvh-12rem)] w-full border-0 bg-background";
-    iframe.src = src;
+    iframe.className = "h-full min-h-[calc(100dvh-12rem)] w-full border-0 bg-transparent";
+    iframe.src = mfoCheckoutUrl;
     container.appendChild(iframe);
-  }, [active, src]);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    return () => container?.replaceChildren();
+    return () => {
+      container.replaceChildren();
+    };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      hidden={!active}
-      className="mt-4 min-h-[calc(100dvh-12rem)] w-[98%] flex-1 self-center overflow-hidden rounded-none border border-border bg-background"
+      className="mx-auto mt-4 min-h-[calc(100dvh-12rem)] w-[92%] flex-1 overflow-hidden rounded-none bg-transparent"
     />
   );
 });
+
+CaktoCheckoutEmbed.displayName = "CaktoCheckoutEmbed";
 
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -1079,17 +1072,14 @@ export default function Community() {
               </DialogDescription>
             </DialogHeader>
           )}
-          {mfoCheckoutUrl ? (
-            <MemoizedCheckoutFrame
-              checkoutUrl={mfoCheckoutUrl}
-              email={confirmedEmail}
-              active={upgradeStep === 3}
-            />
-          ) : upgradeStep === 3 ? (
-            <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
-              O checkout da Cakto ainda não está configurado.
-            </p>
-          ) : null}
+          {upgradeStep === 3 &&
+            (mfoCheckoutUrl ? (
+              <CaktoCheckoutEmbed />
+            ) : (
+              <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
+                O checkout da Cakto ainda não está configurado.
+              </p>
+            ))}
         </DialogContent>
       </Dialog>
     </main>
