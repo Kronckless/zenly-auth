@@ -61,10 +61,8 @@ const SUPER_CHAT_DAILY_LIMIT = 10;
 
 function MfoStep3Checkout() {
   return (
-    <div className="flex w-full flex-col items-center justify-center bg-transparent p-6 text-center">
-      <p className="mb-6 text-sm text-muted-foreground">Duração: Vitalício</p>
-
-      <div className="mb-6 w-full rounded-lg border border-destructive/30 bg-destructive/10 p-4">
+    <div className="flex w-full flex-col items-center justify-center bg-transparent p-4 text-center sm:p-6">
+      <div className="mb-5 w-full rounded-lg border border-destructive/30 bg-destructive/10 p-4">
         <p className="text-sm font-medium text-destructive">
           ⚠️ <strong>Importante:</strong> Preencha os seus dados utilizando o{" "}
           <strong>MESMO E-MAIL</strong> cadastrado na VOZ DO POVO para a
@@ -969,7 +967,7 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative overflow-hidden [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-24 ${
+          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-4 !pt-14 !shadow-none relative overflow-hidden [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-6 sm:!pt-16 ${
             upgradeStep === 2 ? "mfo-email-modal-border" : ""
           }`}
         >
@@ -1068,10 +1066,7 @@ export default function Community() {
                 Desbloquear Modo Formador de Opinião
               </DialogTitle>
               <DialogDescription className="text-muted-foreground">
-                <span className="block">Duração: Vitalício</span>
-                <span className="mt-2 block font-bold text-destructive">
-                  ⚠️ Importante: Preencha seus dados utilizando o MESMO E-MAIL cadastrado no VOZ DO POVO para a liberação automática do seu acesso.
-                </span>
+                Duração: Vitalício
               </DialogDescription>
             </DialogHeader>
           )}
