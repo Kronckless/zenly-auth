@@ -1,4 +1,4 @@
-import { FormEvent, memo, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
@@ -49,37 +49,7 @@ type PortalArticle = {
   created_at: string;
 };
 
-const CaktoCheckoutEmbed = memo(function CaktoCheckoutEmbed() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const initialized = useRef(false);
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (initialized.current || !container) return;
-
-    initialized.current = true;
-    const iframe = document.createElement("iframe");
-    iframe.title = "Checkout MFO da Cakto";
-    iframe.setAttribute(
-      "sandbox",
-      "allow-scripts allow-same-origin allow-forms allow-popups",
-    );
-    iframe.setAttribute("allow", "payment *");
-    iframe.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
-    iframe.className = "h-full min-h-[calc(100dvh-12rem)] w-full border-0 bg-transparent";
-    iframe.src = mfoCheckoutUrl;
-    container.appendChild(iframe);
-  }, []);
-
-  return (
-    <div
-      ref={containerRef}
-      className="mx-auto mt-4 min-h-[calc(100dvh-12rem)] w-[92%] flex-1 overflow-hidden rounded-none bg-transparent"
-    />
-  );
-});
-
-CaktoCheckoutEmbed.displayName = "CaktoCheckoutEmbed";
 
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -1070,7 +1040,14 @@ export default function Community() {
           )}
           {upgradeStep === 3 &&
             (mfoCheckoutUrl ? (
-              <CaktoCheckoutEmbed />
+              <div className="w-[92%] mx-auto flex flex-col items-center justify-center bg-white rounded-none">
+                <iframe
+                  src="https://pay.cakto.com.br/y5pewwd_1277398"
+                  className="w-full h-[600px] border-0 rounded-none bg-transparent"
+                  title="Checkout MFO"
+                  allow="payment"
+                />
+              </div>
             ) : (
               <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
                 O checkout da Cakto ainda não está configurado.
