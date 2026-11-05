@@ -74,12 +74,10 @@ function MfoStep3Checkout() {
 
       <button
         type="button"
-        onClick={() => {
-          window.open(
-            "https://pay.cakto.com.br/y5pewwd_1277398",
-            "_blank",
-            "noopener,noreferrer",
-          );
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = 'https://pay.cakto.com.br/y5pewwd_1277398';
         }}
         className="inline-flex h-14 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
