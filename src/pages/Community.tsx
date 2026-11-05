@@ -929,14 +929,14 @@ export default function Community() {
       >
         <DialogContent
           data-mfo-upgrade-dialog="true"
-          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-24 ${
+          className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-6 !pt-20 !shadow-none relative overflow-hidden [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-10 sm:!pt-24 ${
             upgradeStep === 2 ? "mfo-email-modal-border" : ""
           }`}
         >
           <button
             type="button"
             onClick={closeModal}
-            className="absolute top-4 right-4 z-50 p-2 text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
+            className="absolute top-4 right-4 z-50 p-2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
             aria-label="Fechar modal"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
