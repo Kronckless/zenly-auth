@@ -66,9 +66,7 @@ function MfoStep3Checkout() {
   const handleCheckout = () => {
     if (isNavigating) return;
     setIsNavigating(true);
-    window.setTimeout(() => {
-      window.location.assign("https://pay.cakto.com.br/y5pewwd_1277398");
-    }, 600);
+    window.location.href = "https://pay.cakto.com.br/y5pewwd_1277398";
   };
 
   return (
@@ -104,8 +102,6 @@ function MfoStep3Checkout() {
           </p>
           <a
             href="https://pay.cakto.com.br/y5pewwd_1277398"
-            target="_blank"
-            rel="noreferrer"
             className="text-sm font-medium underline underline-offset-4 hover:text-background/80"
           >
             Se não abrir, acesse o checkout aqui
