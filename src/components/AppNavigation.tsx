@@ -13,6 +13,34 @@ const tabs = [
   { label: "MFO", to: "/mfo", Icon: Award },
 ];
 
+function shouldShowMfoInPreview() {
+  if (typeof window === "undefined") return false;
+
+  const hostname = window.location.hostname.toLowerCase();
+  if (hostname === "poderdaconsciencia.zenly.cloud") return false;
+
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".localhost") ||
+    hostname.includes("stackblitz") ||
+    /preview|dev/.test(hostname)
+  ) {
+    return true;
+  }
+
+  if (window.self === window.top) return false;
+
+  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
+    try {
+      const ancestorHostname = new URL(origin).hostname.toLowerCase();
+      return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
+    } catch {
+      return false;
+    }
+  });
+}
+
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [hasMfo, setHasMfo] = useState(false);
@@ -83,7 +111,7 @@ export default function AppNavigation() {
     tabs[3],
     tabs[0],
     tabs[1],
-    ...(hasMfo ? [tabs[4]] : []),
+    ...(hasMfo || shouldShowMfoInPreview() ? [tabs[4]] : []),
   ];
 
   return (
