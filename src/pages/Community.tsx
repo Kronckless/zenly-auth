@@ -933,18 +933,16 @@ export default function Community() {
             upgradeStep === 2 ? "mfo-email-modal-border" : ""
           }`}
         >
-          <div className="absolute inset-x-0 top-0 z-40 h-16 rounded-b-[2rem] rounded-br-[3rem] border-b border-border/60 bg-muted/70 shadow-sm sm:h-20">
-            <button
-              type="button"
-              onClick={closeModal}
-              className="absolute top-4 right-4 z-50 p-2 text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
-              aria-label="Fechar modal"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={closeModal}
+            className="absolute top-4 right-4 z-50 p-2 text-gray-500 hover:text-gray-800 transition-colors cursor-pointer"
+            aria-label="Fechar modal"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
           {upgradeStep === 1 ? (
             <div className="-translate-y-4">
