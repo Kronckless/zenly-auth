@@ -61,30 +61,32 @@ const SUPER_CHAT_DAILY_LIMIT = 10;
 const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 
 function CaktoEmbeddedCheckout() {
-  const openCheckoutPopup = () => {
-    const width = 500;
-    const height = 750;
-    const left = Math.max(0, Math.round((window.screen.width - width) / 2));
-    const top = Math.max(0, Math.round((window.screen.height - height) / 2));
+  const [redirecting, setRedirecting] = useState(false);
 
-    window.open(
-      "https://pay.cakto.com.br/y5pewwd_1277398",
-      "_blank",
-      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
-    );
+  const redirectToCheckout = () => {
+    if (redirecting) return;
+    setRedirecting(true);
+    window.setTimeout(() => {
+      window.location.assign("https://pay.cakto.com.br/y5pewwd_1277398");
+    }, 250);
   };
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-5 rounded-none border border-border bg-muted p-6 text-center sm:p-8">
+    <div
+      className={`flex w-full flex-col items-center justify-center gap-5 rounded-none border border-border bg-muted p-6 text-center transition-opacity duration-200 sm:p-8 ${
+        redirecting ? "opacity-70" : "opacity-100"
+      }`}
+    >
       <p className="max-w-xl text-sm font-semibold leading-relaxed text-foreground sm:text-base">
         Preencha os seus dados utilizando o MESMO E-MAIL cadastrado na VOZ DO POVO para a liberação automática do seu acesso.
       </p>
       <Button
         type="button"
-        onClick={openCheckoutPopup}
+        onClick={redirectToCheckout}
+        disabled={redirecting}
         className="h-14 w-full max-w-md rounded-none px-6 text-base font-bold"
       >
-        ⚡ FINALIZAR PAGAMENTO AGORA
+        {redirecting ? "Redirecionando para o checkout..." : "⚡ FINALIZAR PAGAMENTO AGORA"}
       </Button>
     </div>
   );
