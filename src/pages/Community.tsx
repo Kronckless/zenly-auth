@@ -1040,13 +1040,23 @@ export default function Community() {
           )}
           {upgradeStep === 3 &&
             (mfoCheckoutUrl ? (
-              <div className="w-[92%] mx-auto flex flex-col items-center justify-center bg-white rounded-none">
-                <iframe
-                  src="https://pay.cakto.com.br/y5pewwd_1277398"
-                  className="w-full h-[600px] border-0 rounded-none bg-transparent"
-                  title="Checkout MFO"
-                  allow="payment"
-                />
+              <div className="mx-auto flex w-[92%] flex-col items-center justify-center gap-4 rounded-none bg-transparent py-6 text-center">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    window.open(
+                      "https://pay.cakto.com.br/y5pewwd_1277398",
+                      "_blank",
+                      "noopener,noreferrer",
+                    )
+                  }
+                  className="h-auto min-h-14 w-full rounded-none bg-[#5865F2] px-5 py-4 text-base font-bold text-white hover:bg-[#4752C4] sm:text-lg"
+                >
+                  ⚡ FINALIZAR PAGAMENTO COM SEGURANÇA
+                </Button>
+                <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
+                  O pagamento é processado em ambiente seguro da Cakto. Após a confirmação, o acesso é liberado automaticamente
+                </p>
               </div>
             ) : (
               <p role="status" className="rounded-xl border border-border bg-muted/60 p-4 text-sm text-muted-foreground">
