@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -930,23 +929,7 @@ export default function Community() {
             upgradeStep === 2 ? "mfo-email-modal-border" : ""
           }`}
         >
-          <DialogClose
-            aria-label="Fechar"
-            className="!absolute !right-4 !top-4 z-50 flex size-9 cursor-pointer items-center justify-center rounded-full bg-black/10 text-black backdrop-blur-md transition-all hover:bg-black/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          >
-            <svg
-              className="size-5 stroke-current stroke-[2.5]"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M18 6 6 18M6 6l12 12"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </DialogClose>
+
           {upgradeStep === 1 ? (
             <div className="-translate-y-4">
               <DialogHeader className="shrink-0 items-center text-center">
