@@ -18,6 +18,7 @@ import {
   FileText,
   LockKeyhole,
   Crosshair,
+  LoaderCircle,
   MessageSquare,
   Paperclip,
   Send,
@@ -61,34 +62,44 @@ const SUPER_CHAT_DAILY_LIMIT = 10;
 const mfoCheckoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
 
 function CaktoEmbeddedCheckout() {
-  const [redirecting, setRedirecting] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
 
   const redirectToCheckout = () => {
-    if (redirecting) return;
-    setRedirecting(true);
+    if (isNavigating) return;
+    setIsNavigating(true);
     window.setTimeout(() => {
-      window.location.assign("https://pay.cakto.com.br/y5pewwd_1277398");
-    }, 250);
+      window.location.href = "https://pay.cakto.com.br/y5pewwd_1277398";
+    }, 600);
   };
 
   return (
-    <div
-      className={`flex w-full flex-col items-center justify-center gap-5 rounded-none border border-border bg-muted p-6 text-center transition-opacity duration-200 sm:p-8 ${
-        redirecting ? "opacity-70" : "opacity-100"
-      }`}
-    >
-      <p className="max-w-xl text-sm font-semibold leading-relaxed text-foreground sm:text-base">
-        Preencha os seus dados utilizando o MESMO E-MAIL cadastrado na VOZ DO POVO para a liberação automática do seu acesso.
-      </p>
-      <Button
-        type="button"
-        onClick={redirectToCheckout}
-        disabled={redirecting}
-        className="h-14 w-full max-w-md rounded-none px-6 text-base font-bold"
-      >
-        {redirecting ? "Redirecionando para o checkout..." : "⚡ FINALIZAR PAGAMENTO AGORA"}
-      </Button>
-    </div>
+    <>
+      <div className="flex w-full flex-col items-center justify-center gap-5 rounded-none border border-border bg-muted p-6 text-center sm:p-8">
+        <p className="max-w-xl text-sm font-semibold leading-relaxed text-foreground sm:text-base">
+          Preencha os seus dados utilizando o MESMO E-MAIL cadastrado na VOZ DO POVO para a liberação automática do seu acesso.
+        </p>
+        <Button
+          type="button"
+          onClick={redirectToCheckout}
+          disabled={isNavigating}
+          className="h-14 w-full max-w-md rounded-none px-6 text-base font-bold"
+        >
+          ⚡ FINALIZAR PAGAMENTO AGORA
+        </Button>
+      </div>
+      {isNavigating && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-5 bg-foreground/70 px-6 text-center text-background backdrop-blur-md"
+        >
+          <LoaderCircle className="size-12 animate-spin" aria-hidden="true" />
+          <p className="text-base font-semibold sm:text-lg">
+            Redirecionando para o ambiente seguro de pagamento...
+          </p>
+        </div>
+      )}
+    </>
   );
 }
 
