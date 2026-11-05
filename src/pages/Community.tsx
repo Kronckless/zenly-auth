@@ -77,7 +77,17 @@ function MfoStep3Checkout() {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          window.top!.location.href = 'https://pay.cakto.com.br/y5pewwd_1277398';
+          const checkoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
+
+          try {
+            if (window.top) {
+              window.top.location.href = checkoutUrl;
+            } else {
+              window.location.href = checkoutUrl;
+            }
+          } catch {
+            window.location.href = checkoutUrl;
+          }
         }}
         className="inline-flex h-14 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
