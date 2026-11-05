@@ -18,7 +18,6 @@ import {
   FileText,
   LockKeyhole,
   Crosshair,
-  LoaderCircle,
   MessageSquare,
   Paperclip,
   Send,
@@ -61,14 +60,6 @@ const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
 
 function MfoStep3Checkout() {
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  const handleCheckout = () => {
-    if (isNavigating) return;
-    setIsNavigating(true);
-    window.location.href = "https://pay.cakto.com.br/y5pewwd_1277398";
-  };
-
   return (
     <div className="flex w-full flex-col items-center justify-center bg-transparent p-6 text-center">
       <p className="mb-6 text-sm text-muted-foreground">Duração: Vitalício</p>
@@ -81,33 +72,12 @@ function MfoStep3Checkout() {
         </p>
       </div>
 
-      <Button
-        type="button"
-        onClick={handleCheckout}
-        disabled={isNavigating}
-        className="h-14 w-full rounded-lg px-6 text-base font-bold uppercase tracking-wide"
+      <a
+        href="https://pay.cakto.com.br/y5pewwd_1277398"
+        className="inline-flex h-14 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
-        {isNavigating ? "Conectando..." : "⚡ FINALIZAR PAGAMENTO AGORA"}
-      </Button>
-
-      {isNavigating && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-5 bg-foreground/80 px-6 text-center text-background backdrop-blur-md"
-        >
-          <LoaderCircle className="size-12 animate-spin" aria-hidden="true" />
-          <p className="text-lg font-semibold">
-            Redirecionando para o ambiente seguro de pagamento...
-          </p>
-          <a
-            href="https://pay.cakto.com.br/y5pewwd_1277398"
-            className="text-sm font-medium underline underline-offset-4 hover:text-background/80"
-          >
-            Se não abrir, acesse o checkout aqui
-          </a>
-        </div>
-      )}
+        ⚡ FINALIZAR PAGAMENTO AGORA
+      </a>
     </div>
   );
 }
