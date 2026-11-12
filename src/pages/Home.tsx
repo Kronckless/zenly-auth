@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Clock3, TrendingUp } from "lucide-react";
+import { ArrowRight, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -636,13 +636,7 @@ async function openNews(item: NewsItem) {
                         {cleanJournalisticText(item.summary || item.content)}
                       </p>
                     )}
-                    <div className="flex items-center justify-between gap-3">
-                      {item.publishedAt && (
-                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                          <Clock3 className="h-3 w-3" />
-                          {new Date(item.publishedAt).toLocaleDateString("pt-BR")}
-                        </span>
-                      )}
+                    <div className="flex items-center justify-end gap-3">
                       <Button
                         variant="ghost"
                         size="sm"
