@@ -90,7 +90,7 @@ function MfoStep3Checkout({ email }: { email: string }) {
           title="Checkout Cakto para desbloquear o Modo Formador de Opinião"
           sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
           allow="payment; clipboard-write"
-          className="block h-[45dvh] min-h-[280px] max-h-[400px] w-full bg-background sm:h-[650px] sm:max-h-none"
+          className="block h-[55dvh] min-h-[320px] max-h-[480px] w-full bg-background sm:h-[650px] sm:max-h-none"
         />
       </div>
 
