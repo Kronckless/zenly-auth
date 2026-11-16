@@ -11,6 +11,11 @@ app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
+// Variáveis para o Cache de Notícias
+let newsCache = null;
+let lastFetchTime = 0;
+const CACHE_DURATION = 2 * 60 * 60 * 1000; // 2 horas em milissegundos
+
 const FEEDS = [
   // 1. NA ÍNTEGRA
   {
@@ -56,9 +61,9 @@ const FEEDS = [
 function cleanRawText(text) {
   if (!text) return '';
   return text
-    .replace(/O post .* apareceu primeiro em .*/gi, '') // Remove assinatura de RSS
-    .replace(/\[\.\.\.\]/g, '')                         // Remove [...]
-    .replace(/<[^>]*>?/gm, '')                          // Remove tags HTML soltas
+    .replace(/O post .* apareceu primeiro em .*/gi, '')
+    .replace(/\[\.\.\.\]/g, '')
+    .replace(/<[^>]*>?/gm, '')
     .trim();
 }
 
@@ -107,6 +112,22 @@ app.get('/health', (req, res) => {
 
 app.get('/api/news', async (req, res) => {
   try {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = Domingo, 6 = Sábado
+    const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+    // Se for fim de semana e já tivermos cache, entrega direto sem chamar RSS/Gemini
+    if (isWeekend && newsCache) {
+      return res.json(newsCache);
+    }
+
+    const currentTime = Date.now();
+
+    // Durante a semana, se o cache tiver menos de 2 horas, devolve instantaneamente
+    if (newsCache && !isWeekend && (currentTime - lastFetchTime < CACHE_DURATION)) {
+      return res.json(newsCache);
+    }
+
     const allArticles = [];
 
     for (const feedConfig of FEEDS) {
@@ -159,9 +180,16 @@ app.get('/api/news', async (req, res) => {
       }
     }
 
+    // Atualiza o cache com as notícias fresquinhas
+    newsCache = allArticles;
+    lastFetchTime = currentTime;
+
     res.json(allArticles);
   } catch (error) {
     console.error('Erro geral ao processar notícias:', error);
+    if (newsCache) {
+      return res.json(newsCache);
+    }
     res.status(500).json({ error: 'Erro ao processar as notícias' });
   }
 });
