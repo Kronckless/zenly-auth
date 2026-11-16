@@ -64,30 +64,46 @@ function MfoStep3Checkout({ email }: { email: string }) {
   checkoutUrl.searchParams.set("email", email);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center bg-transparent p-4 text-center sm:p-6">
-      <div className="mb-5 w-full rounded-lg border border-destructive/30 bg-destructive/10 p-4">
-        <p className="text-sm font-medium text-destructive">
-          ⚠️ <strong>Importante:</strong> Preencha os seus dados utilizando o{" "}
-          <strong>MESMO E-MAIL</strong> cadastrado na VOZ DO POVO para a
-          liberação automática do seu acesso.
-        </p>
+    <div className="w-full space-y-4 px-4 pb-4 sm:px-6">
+      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 text-left">
+        <div className="flex items-start gap-3">
+          <span
+            aria-hidden="true"
+            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary"
+          >
+            ✓
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-foreground">
+              Confira seu e-mail antes de pagar
+            </p>
+            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+              Use o mesmo e-mail cadastrado no VOZ DO POVO para liberar seu acesso automaticamente.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <iframe
-        src={checkoutUrl.toString()}
-        title="Checkout Cakto para desbloquear o Modo Formador de Opinião"
-        sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
-        allow="payment; clipboard-write"
-        className="h-[650px] w-full rounded-lg border border-border bg-background"
-      />
-      <a
-        href={checkoutUrl.toString()}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 text-sm font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
-      >
-        ⚠️ Está com problemas para carregar corretamente? Clique aqui.
-      </a>
+      <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
+        <iframe
+          src={checkoutUrl.toString()}
+          title="Checkout Cakto para desbloquear o Modo Formador de Opinião"
+          sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
+          allow="payment; clipboard-write"
+          className="block h-[560px] w-full bg-background sm:h-[650px]"
+        />
+      </div>
+
+      <div className="text-center">
+        <a
+          href={checkoutUrl.toString()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex min-h-11 items-center justify-center rounded-xl border border-border bg-muted/40 px-4 py-2 text-sm font-medium text-muted-foreground underline underline-offset-4 transition-colors hover:bg-muted hover:text-foreground"
+        >
+          ⚠️ Está com problemas para carregar corretamente? Clique aqui.
+        </a>
+      </div>
     </div>
   );
 }
