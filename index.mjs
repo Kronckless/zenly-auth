@@ -11,10 +11,10 @@ app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-// Variáveis para o Cache de Notícias
+// Variáveis para o Cache de Notícias (Configurado para 2 horas e 54 minutos)
 let newsCache = null;
 let lastFetchTime = 0;
-const CACHE_DURATION = 2 * 60 * 60 * 1000; // 2 horas em milissegundos
+const CACHE_DURATION = (2 * 60 + 54) * 60 * 1000; // 2h 54m em milissegundos
 
 const FEEDS = [
   // 1. NA ÍNTEGRA
@@ -123,7 +123,7 @@ app.get('/api/news', async (req, res) => {
 
     const currentTime = Date.now();
 
-    // Durante a semana, se o cache tiver menos de 2 horas, devolve instantaneamente
+    // Durante a semana, se o cache tiver menos de 2h 54m, devolve instantaneamente
     if (newsCache && !isWeekend && (currentTime - lastFetchTime < CACHE_DURATION)) {
       return res.json(newsCache);
     }
