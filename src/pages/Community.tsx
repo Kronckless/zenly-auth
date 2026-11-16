@@ -59,7 +59,10 @@ function formatFileSize(bytes: number) {
 const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
 
-function MfoStep3Checkout() {
+function MfoStep3Checkout({ email }: { email: string }) {
+  const checkoutUrl = new URL("https://pay.cakto.com.br/y5pewwd_1277398");
+  checkoutUrl.searchParams.set("email", email);
+
   return (
     <div className="flex w-full flex-col items-center justify-center bg-transparent p-4 text-center sm:p-6">
       <div className="mb-5 w-full rounded-lg border border-destructive/30 bg-destructive/10 p-4">
@@ -70,27 +73,13 @@ function MfoStep3Checkout() {
         </p>
       </div>
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const checkoutUrl = "https://pay.cakto.com.br/y5pewwd_1277398";
-
-          try {
-            if (window.top) {
-              window.top.location.href = checkoutUrl;
-            } else {
-              window.location.href = checkoutUrl;
-            }
-          } catch {
-            window.location.href = checkoutUrl;
-          }
-        }}
-        className="inline-flex h-14 w-full items-center justify-center rounded-lg bg-primary px-6 text-base font-bold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      >
-        GARANTIR MEU ACESSO AGORA
-      </button>
+      <iframe
+        src={checkoutUrl.toString()}
+        title="Checkout Cakto para desbloquear o Modo Formador de Opinião"
+        sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
+        allow="payment; clipboard-write"
+        className="h-[650px] w-full rounded-lg border border-border bg-background"
+      />
     </div>
   );
 }
@@ -1070,7 +1059,7 @@ export default function Community() {
               </DialogDescription>
             </DialogHeader>
           )}
-          {upgradeStep === 3 && <MfoStep3Checkout />}
+          {upgradeStep === 3 && <MfoStep3Checkout email={confirmedEmail} />}
         </DialogContent>
       </Dialog>
     </main>
