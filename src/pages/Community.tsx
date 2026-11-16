@@ -65,11 +65,11 @@ function MfoStep3Checkout({ email }: { email: string }) {
 
   return (
     <div className="w-full space-y-4 px-4 pb-4 sm:px-6">
-      <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 text-left">
+      <div className="rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-left">
         <div className="flex items-start gap-3">
           <span
             aria-hidden="true"
-            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary"
+            className="flex size-8 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-sm font-bold text-destructive"
           >
             ✓
           </span>
@@ -84,7 +84,7 @@ function MfoStep3Checkout({ email }: { email: string }) {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
+      <div className="overflow-hidden border border-border bg-background shadow-sm">
         <iframe
           src={checkoutUrl.toString()}
           title="Checkout Cakto para desbloquear o Modo Formador de Opinião"
