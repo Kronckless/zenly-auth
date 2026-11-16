@@ -77,8 +77,8 @@ function MfoStep3Checkout({ email }: { email: string }) {
             <p className="text-sm font-semibold text-foreground">
               Confira seu e-mail antes de pagar
             </p>
-            <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
-              Use o mesmo e-mail cadastrado no VOZ DO POVO para liberar seu acesso automaticamente.
+            <p className="mt-1 text-sm leading-relaxed" style={{ color: "#000000" }}>
+              <strong>Use o mesmo e-mail cadastrado</strong> no VOZ DO POVO para liberar seu acesso automaticamente.
             </p>
           </div>
         </div>
