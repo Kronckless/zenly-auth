@@ -80,6 +80,14 @@ function MfoStep3Checkout({ email }: { email: string }) {
         allow="payment; clipboard-write"
         className="h-[650px] w-full rounded-lg border border-border bg-background"
       />
+      <a
+        href={checkoutUrl.toString()}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-4 text-sm font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
+      >
+        ⚠️ Está com problemas para carregar o pagamento? Clique aqui para abrir o checkout seguro.
+      </a>
     </div>
   );
 }
