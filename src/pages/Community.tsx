@@ -64,7 +64,7 @@ function MfoStep3Checkout({ email }: { email: string }) {
   checkoutUrl.searchParams.set("email", email);
 
   return (
-    <div className="w-full space-y-4 px-4 pb-4 sm:px-6">
+    <div className="w-full space-y-3 px-2 pb-3 sm:space-y-4 sm:px-6 sm:pb-4">
       <div className="rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-left">
         <div className="flex items-start gap-3">
           <span
@@ -90,7 +90,7 @@ function MfoStep3Checkout({ email }: { email: string }) {
           title="Checkout Cakto para desbloquear o Modo Formador de Opinião"
           sandbox="allow-scripts allow-forms allow-popups allow-same-origin"
           allow="payment; clipboard-write"
-          className="block h-[560px] w-full bg-background sm:h-[650px]"
+          className="block h-[45dvh] min-h-[280px] max-h-[400px] w-full bg-background sm:h-[650px] sm:max-h-none"
         />
       </div>
 
@@ -981,6 +981,8 @@ export default function Community() {
         <DialogContent
           data-mfo-upgrade-dialog="true"
           className={`!fixed !inset-0 !left-0 !top-0 !z-50 !flex !h-dvh !w-screen !max-w-none !translate-x-0 !translate-y-0 !flex-col !items-center !justify-center !rounded-none !border-0 !px-6 !pb-4 !pt-14 !shadow-none relative overflow-hidden [&>button[data-slot=dialog-close]]:hidden overflow-y-auto overscroll-contain scroll-smooth !bg-gradient-to-br !from-background/95 !via-background/95 !to-muted/80 text-foreground backdrop-blur-2xl sm:!max-w-none sm:!px-10 sm:!pb-6 sm:!pt-16 ${
+            upgradeStep === 3 ? "!px-2 !pb-2" : ""
+          } ${
             upgradeStep === 2 ? "mfo-email-modal-border" : ""
           }`}
         >
