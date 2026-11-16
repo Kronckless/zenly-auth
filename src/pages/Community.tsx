@@ -86,7 +86,7 @@ function MfoStep3Checkout({ email }: { email: string }) {
         rel="noopener noreferrer"
         className="mt-4 text-sm font-medium text-primary underline underline-offset-4 transition-colors hover:text-primary/80"
       >
-        ⚠️ Está com problemas para carregar o pagamento? Clique aqui para abrir o checkout seguro.
+        ⚠️ Está com problemas para carregar corretamente? Clique aqui.
       </a>
     </div>
   );
