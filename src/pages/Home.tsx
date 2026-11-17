@@ -23,6 +23,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import AppNavigation from "@/components/AppNavigation";
 import { supabase } from "@/lib/supabase";
 import {
@@ -1244,7 +1250,7 @@ async function openNews(item: NewsItem) {
             <X className="size-5" />
           </button>
 
-          <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+          <div className="mx-auto flex w-full max-w-6xl flex-col items-center text-center">
             <div className="w-full max-w-3xl space-y-5">
               <h2
                 id="socio-modal-title"
@@ -1306,6 +1312,66 @@ async function openNews(item: NewsItem) {
                 </article>
               ))}
             </div>
+
+            <section
+              aria-labelledby="socio-faq-title"
+              className="mt-12 w-full rounded-b-3xl bg-white px-6 py-12 text-zinc-950 md:px-12"
+            >
+              <h3
+                id="socio-faq-title"
+                className="mb-8 text-center font-display text-3xl font-bold tracking-tight"
+              >
+                Como funciona?
+              </h3>
+
+              <Accordion type="single" collapsible className="mx-auto w-full max-w-4xl">
+                {[
+                  {
+                    question: "O acesso de sócio é vitalício?",
+                    answer:
+                      "A licença de sócio é vitalícia. O acesso correspondente permanece ativo sem prazo de encerramento, de acordo com os termos da oferta.",
+                  },
+                  {
+                    question: "Quando meu acesso será ativado?",
+                    answer:
+                      "Após a confirmação do pagamento pela Cakto, a ativação é automática no perfil vinculado à compra. Se o acesso não aparecer, entre em contato com o suporte.",
+                  },
+                  {
+                    question: "Quais permissões de gestão estão incluídas?",
+                    answer:
+                      "O benefício inclui controle administrativo sobre espaços e seções exclusivas do portal para organizar temas, conteúdos e debates.",
+                  },
+                  {
+                    question: "Posso convidar outras pessoas?",
+                    answer:
+                      "Sim. A sociedade inclui acesso para convidar novos membros e ajudar a fortalecer o núcleo ativo da plataforma.",
+                  },
+                  {
+                    question: "Como funciona o suporte pelo Telegram?",
+                    answer:
+                      "Sócios têm acesso a um canal exclusivo de suporte e atendimento prioritário no Telegram. As orientações de acesso são fornecidas após a ativação.",
+                  },
+                  {
+                    question: "O que minha contribuição ajuda a fortalecer?",
+                    answer:
+                      "Ela contribui para a evolução contínua, o alcance e a independência do Portal Voz do Povo.",
+                  },
+                ].map(({ question, answer }, index) => (
+                  <AccordionItem
+                    key={question}
+                    value={`socio-faq-${index + 1}`}
+                    className="border-zinc-200"
+                  >
+                    <AccordionTrigger className="py-5 text-left text-base font-semibold text-zinc-950 hover:no-underline sm:text-lg">
+                      {question}
+                    </AccordionTrigger>
+                    <AccordionContent className="pb-4 text-sm leading-relaxed text-zinc-600 sm:text-base">
+                      {answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </section>
           </div>
         </div>
       )}
