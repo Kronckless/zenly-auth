@@ -553,15 +553,15 @@ async function openNews(item: NewsItem) {
           aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen((open) => !open)}
-          className="flex size-11 items-center justify-center rounded-full border border-[#262626] bg-[#101011] text-background shadow-lg transition-colors hover:bg-[#262626] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex size-8 items-center justify-center rounded-full border border-gray-200 bg-white text-black shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
-          <Menu className="size-5" />
+          <Menu className="size-4" />
         </button>
 
         {menuOpen && (
-          <div className="absolute right-0 top-12 w-64 rounded-xl border border-[#262626] bg-[#101011] p-2 shadow-2xl">
+          <div className="absolute right-0 top-10 w-64 rounded-lg border border-white/30 bg-neutral-500/25 p-2 shadow-lg backdrop-blur-xl">
             {isBooster ? (
-              <div className="rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-3 text-sm font-medium text-amber-200">
+              <div className="rounded-md border border-white/40 bg-white/95 px-3 py-3 text-sm font-medium text-gray-800">
                 Sócio Vitalício Ativo
               </div>
             ) : (
@@ -570,10 +570,10 @@ async function openNews(item: NewsItem) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setMenuOpen(false)}
-                className="block rounded-lg border border-amber-400/25 bg-amber-400/10 px-3 py-3 text-amber-100 transition-colors hover:bg-amber-400/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+                className="block rounded-md border border-white/60 bg-white/95 px-3 py-3 text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span className="block text-sm font-bold">Torne-se sócio</span>
-                <span className="mt-1 block text-xs text-amber-100/70">
+                <span className="mt-1 block text-xs text-gray-600">
                   Impulsione o Portal Voz do Povo
                 </span>
               </a>
