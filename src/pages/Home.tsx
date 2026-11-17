@@ -1372,6 +1372,59 @@ async function openNews(item: NewsItem) {
                 ))}
               </Accordion>
             </section>
+
+            <section
+              aria-labelledby="socio-jornada-title"
+              className="w-full bg-gradient-to-b from-zinc-800 via-zinc-900 to-zinc-950 px-6 py-16 text-white md:px-12"
+            >
+              <header className="mx-auto mb-10 max-w-3xl text-center">
+                <h3
+                  id="socio-jornada-title"
+                  className="font-display text-3xl font-bold tracking-tight sm:text-4xl"
+                >
+                  A Jornada do Sócio
+                </h3>
+                <p className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
+                  Veja como é simples ativar sua licença vitalícia e assumir seu espaço no Portal Voz do Povo.
+                </p>
+              </header>
+
+              <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-3">
+                {[
+                  {
+                    number: "01",
+                    title: "Ativação Instantânea",
+                    description:
+                      "Você garante sua licença com pagamento único e o sistema libera automaticamente o seu acesso vitalício na hora.",
+                  },
+                  {
+                    number: "02",
+                    title: "Permissões Liberadas",
+                    description:
+                      "Seu perfil ganha o selo oficial de Sócio, desbloqueando a administração de espaços exclusivos e seu painel de convites.",
+                  },
+                  {
+                    number: "03",
+                    title: "Acesso ao Núcleo VIP",
+                    description:
+                      "Você entra no grupo dedicado de sócios no Telegram e passa a impulsionar diretamente o crescimento do portal.",
+                  },
+                ].map(({ number, title, description }) => (
+                  <article
+                    key={number}
+                    className="rounded-2xl border border-white/15 bg-zinc-800/50 p-6 text-left shadow-lg backdrop-blur-sm"
+                  >
+                    <span className="inline-flex size-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 font-display text-lg font-bold text-zinc-100">
+                      {number}
+                    </span>
+                    <h4 className="mt-6 text-lg font-semibold">{title}</h4>
+                    <p className="mt-3 text-sm leading-relaxed text-zinc-300">
+                      {description}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            </section>
           </div>
         </div>
       )}
