@@ -1315,7 +1315,7 @@ async function openNews(item: NewsItem) {
 
             <section
               aria-labelledby="socio-faq-title"
-              className="mt-12 w-full rounded-b-3xl bg-white px-6 py-12 text-zinc-950 md:px-12"
+              className="mt-12 w-full rounded-b-3xl bg-white px-6 py-14 text-zinc-950 md:px-12"
             >
               <h3
                 id="socio-faq-title"
@@ -1327,34 +1327,34 @@ async function openNews(item: NewsItem) {
               <Accordion type="single" collapsible className="mx-auto w-full max-w-4xl">
                 {[
                   {
-                    question: "O acesso de sócio é vitalício?",
+                    question: "Como funciona o gerenciamento dos espaços do portal?",
                     answer:
-                      "A licença de sócio é vitalícia. O acesso correspondente permanece ativo sem prazo de encerramento, de acordo com os termos da oferta.",
+                      "Como sócio, você ganha permissões administrativas sobre áreas específicas do Portal Voz do Povo. Isso permite organizar tópicos, moderar discussões, destacar assuntos relevantes e moldar o ambiente de debates junto com a equipe do portal.",
                   },
                   {
-                    question: "Quando meu acesso será ativado?",
+                    question: "Posso convidar outras pessoas para o portal?",
                     answer:
-                      "Após a confirmação do pagamento pela Cakto, a ativação é automática no perfil vinculado à compra. Se o acesso não aparecer, entre em contato com o suporte.",
+                      "Sim. Você recebe acesso a um sistema exclusivo de convites para trazer pessoas de confiança, expandir o alcance da comunidade e ajudar a construir um núcleo de membros cada vez mais ativo e qualificado.",
                   },
                   {
-                    question: "Quais permissões de gestão estão incluídas?",
+                    question: "O que significa impulsionar diretamente o portal?",
                     answer:
-                      "O benefício inclui controle administrativo sobre espaços e seções exclusivas do portal para organizar temas, conteúdos e debates.",
+                      "Significa que a sua contribuição financia diretamente a evolução tecnológica, a independência editorial e a expansão do Voz do Povo — além de garantir prioridade e maior visibilidade para as suas próprias participações dentro da plataforma.",
                   },
                   {
-                    question: "Posso convidar outras pessoas?",
+                    question: "Como faço para entrar no grupo de suporte dedicado no Telegram?",
                     answer:
-                      "Sim. A sociedade inclui acesso para convidar novos membros e ajudar a fortalecer o núcleo ativo da plataforma.",
+                      "Assim que a sua licença de sócio for confirmada, o link de acesso exclusivo ao nosso canal e grupo VIP de atendimento direto no Telegram é liberado automaticamente no seu painel de usuário.",
                   },
                   {
-                    question: "Como funciona o suporte pelo Telegram?",
+                    question: "Eu terei acesso imediato a demais funcionalidades de ser sócio?",
                     answer:
-                      "Sócios têm acesso a um canal exclusivo de suporte e atendimento prioritário no Telegram. As orientações de acesso são fornecidas após a ativação.",
+                      "Sim, a liberação é automática e instantânea. Logo após a confirmação do pagamento, o sistema atualiza o seu perfil na hora e desbloqueia todos os recursos, permissões e selos exclusivos de sócio.",
                   },
                   {
-                    question: "O que minha contribuição ajuda a fortalecer?",
+                    question: "Tem mensalidades para se tornar sócio ou é vitalício?",
                     answer:
-                      "Ela contribui para a evolução contínua, o alcance e a independência do Portal Voz do Povo.",
+                      "É 100% vitalício. Você realiza um pagamento único e garante todos os privilégios e futuras atualizações de sócio para sempre, sem cobranças recorrentes ou taxas ocultas.",
                   },
                 ].map(({ question, answer }, index) => (
                   <AccordionItem
