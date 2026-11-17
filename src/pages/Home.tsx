@@ -1224,27 +1224,51 @@ async function openNews(item: NewsItem) {
           role="dialog"
           aria-modal="true"
           aria-labelledby="socio-modal-title"
-          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-zinc-900 via-neutral-900 to-zinc-950 p-6"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-start overflow-y-auto bg-gradient-to-b from-neutral-700 via-neutral-800 to-zinc-800 p-6 pt-14 md:pt-20"
         >
           <button
             type="button"
             aria-label="Fechar modal"
             onClick={() => setIsSocioModalOpen(false)}
-            className="absolute right-5 top-5 rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+            className="absolute right-5 top-5 rounded-full p-2 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
           >
             <X className="size-5" />
           </button>
 
-          <div className="mx-auto w-full max-w-3xl space-y-5 text-center">
-            <h2
-              id="socio-modal-title"
-              className="membership-gradient-title bg-clip-text text-3xl font-bold leading-tight text-transparent sm:text-4xl md:text-5xl"
-            >
-              Torne-se sócio do portal VOZ DO POVO
-            </h2>
-            <p className="text-base leading-relaxed text-zinc-300 sm:text-lg">
-              Ser sócio é mais do que um simples status, é liberdade para se expressar de tudo que vier pela sua mente, administrar determinados lugares do Portal Voz do Povo, convidar pessoas e impulsionar o portal!
-            </p>
+          <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+            <div className="w-full max-w-3xl space-y-5">
+              <h2
+                id="socio-modal-title"
+                className="membership-gradient-title bg-clip-text text-3xl font-bold leading-tight text-transparent sm:text-4xl md:text-5xl"
+              >
+                Torne-se sócio do portal VOZ DO POVO
+              </h2>
+              <p className="text-base leading-relaxed text-zinc-100 sm:text-lg">
+                Ser sócio é mais do que um simples status, é liberdade para se expressar de tudo que vier pela sua mente, administrar determinados lugares do Portal Voz do Povo, convidar pessoas e impulsionar o portal!
+              </p>
+            </div>
+
+            <Button className="mt-8 rounded-full px-8 py-3.5 font-bold shadow-lg">
+              Eu quero ser sócio
+            </Button>
+
+            <h3 className="mt-12 text-center text-lg font-bold tracking-wide text-white sm:text-xl">
+              CONFIRA O QUE VOCÊ VAI TER DISPONIVEL AO SE TORNAR SÓCIO
+            </h3>
+
+            <div className="mt-5 grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
+              {[1, 2, 3].map((benefit) => (
+                <article
+                  key={benefit}
+                  className="rounded-2xl border border-white/20 bg-white/10 p-6 text-left text-white shadow-sm backdrop-blur-sm"
+                >
+                  <h4 className="text-lg font-semibold">Título do benefício</h4>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-200">
+                    Descrição do benefício.
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       )}
