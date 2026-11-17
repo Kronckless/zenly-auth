@@ -1362,10 +1362,10 @@ async function openNews(item: NewsItem) {
                     value={`socio-faq-${index + 1}`}
                     className="border-zinc-200"
                   >
-                    <AccordionTrigger className="py-5 text-left text-base font-semibold text-zinc-950 hover:no-underline sm:text-lg">
+                    <AccordionTrigger className="items-start py-5 text-left text-base font-semibold text-zinc-950 hover:no-underline sm:text-lg">
                       {question}
                     </AccordionTrigger>
-                    <AccordionContent className="pb-4 text-sm leading-relaxed text-zinc-600 sm:text-base">
+                    <AccordionContent className="text-left pb-4 text-sm leading-relaxed text-zinc-600 sm:text-base">
                       {answer}
                     </AccordionContent>
                   </AccordionItem>
