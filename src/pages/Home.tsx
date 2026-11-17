@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Menu, TrendingUp } from "lucide-react";
+import { ArrowRight, Menu, TrendingUp, X } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -174,6 +174,7 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
 export default function Home() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -579,18 +580,19 @@ async function openNews(item: NewsItem) {
                       Sócio Vitalício Ativo
                     </div>
                   ) : (
-                    <a
-                      href="https://pay.cakto.com.br/4gxfhf8_1336054"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={() => setMenuOpen(false)}
-                      className="block rounded-md border border-white/60 bg-white/95 px-3 py-3 text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setIsSocioModalOpen(true);
+                      }}
+                      className="block w-full rounded-md border border-white/60 bg-white/95 px-3 py-3 text-left text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <span className="membership-gradient-title block bg-clip-text text-sm font-bold text-transparent">Torne-se sócio</span>
                       <span className="mt-1 block text-xs text-gray-600">
                         Impulsione o Portal Voz do Povo...
                       </span>
-                    </a>
+                    </button>
                   )}
                 </div>
               )}
@@ -1217,6 +1219,35 @@ async function openNews(item: NewsItem) {
         </Dialog>
       </div>
 
+      {isSocioModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="socio-modal-title"
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-zinc-900 via-neutral-900 to-zinc-950 p-6"
+        >
+          <button
+            type="button"
+            aria-label="Fechar modal"
+            onClick={() => setIsSocioModalOpen(false)}
+            className="absolute right-5 top-5 rounded-full p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+          >
+            <X className="size-5" />
+          </button>
+
+          <div className="mx-auto w-full max-w-3xl space-y-5 text-center">
+            <h2
+              id="socio-modal-title"
+              className="membership-gradient-title bg-clip-text text-3xl font-bold leading-tight text-transparent sm:text-4xl md:text-5xl"
+            >
+              Torne-se sócio do portal VOZ DO POVO
+            </h2>
+            <p className="text-base leading-relaxed text-zinc-300 sm:text-lg">
+              Ser sócio é mais do que um simples status, é liberdade para se expressar de tudo que vier pela sua mente, administrar determinados lugares do Portal Voz do Povo, convidar pessoas e impulsionar o portal!
+            </p>
+          </div>
+        </div>
+      )}
 
     </main>
   );
