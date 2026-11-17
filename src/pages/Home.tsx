@@ -206,6 +206,7 @@ export default function Home() {
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
   const [textoIndex, setTextoIndex] = useState(0);
   const [comDestaque, setComDestaque] = useState(false);
+  const socioFinalTitleRef = useRef<HTMLHeadingElement | null>(null);
 
   useEffect(() => {
     if (!supabase) return;
@@ -1263,7 +1264,16 @@ async function openNews(item: NewsItem) {
               </p>
             </div>
 
-            <Button className="relative mt-8 overflow-hidden rounded-full bg-[#5865F2] px-8 py-3.5 font-bold text-white shadow-lg hover:bg-[#4752C4]">
+            <Button
+              type="button"
+              onClick={() =>
+                socioFinalTitleRef.current?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                })
+              }
+              className="relative mt-8 overflow-hidden rounded-full bg-[#5865F2] px-8 py-3.5 font-bold text-white shadow-lg hover:bg-[#4752C4]"
+            >
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
@@ -1449,7 +1459,10 @@ async function openNews(item: NewsItem) {
               aria-label="Finalizar adesão de sócio"
               className="my-10 flex w-full max-w-4xl flex-col items-center rounded-3xl border border-white/20 bg-gradient-to-b from-zinc-900 via-neutral-900 to-zinc-950 p-8 text-center shadow-2xl md:p-10"
             >
-              <h3 className="mb-3 text-2xl font-extrabold text-white md:text-3xl">
+              <h3
+                ref={socioFinalTitleRef}
+                className="mb-3 text-2xl font-extrabold text-white md:text-3xl"
+              >
                 Ser sócio não é apenas luxo, é o poder máximo que você tem dentro do Portal!
               </h3>
               <a
