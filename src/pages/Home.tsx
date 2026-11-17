@@ -1425,6 +1425,21 @@ async function openNews(item: NewsItem) {
                 ))}
               </div>
             </section>
+
+            <section
+              aria-label="Aviso de lote fundador"
+              className="relative my-8 w-full max-w-4xl overflow-hidden rounded-3xl border border-amber-500/30 bg-gradient-to-r from-zinc-900 via-neutral-900 to-zinc-900 px-6 py-8 text-center shadow-2xl"
+            >
+              <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-xs font-semibold text-amber-400">
+                ⚡ Lote Fundador Disponível
+              </span>
+              <h3 className="mb-2 text-xl font-bold text-white md:text-2xl">
+                Licença Vitalícia com Vagas Limitadas no Núcleo
+              </h3>
+              <p className="text-sm text-zinc-300 md:text-base">
+                Para manter a qualidade, a agilidade na administração dos espaços e a exclusividade do núcleo de sócios do Portal Voz do Povo, o acesso vitalício com todas as permissões avançadas é liberado em lotes controlados.
+              </p>
+            </section>
           </div>
         </div>
       )}
