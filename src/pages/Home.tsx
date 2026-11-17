@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, TrendingUp } from "lucide-react";
+import { ArrowRight, Menu, TrendingUp } from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import AppNavigation from "@/components/AppNavigation";
+import { supabase } from "@/lib/supabase";
 import {
   Card,
   CardContent,
@@ -172,6 +173,8 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
 
 export default function Home() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isBooster, setIsBooster] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
@@ -187,6 +190,44 @@ export default function Home() {
   const [fiscalAlertOpen, setFiscalAlertOpen] = useState(false);
   const [textoIndex, setTextoIndex] = useState(0);
   const [comDestaque, setComDestaque] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    let active = true;
+
+    const loadBoosterStatus = async (userId?: string) => {
+      if (!userId) {
+        if (active) setIsBooster(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("is_booster")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (active) setIsBooster(!error && data?.is_booster === true);
+    };
+
+    void supabase.auth.getUser().then(({ data: { user } }) => {
+      void loadBoosterStatus(user?.id);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      window.setTimeout(() => {
+        void loadBoosterStatus(session?.user.id);
+      }, 0);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     let destaqueTimeout: number | undefined;
@@ -506,6 +547,40 @@ async function openNews(item: NewsItem) {
     <main className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] max-sm:overflow-x-clip sm:pb-0">
       <AppNavigation />
 
+      <div className="fixed right-3 top-3 z-50">
+        <button
+          type="button"
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+          className="flex size-11 items-center justify-center rounded-full border border-[#262626] bg-[#101011] text-background shadow-lg transition-colors hover:bg-[#262626] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <Menu className="size-5" />
+        </button>
+
+        {menuOpen && (
+          <div className="absolute right-0 top-12 w-64 rounded-xl border border-[#262626] bg-[#101011] p-2 shadow-2xl">
+            {isBooster ? (
+              <div className="rounded-lg border border-amber-400/20 bg-amber-400/5 px-3 py-3 text-sm font-medium text-amber-200">
+                Sócio Vitalício Ativo
+              </div>
+            ) : (
+              <a
+                href="https://pay.cakto.com.br/4gxfhf8_1336054"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMenuOpen(false)}
+                className="block rounded-lg border border-amber-400/25 bg-amber-400/10 px-3 py-3 text-amber-100 transition-colors hover:bg-amber-400/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300"
+              >
+                <span className="block text-sm font-bold">Torne-se sócio</span>
+                <span className="mt-1 block text-xs text-amber-100/70">
+                  Impulsione o Portal Voz do Povo
+                </span>
+              </a>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8 lg:py-12">
         <section id="urgente" aria-label="Notícias urgentes">
