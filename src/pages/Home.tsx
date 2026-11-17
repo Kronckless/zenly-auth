@@ -1263,8 +1263,12 @@ async function openNews(item: NewsItem) {
               </p>
             </div>
 
-            <Button className="mt-8 rounded-full px-8 py-3.5 font-bold shadow-lg">
-              Eu quero ser sócio
+            <Button className="relative mt-8 overflow-hidden rounded-full bg-[#5865F2] px-8 py-3.5 font-bold text-white shadow-lg hover:bg-[#4752C4]">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
+              />
+              <span className="relative">Eu quero ser sócio</span>
             </Button>
 
             <h3 className="mt-12 text-center text-lg font-bold tracking-wide text-white sm:text-xl">
@@ -1452,9 +1456,13 @@ async function openNews(item: NewsItem) {
                 href="https://pay.cakto.com.br/4gxfhf8_1336054"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="my-6 inline-flex items-center justify-center rounded-full bg-primary px-10 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all duration-300 hover:scale-105 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-lg"
+                className="relative my-6 inline-flex items-center justify-center overflow-hidden rounded-full bg-[#5865F2] px-10 py-4 text-base font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#4752C4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-lg"
               >
-                Eu quero ser sócio
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                />
+                <span className="relative">Eu quero ser sócio</span>
               </a>
               <p className="text-sm leading-relaxed text-zinc-300">
                 Dê o primeiro passo e veja como isso funciona na prática.

@@ -301,3 +301,8 @@
   from { background-position: 0% 50%; }
   to { background-position: 100% 50%; }
 }
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
