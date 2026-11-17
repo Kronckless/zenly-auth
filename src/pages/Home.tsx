@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Menu, TrendingUp, X } from "lucide-react";
+import {
+  ArrowRight,
+  Headset,
+  LayoutDashboard,
+  Megaphone,
+  Menu,
+  TrendingUp,
+  UserPlus,
+  X,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -1256,16 +1265,44 @@ async function openNews(item: NewsItem) {
               CONFIRA O QUE VOCÊ VAI TER DISPONIVEL AO SE TORNAR SÓCIO
             </h3>
 
-            <div className="mt-5 grid w-full max-w-4xl grid-cols-1 gap-4 md:grid-cols-3">
-              {[1, 2, 3].map((benefit) => (
+            <div className="mt-5 grid w-full max-w-6xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                {
+                  title: "Gerencie espaços do Portal",
+                  description:
+                    "Tenha controle administrativo sobre áreas e seções exclusivas dentro do Portal Voz do Povo para organizar temas, conteúdos e debates.",
+                  Icon: LayoutDashboard,
+                },
+                {
+                  title: "Poder de Convite Exclusivo",
+                  description:
+                    "Receba acesso para convidar novos membros e trazer pessoas de confiança para fortalecer o núcleo ativo da plataforma.",
+                  Icon: UserPlus,
+                },
+                {
+                  title: "Impulsionamento Direto do Portal",
+                  description:
+                    "Contribua diretamente para a evolução contínua, alcance e independência do Voz do Povo com sua licença vitalícia.",
+                  Icon: Megaphone,
+                },
+                {
+                  title: "Suporte dedicado",
+                  description:
+                    "Acesso direto e prioritário ao nosso canal exclusivo de suporte e atendimento VIP para sócios no Telegram.",
+                  Icon: Headset,
+                },
+              ].map(({ title, description, Icon }) => (
                 <article
-                  key={benefit}
-                  className="rounded-2xl border border-white/20 bg-white/10 p-6 text-left text-white shadow-sm backdrop-blur-sm"
+                  key={title}
+                  className="flex min-h-[280px] flex-col justify-between rounded-2xl border border-white/20 bg-white/10 p-6 text-left text-white shadow-sm backdrop-blur-sm"
                 >
-                  <h4 className="text-lg font-semibold">Título do benefício</h4>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-200">
-                    Descrição do benefício.
-                  </p>
+                  <Icon className="size-6 text-zinc-100" aria-hidden="true" />
+                  <div className="mt-8">
+                    <h4 className="text-lg font-semibold">{title}</h4>
+                    <p className="mt-3 text-sm leading-relaxed text-zinc-200">
+                      {description}
+                    </p>
+                  </div>
                 </article>
               ))}
             </div>
