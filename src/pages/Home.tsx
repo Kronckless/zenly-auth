@@ -1446,7 +1446,7 @@ async function openNews(item: NewsItem) {
               className="my-10 flex w-full max-w-4xl flex-col items-center rounded-3xl border border-white/20 bg-gradient-to-b from-zinc-900 via-neutral-900 to-zinc-950 p-8 text-center shadow-2xl md:p-10"
             >
               <h3 className="mb-3 text-2xl font-extrabold text-white md:text-3xl">
-                Pronto para assumir seu espaço e ter liberdade total no Portal Voz do Povo?
+                Ser sócio não é apenas luxo, é o poder máximo que você tem dentro do Portal!
               </h3>
               <a
                 href="https://pay.cakto.com.br/4gxfhf8_1336054"
