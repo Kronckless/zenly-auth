@@ -1457,9 +1457,7 @@ async function openNews(item: NewsItem) {
                 Eu quero ser sócio
               </a>
               <p className="text-sm leading-relaxed text-zinc-300">
-                🔒 Pagamento seguro via Cakto <span aria-hidden="true">•</span>{" "}
-                ⚡ Liberação imediata <span aria-hidden="true">•</span>{" "}
-                ♾️ Acesso vitalício*
+                Dê o primeiro passo e veja como isso funciona na prática.
               </p>
             </section>
           </div>
