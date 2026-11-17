@@ -1501,7 +1501,7 @@ async function openNews(item: NewsItem) {
           <div className="relative flex h-[88dvh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 p-3 shadow-2xl sm:p-5">
             <div className="mb-3 flex shrink-0 items-center justify-between gap-4 text-white">
               <h2 className="font-display text-lg font-semibold sm:text-xl">
-                Finalize sua adesão
+                Torna-se sócio
               </h2>
               <button
                 type="button"
