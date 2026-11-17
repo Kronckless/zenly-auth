@@ -1382,7 +1382,7 @@ async function openNews(item: NewsItem) {
                   id="socio-jornada-title"
                   className="font-display text-3xl font-bold tracking-tight sm:text-4xl"
                 >
-                  A Jornada do Sócio
+                  Ainda está com dúvidas?
                 </h3>
                 <p className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
                   Veja como é simples ativar sua licença vitalícia e assumir seu espaço no Portal Voz do Povo.
