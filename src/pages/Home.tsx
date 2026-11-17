@@ -1294,7 +1294,7 @@ async function openNews(item: NewsItem) {
               ].map(({ title, description, Icon }) => (
                 <article
                   key={title}
-                  className="flex min-h-[280px] flex-col justify-between rounded-2xl border border-white/20 bg-white/10 p-6 text-left text-white shadow-sm backdrop-blur-sm"
+                  className="flex min-h-[280px] flex-col justify-between rounded-2xl border border-white/25 bg-gradient-to-br from-zinc-700/85 via-zinc-800/90 to-neutral-900/95 p-6 text-left text-white shadow-xl ring-1 ring-inset ring-white/15 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-white/50"
                 >
                   <Icon className="size-6 text-zinc-100" aria-hidden="true" />
                   <div className="mt-8">
