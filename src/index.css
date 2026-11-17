@@ -282,3 +282,22 @@
   50% { clip-path: inset(42% 0 36% 0); transform: translate(1px, -1px); }
   75% { clip-path: inset(80% 0 2% 0); transform: translate(-1px, 1px); }
 }
+
+.membership-gradient-title {
+  background-image: linear-gradient(
+    90deg,
+    #f09433,
+    #e6683c,
+    #dc2743,
+    #cc2366,
+    #bc1888,
+    #f09433
+  );
+  background-size: 200% auto;
+  animation: membership-gradient-slide 6s linear infinite;
+}
+
+@keyframes membership-gradient-slide {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
+}

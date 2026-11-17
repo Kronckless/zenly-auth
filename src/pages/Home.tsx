@@ -586,9 +586,9 @@ async function openNews(item: NewsItem) {
                       onClick={() => setMenuOpen(false)}
                       className="block rounded-md border border-white/60 bg-white/95 px-3 py-3 text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                      <span className="block text-sm font-bold">Torne-se sócio</span>
+                      <span className="membership-gradient-title block bg-clip-text text-sm font-bold text-transparent">Torne-se sócio</span>
                       <span className="mt-1 block text-xs text-gray-600">
-                        Impulsione o Portal Voz do Povo
+                        Impulsione o Portal Voz do Povo...
                       </span>
                     </a>
                   )}
