@@ -1266,7 +1266,7 @@ async function openNews(item: NewsItem) {
             <Button className="relative mt-8 overflow-hidden rounded-full bg-[#5865F2] px-8 py-3.5 font-bold text-white shadow-lg hover:bg-[#4752C4]">
               <span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
               />
               <span className="relative">Eu quero ser sócio</span>
             </Button>
@@ -1460,7 +1460,7 @@ async function openNews(item: NewsItem) {
               >
                 <span
                   aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
+                  className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
                 />
                 <span className="relative">Eu quero ser sócio</span>
               </a>
