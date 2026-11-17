@@ -190,6 +190,7 @@ export default function Home() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
@@ -1465,10 +1466,12 @@ async function openNews(item: NewsItem) {
               >
                 Ser sócio não é apenas luxo, é o poder máximo que você tem dentro do Portal!
               </h3>
-              <a
-                href="https://pay.cakto.com.br/4gxfhf8_1336054"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => {
+                  setIsSocioModalOpen(false);
+                  setIsCheckoutOpen(true);
+                }}
                 className="relative my-6 inline-flex items-center justify-center overflow-hidden rounded-full bg-[#5865F2] px-10 py-4 text-base font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#4752C4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-lg"
               >
                 <span
@@ -1476,11 +1479,45 @@ async function openNews(item: NewsItem) {
                   className="pointer-events-none absolute inset-0 -translate-x-full animate-[shimmer_1.2s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent"
                 />
                 <span className="relative">Eu quero ser sócio</span>
-              </a>
+              </button>
               <p className="text-sm leading-relaxed text-zinc-300">
                 Dê o primeiro passo e veja como isso funciona na prática.
               </p>
             </section>
+          </div>
+        </div>
+      )}
+
+      {isCheckoutOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Checkout de sócio"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) setIsCheckoutOpen(false);
+          }}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 p-3 backdrop-blur-sm sm:p-6"
+        >
+          <div className="relative flex h-[88dvh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-white/15 bg-zinc-900 p-3 shadow-2xl sm:p-5">
+            <div className="mb-3 flex shrink-0 items-center justify-between gap-4 text-white">
+              <h2 className="font-display text-lg font-semibold sm:text-xl">
+                Finalize sua adesão
+              </h2>
+              <button
+                type="button"
+                aria-label="Fechar checkout"
+                onClick={() => setIsCheckoutOpen(false)}
+                className="rounded-full p-2 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              >
+                <X className="size-5" />
+              </button>
+            </div>
+            <iframe
+              src="https://pay.cakto.com.br/4gxfhf8_1336054"
+              title="Checkout de sócio do Portal Voz do Povo"
+              allow="payment; clipboard-write"
+              className="min-h-0 w-full flex-1 rounded-xl bg-white"
+            />
           </div>
         </div>
       )}
