@@ -1440,6 +1440,28 @@ async function openNews(item: NewsItem) {
                 Para manter a qualidade, a agilidade na administração dos espaços e a exclusividade do núcleo de sócios do Portal Voz do Povo, o acesso vitalício com todas as permissões avançadas é liberado em lotes controlados.
               </p>
             </section>
+
+            <section
+              aria-label="Finalizar adesão de sócio"
+              className="my-10 flex w-full max-w-4xl flex-col items-center rounded-3xl border border-white/20 bg-gradient-to-b from-zinc-900 via-neutral-900 to-zinc-950 p-8 text-center shadow-2xl md:p-10"
+            >
+              <h3 className="mb-3 text-2xl font-extrabold text-white md:text-3xl">
+                Pronto para assumir seu espaço e ter liberdade total no Portal Voz do Povo?
+              </h3>
+              <a
+                href="https://pay.cakto.com.br/4gxfhf8_1336054"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="my-6 inline-flex items-center justify-center rounded-full bg-primary px-10 py-4 text-base font-bold text-primary-foreground shadow-xl transition-all duration-300 hover:scale-105 hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-lg"
+              >
+                Eu quero ser sócio
+              </a>
+              <p className="text-sm leading-relaxed text-zinc-300">
+                🔒 Pagamento seguro via Cakto <span aria-hidden="true">•</span>{" "}
+                ⚡ Liberação imediata <span aria-hidden="true">•</span>{" "}
+                ♾️ Acesso vitalício*
+              </p>
+            </section>
           </div>
         </div>
       )}
