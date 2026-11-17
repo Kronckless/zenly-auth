@@ -547,51 +547,54 @@ async function openNews(item: NewsItem) {
     <main className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] max-sm:overflow-x-clip sm:pb-0">
       <AppNavigation />
 
-      <div className="fixed right-3 top-3 z-50">
-        <button
-          type="button"
-          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
-          className="flex size-8 items-center justify-center rounded-full border border-gray-200 bg-white text-black shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <Menu className="size-4" />
-        </button>
-
-        {menuOpen && (
-          <div className="absolute right-0 top-10 w-64 rounded-lg border border-white/30 bg-neutral-500/25 p-2 shadow-lg backdrop-blur-xl">
-            {isBooster ? (
-              <div className="rounded-md border border-white/40 bg-white/95 px-3 py-3 text-sm font-medium text-gray-800">
-                Sócio Vitalício Ativo
-              </div>
-            ) : (
-              <a
-                href="https://pay.cakto.com.br/4gxfhf8_1336054"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMenuOpen(false)}
-                className="block rounded-md border border-white/60 bg-white/95 px-3 py-3 text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <span className="block text-sm font-bold">Torne-se sócio</span>
-                <span className="mt-1 block text-xs text-gray-600">
-                  Impulsione o Portal Voz do Povo
-                </span>
-              </a>
-            )}
-          </div>
-        )}
-      </div>
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-5 sm:py-8 lg:px-8 lg:py-12">
         <section id="urgente" aria-label="Notícias urgentes">
-          <div className="mb-5 flex items-center gap-3">
-            <Badge className="gap-2 bg-destructive px-3 py-1 text-destructive-foreground hover:bg-destructive">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-foreground" />
-              NOTÍCIAS URGENTES
-            </Badge>
-            <span className="text-sm text-muted-foreground">
-              Atualização contínua
-            </span>
+          <div className="mb-5 flex w-full items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Badge className="gap-2 bg-destructive px-3 py-1 text-destructive-foreground hover:bg-destructive">
+                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary-foreground" />
+                NOTÍCIAS URGENTES
+              </Badge>
+              <span className="text-sm text-muted-foreground">
+                Atualização contínua
+              </span>
+            </div>
+
+            <div className="relative z-50">
+              <button
+                type="button"
+                aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((open) => !open)}
+                className="flex size-8 items-center justify-center rounded-full border border-gray-200 bg-white text-black shadow-sm transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <Menu className="size-4" />
+              </button>
+
+              {menuOpen && (
+                <div className="absolute right-0 top-10 w-64 rounded-lg border border-white/30 bg-neutral-500/25 p-2 shadow-lg backdrop-blur-xl">
+                  {isBooster ? (
+                    <div className="rounded-md border border-white/40 bg-white/95 px-3 py-3 text-sm font-medium text-gray-800">
+                      Sócio Vitalício Ativo
+                    </div>
+                  ) : (
+                    <a
+                      href="https://pay.cakto.com.br/4gxfhf8_1336054"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setMenuOpen(false)}
+                      className="block rounded-md border border-white/60 bg-white/95 px-3 py-3 text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <span className="block text-sm font-bold">Torne-se sócio</span>
+                      <span className="mt-1 block text-xs text-gray-600">
+                        Impulsione o Portal Voz do Povo
+                      </span>
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="relative left-1/2 w-screen -translate-x-1/2 overflow-hidden rounded-none bg-foreground">
