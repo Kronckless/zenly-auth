@@ -19,9 +19,9 @@ import {
   LockKeyhole,
   Crosshair,
   MessageSquare,
+  MessageSquarePlus,
   Paperclip,
   Pin,
-  Plus,
   Send,
   Smile,
   Sparkles,
@@ -1044,9 +1044,9 @@ export default function Community() {
           size="icon"
           aria-label="Criar sala"
           onClick={() => void openRoomCreation()}
-          className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-primary text-primary-foreground shadow-lg transition active:scale-95 hover:bg-primary/90"
+          className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-[#5865F2] text-white shadow-lg shadow-[#5865F2]/30 transition-all duration-150 hover:bg-[#4752C4] active:scale-95"
         >
-          <Plus className="size-6" aria-hidden="true" />
+          <MessageSquarePlus className="size-6" strokeWidth={2.2} aria-hidden="true" />
         </Button>
 
         <Dialog open={socioDialogOpen} onOpenChange={setSocioDialogOpen}>
