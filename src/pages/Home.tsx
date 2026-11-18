@@ -707,7 +707,8 @@ async function openNews(item: NewsItem) {
                         Uma voz alcança mais pessoas quando é compartilhada.
                       </DialogTitle>
                       <DialogDescription className="max-w-2xl text-sm leading-relaxed sm:text-base">
-                        Compartilhe o Voz do Povo com outras pessoas, ajude a ampliar o alcance do portal e receba comissões pelas novas assinaturas feitas através do seu link.
+                        Compartilhe o Voz do Povo com outras pessoas, ajude a ampliar o alcance do portal e{" "}
+                        <strong>receba comissões pelas novas assinaturas feitas através do seu link.</strong>
                       </DialogDescription>
                     </DialogHeader>
 
