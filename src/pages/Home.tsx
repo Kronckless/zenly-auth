@@ -912,7 +912,15 @@ async function openNews(item: NewsItem) {
                                 <p className="relative z-10 max-w-sm text-sm font-medium leading-relaxed text-zinc-200 sm:text-base">
                                   Você indica. O Voz do Povo cresce. E 90% da comissão fica com você!
                                 </p>
-                                <div className="relative z-10 my-3 bg-gradient-to-b from-emerald-600 via-emerald-800 to-cyan-950 bg-clip-text font-display text-5xl font-bold leading-none tracking-tight text-transparent sm:text-6xl">
+                                <div
+                                  className="relative z-10 my-3 bg-clip-text font-display text-5xl font-bold leading-none tracking-tight text-transparent sm:text-6xl"
+                                  style={{
+                                    background:
+                                      "radial-gradient(43.3% 44.23% at 50% 49.51%, rgb(247, 255, 250) 29%, rgb(204, 255, 218) 48.5%, rgb(163, 255, 234) 100%)",
+                                    backgroundClip: "text",
+                                    color: "transparent",
+                                  }}
+                                >
                                   90%
                                 </div>
                                 <span className="relative z-10 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-300">
