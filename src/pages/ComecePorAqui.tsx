@@ -129,7 +129,11 @@ export default function ComecePorAqui() {
         </div>
       </section>
 
-      <section className="mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-[#F5F6F8] text-left">
+      <section className={`mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-xl border text-left transition-colors duration-300 ${
+        isWhatsAppGuideOpen
+          ? "border-border bg-[#F5F6F8]"
+          : "border-[#25D366]/40 bg-gradient-to-br from-[#075E54] to-[#25D366]"
+      }`}>
         <Accordion
           type="single"
           collapsible
@@ -139,10 +143,10 @@ export default function ComecePorAqui() {
           <AccordionItem value="whatsapp-engagement" className="border-0">
             <AccordionTrigger className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:no-underline [&>svg]:hidden sm:px-8">
               <span className="min-w-0">
-                <span className="block text-base font-bold leading-snug text-foreground sm:text-lg">
+                <span className={`block text-base font-bold leading-snug sm:text-lg ${isWhatsAppGuideOpen ? "text-foreground" : "text-white"}`}>
                   Como se engajar em grupos de WhatsApp?
                 </span>
-                <span className="mt-1 block text-xs font-medium text-muted-foreground transition-colors group-hover:text-foreground sm:text-sm">
+                <span className={`mt-1 block text-xs font-medium transition-colors sm:text-sm ${isWhatsAppGuideOpen ? "text-muted-foreground group-hover:text-foreground" : "text-white/90 group-hover:text-white"}`}>
                   {isWhatsAppGuideOpen ? "Ocultar detalhes ↑" : "Mais detalhes ↓"}
                 </span>
               </span>
@@ -150,11 +154,11 @@ export default function ComecePorAqui() {
 
             {!isWhatsAppGuideOpen && (
               <div aria-hidden="true" className="relative mx-5 mb-4 space-y-1.5 overflow-hidden opacity-40 blur-[2px] sm:mx-8">
-                <div className="h-1.5 w-4/5 rounded-full bg-muted-foreground/50" />
-                <div className="h-1.5 w-full rounded-full bg-muted-foreground/40" />
-                <div className="h-1.5 w-11/12 rounded-full bg-muted-foreground/40" />
-                <div className="h-1.5 w-2/3 rounded-full bg-muted-foreground/30" />
-                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#F5F6F8] to-transparent" />
+                <div className="h-1.5 w-4/5 rounded-full bg-white/60" />
+                <div className="h-1.5 w-full rounded-full bg-white/50" />
+                <div className="h-1.5 w-11/12 rounded-full bg-white/50" />
+                <div className="h-1.5 w-2/3 rounded-full bg-white/40" />
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#25D366] to-transparent" />
               </div>
             )}
 
