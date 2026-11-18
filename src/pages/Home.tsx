@@ -819,13 +819,13 @@ async function openNews(item: NewsItem) {
                         </p>
                         <button
                           type="button"
-                          className="mx-auto mt-7 flex w-full max-w-3xl items-center justify-between gap-4 rounded-2xl border border-destructive/25 bg-white px-5 py-4 text-left shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-destructive/50 hover:shadow-[0_6px_18px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
+                          className="group mx-auto mt-7 flex min-h-24 w-full max-w-3xl items-center justify-between gap-4 rounded-2xl border-2 border-destructive/80 bg-gradient-to-br from-destructive via-destructive to-destructive/90 p-1 text-left text-destructive-foreground shadow-lg shadow-destructive/20 transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-xl hover:shadow-destructive/25 active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
                         >
-                          <span className="font-display text-sm font-bold tracking-[0.14em] text-zinc-950 sm:text-base">
+                          <span className="flex min-h-20 flex-1 items-center justify-center rounded-xl border border-white/50 px-5 py-5 font-display text-base font-extrabold tracking-[0.14em] text-white sm:text-lg">
                             COMECE POR AQUI
                           </span>
                           <ArrowRight
-                            className="size-5 shrink-0 text-destructive transition-transform duration-200 group-hover:translate-x-1"
+                            className="mr-5 size-6 shrink-0 text-white transition-transform duration-200 group-hover:translate-x-1"
                             aria-hidden="true"
                           />
                         </button>
