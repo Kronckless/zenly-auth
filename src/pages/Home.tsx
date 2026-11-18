@@ -971,7 +971,8 @@ async function openNews(item: NewsItem) {
                                 },
                                 {
                                   question: "Preciso pagar alguma coisa para participar?",
-                                  answer: "Resposta pendente de confirmação da gratuidade da participação.",
+                                  answer:
+                                    "Não! Ser sócio do Voz do Povo já garante a você o direito de convidar novas pessoas, compartilhar seu link exclusivo e receber uma das comissões mais cobiçadas do mercado. É um benefício exclusivo de quem faz parte do nosso projeto, sem nenhuma taxa adicional para participar.\n\nAproveite esse benefício, compartilhe seu convite e ajude o Voz do Povo a chegar ainda mais longe!",
                                 },
                                 {
                                   question: "Posso compartilhar meu convite nas redes sociais?",
