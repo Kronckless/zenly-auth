@@ -1471,7 +1471,7 @@ async function openNews(item: NewsItem) {
               <Button
                 type="button"
                 onClick={() => setFiscalAlertOpen(true)}
-                className="rounded-lg bg-cta px-7 text-cta-foreground shadow-md transition-all hover:scale-[1.02] hover:brightness-95 hover:shadow-lg"
+                className="rounded-lg bg-[#5865F2] px-7 text-white shadow-md transition-all hover:scale-[1.02] hover:brightness-95 hover:shadow-lg"
               >
                 Saber mais
               </Button>
