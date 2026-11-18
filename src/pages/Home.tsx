@@ -750,25 +750,25 @@ async function openNews(item: NewsItem) {
                       {[
                         {
                           number: "1",
-                          title: "Prepare seu acesso",
+                          title: "Como divulgar",
                           description:
-                            "Crie sua conta gratuita na Cakto, a plataforma usada para receber os pagamentos das indicações.",
+                            "Aprenda a compartilhar o Voz do Povo e apresentar o portal a outras pessoas usando seu link de indicação.",
                           action: "Criar Conta na Cakto (Grátis)",
                           linkNote: "Link de cadastro da Cakto será adicionado aqui.",
                         },
                         {
                           number: "2",
-                          title: "Escolha como compartilhar",
+                          title: "Como criar sua conta para receber comissões",
                           description:
-                            "Quando seu link individual estiver disponível, compartilhe em conversas, grupos, Stories ou publicações com quem possa se interessar pelo portal.",
+                            "Veja como configurar sua conta de afiliado e informar seus dados para receber as comissões pelas indicações.",
                           action: "Gerar Meu Link de Indicação",
                           linkNote: "Link de afiliado será adicionado aqui.",
                         },
                         {
                           number: "3",
-                          title: "Acompanhe indicações e comissões",
+                          title: "Acompanhe seus convites",
                           description:
-                            "As indicações são associadas ao seu link. As comissões estão relacionadas às novas assinaturas feitas através dele.",
+                            "Descubra como acompanhar suas indicações, verificar novas adesões e consultar suas comissões.",
                         },
                       ].map((step) => (
                         <Card
