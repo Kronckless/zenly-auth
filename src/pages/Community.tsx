@@ -18,6 +18,7 @@ import {
   FileText,
   LockKeyhole,
   Crosshair,
+  Crown,
   MessageSquare,
   MessageSquarePlus,
   Paperclip,
@@ -1329,18 +1330,21 @@ export default function Community() {
         </Button>
 
         <Dialog open={socioDialogOpen} onOpenChange={setSocioDialogOpen}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle>Torne-se sócio</DialogTitle>
-              <DialogDescription>
+          <DialogContent className="rounded-2xl p-8 shadow-2xl sm:max-w-md">
+            <DialogHeader className="items-center text-center">
+              <span className="mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Crown className="size-6" aria-hidden="true" />
+              </span>
+              <DialogTitle className="text-xl font-bold text-foreground">
+                Torne-se sócio
+              </DialogTitle>
+              <DialogDescription className="text-center text-sm text-muted-foreground">
                 Seja sócio do Portal Voz do Povo para criar suas próprias salas de conversa.
               </DialogDescription>
             </DialogHeader>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setSocioDialogOpen(false)}>
-                Agora não
-              </Button>
+            <div className="space-y-3">
               <Button
+                className="w-full rounded-xl bg-gradient-to-r from-foreground to-foreground/80 text-background transition-all hover:brightness-110"
                 onClick={() => {
                   setSocioDialogOpen(false);
                   navigate("/home", { state: { openSocioModal: true } });
@@ -1348,7 +1352,15 @@ export default function Community() {
               >
                 Quero me tornar sócio
               </Button>
-            </DialogFooter>
+              <Button
+                type="button"
+                variant="ghost"
+                className="mx-auto block h-auto text-xs text-muted-foreground underline hover:text-foreground"
+                onClick={() => setSocioDialogOpen(false)}
+              >
+                Agora não
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
 
