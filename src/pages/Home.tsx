@@ -790,7 +790,7 @@ async function openNews(item: NewsItem) {
                                 <Button
                                   type="button"
                                   disabled
-                                  className="h-auto min-h-11 w-full whitespace-normal rounded-xl py-2.5 text-center font-semibold leading-snug shadow-sm transition-all hover:shadow-md disabled:opacity-100"
+                                  className="h-auto min-h-11 w-full whitespace-normal rounded-xl bg-gradient-to-r from-[#5865F2] via-[#404EED] to-[#7289DA] py-2.5 text-center font-semibold leading-snug shadow-sm transition-all hover:shadow-md disabled:opacity-100"
                                 >
                                   {step.action}
                                 </Button>
