@@ -982,7 +982,7 @@ async function openNews(item: NewsItem) {
                                 {
                                   question: "O que acontece se alguém cancelar a assinatura?",
                                   answer:
-                                    "As condições de cancelamento e seus efeitos sobre as indicações e comissões dependem das regras oficiais do programa. Consulte os termos vigentes para conhecer a política aplicável.",
+                                    "Se alguém cancelar a assinatura, você deixa de receber comissões pelas próximas mensalidades dessa pessoa. Mas as comissões já geradas pelas mensalidades pagas continuam sendo suas, respeitando as condições de pagamento.",
                                 },
                               ].map(({ question, answer }, index) => (
                                 <AccordionItem
