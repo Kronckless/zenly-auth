@@ -325,7 +325,7 @@
 }
 
 .referral-slider[data-animating="true"] [data-slot="slider-thumb"] {
-  animation: referral-slider-pulse 2.2s ease-in-out infinite;
+  animation: referral-slider-pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes referral-slider-shine {
