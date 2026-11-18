@@ -95,6 +95,21 @@ export default function ComecePorAqui() {
       <h1 className="mx-auto max-w-4xl text-center font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
         É fácil, leia esse passo-a-passo:
       </h1>
+
+      <section className="mx-auto mt-8 w-full max-w-4xl rounded-xl border border-border bg-[#F5F6F8] p-5 text-left sm:p-8">
+        <h2 className="text-lg font-bold leading-snug text-foreground sm:text-xl">No WhatsApp:</h2>
+        <div className="mt-4 space-y-4 text-sm leading-7 text-foreground sm:text-base">
+          <p>
+            Enviar apenas links soltos, sem qualquer contexto, dificilmente deixará alguém confortável ou interessado em aceitar seu convite. O ideal é que o compartilhamento aconteça de maneira natural, dentro de conversas e grupos em que política e noticiário já sejam assuntos frequentes.
+          </p>
+          <p>
+            Participe das conversas, interaja com as pessoas, compartilhe suas opiniões e contribua para as discussões. Quando o assunto surgir naturalmente, apresente o Voz do Povo e explique por que você acredita que vale a pena conhecer o portal.
+          </p>
+          <p>
+            Além disso, você também pode conversar individualmente com pessoas que demonstrem interesse, apresentar seu convite no privado e explicar como funciona. Uma conversa com contexto e atenção costuma ser muito mais acolhedora do que simplesmente enviar um link sem explicação.
+          </p>
+        </div>
+      </section>
     </main>
   );
 
