@@ -146,7 +146,7 @@ export default function ComecePorAqui() {
                 <span className={`block text-base font-bold leading-snug sm:text-lg ${isWhatsAppGuideOpen ? "text-foreground" : "text-white"}`}>
                   Como se engajar em grupos de WhatsApp?
                 </span>
-                <span className={`mt-1 block text-xs font-medium transition-colors sm:text-sm ${isWhatsAppGuideOpen ? "text-muted-foreground group-hover:text-foreground" : "text-white/90 group-hover:text-white"}`}>
+                <span className={`mt-2 inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-xs font-bold transition-all sm:text-sm ${isWhatsAppGuideOpen ? "border-border bg-background text-muted-foreground group-hover:text-foreground" : "border-white/70 bg-white text-[#075E54] shadow-md group-hover:scale-[1.03] group-hover:shadow-lg"}`}>
                   {isWhatsAppGuideOpen ? "Ocultar detalhes ↑" : "Mais detalhes ↓"}
                 </span>
               </span>
