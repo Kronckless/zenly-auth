@@ -912,7 +912,7 @@ async function openNews(item: NewsItem) {
                                 <p className="relative z-10 max-w-sm text-sm font-medium leading-relaxed text-zinc-200 sm:text-base">
                                   Você indica. O Voz do Povo cresce. E 90% da comissão fica com você!
                                 </p>
-                                <div className="relative z-10 my-3 bg-gradient-to-b from-white via-zinc-300 to-zinc-500 bg-clip-text font-display text-5xl font-bold leading-none tracking-tight text-transparent sm:text-6xl">
+                                <div className="commission-flames relative z-10 my-3 bg-gradient-to-b from-white via-zinc-300 to-zinc-500 bg-clip-text font-display text-5xl font-bold leading-none tracking-tight text-transparent sm:text-6xl">
                                   90%
                                 </div>
                                 <span className="relative z-10 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-300">
