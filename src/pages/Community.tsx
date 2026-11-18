@@ -58,8 +58,6 @@ type CommunityRoom = {
   lastMessage: string;
 };
 
-const communityRooms: CommunityRoom[] = [];
-
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -168,6 +166,15 @@ export default function Community() {
   const [userId, setUserId] = useState<string | null>(null);
   const [profileName, setProfileName] = useState("");
   const [hasMfo, setHasMfo] = useState(false);
+  const [isSocio, setIsSocio] = useState(false);
+  const [communityRooms, setCommunityRooms] = useState<CommunityRoom[]>([]);
+  const [createRoomDialogOpen, setCreateRoomDialogOpen] = useState(false);
+  const [socioDialogOpen, setSocioDialogOpen] = useState(false);
+  const [roomLimitDialogOpen, setRoomLimitDialogOpen] = useState(false);
+  const [roomName, setRoomName] = useState("");
+  const [roomIsPrivate, setRoomIsPrivate] = useState(false);
+  const [creatingRoom, setCreatingRoom] = useState(false);
+  const [createRoomError, setCreateRoomError] = useState("");
   const [mfoFilterEnabled, setMfoFilterEnabled] = useState(false);
   const [messageText, setMessageText] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<PortalArticle | null>(null);
@@ -202,6 +209,33 @@ export default function Community() {
     };
   }, []);
 
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    let active = true;
+    const loadCommunityRooms = async () => {
+      const { data } = await supabase
+        .from("salas_comunidade")
+        .select("id, name, creator_name, is_private")
+        .order("created_at", { ascending: false });
+
+      if (!active) return;
+      setCommunityRooms(
+        (data ?? []).map((room) => ({
+          id: room.id,
+          name: room.name,
+          creator: room.creator_name,
+          lastMessage: "Nova sala",
+        })),
+      );
+    };
+
+    void loadCommunityRooms();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!articleDialogOpen || !supabase) return;
@@ -341,7 +375,7 @@ export default function Community() {
 
         const { data: profile } = await supabase
           .from("profiles")
-          .select("display_name, has_mfo")
+          .select("display_name, has_mfo, is_socio")
           .eq("id", user.id)
           .maybeSingle();
 
@@ -352,9 +386,11 @@ export default function Community() {
               "Membro",
           );
           setHasMfo(profile?.has_mfo === true);
+          setIsSocio(profile?.is_socio === true);
         }
       } else if (active) {
         setHasMfo(false);
+        setIsSocio(false);
       }
 
       if (active) {
@@ -516,6 +552,79 @@ export default function Community() {
   const closeModal = () => {
     setUpgradeDialogOpen(false);
     setUpgradeStep(1);
+  };
+
+  const openRoomCreation = async () => {
+    if (!isSocio) {
+      setSocioDialogOpen(true);
+      return;
+    }
+
+    if (!supabase || !userId) {
+      setCreateRoomError("Entre na sua conta para criar uma sala.");
+      setRoomLimitDialogOpen(true);
+      return;
+    }
+
+    const { count, error: countError } = await supabase
+      .from("salas_comunidade")
+      .select("id", { count: "exact", head: true })
+      .eq("creator_id", userId);
+
+    if (countError) {
+      setCreateRoomError("Não foi possível verificar quantas salas você criou.");
+      setRoomLimitDialogOpen(true);
+      return;
+    }
+
+    if ((count ?? 0) >= 2) {
+      setCreateRoomError("Você atingiu o limite máximo de 2 salas.");
+      setRoomLimitDialogOpen(true);
+      return;
+    }
+
+    setCreateRoomError("");
+    setRoomName("");
+    setRoomIsPrivate(false);
+    setCreateRoomDialogOpen(true);
+  };
+
+  const createCommunityRoom = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const name = roomName.trim();
+    if (!name || !supabase || !userId || creatingRoom) return;
+
+    setCreatingRoom(true);
+    setCreateRoomError("");
+
+    const { data, error: insertError } = await supabase
+      .from("salas_comunidade")
+      .insert({
+        creator_id: userId,
+        creator_name: profileName || "Membro",
+        name,
+        is_private: roomIsPrivate,
+      })
+      .select("id, name, creator_name, is_private")
+      .single();
+
+    if (insertError || !data) {
+      setCreateRoomError("Não foi possível criar a sala. Tente novamente.");
+      setCreatingRoom(false);
+      return;
+    }
+
+    setCommunityRooms((rooms) => [
+      {
+        id: data.id,
+        name: data.name,
+        creator: data.creator_name,
+        lastMessage: "Nova sala",
+      },
+      ...rooms,
+    ]);
+    setCreateRoomDialogOpen(false);
+    setCreatingRoom(false);
   };
 
   return (
@@ -933,12 +1042,94 @@ export default function Community() {
         <Button
           type="button"
           size="icon"
-          aria-label="Iniciar conversa"
-          onClick={() => navigate("/comunidade/geral")}
+          aria-label="Criar sala"
+          onClick={() => void openRoomCreation()}
           className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-primary text-primary-foreground shadow-lg transition active:scale-95 hover:bg-primary/90"
         >
           <Plus className="size-6" aria-hidden="true" />
         </Button>
+
+        <Dialog open={socioDialogOpen} onOpenChange={setSocioDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Torne-se sócio</DialogTitle>
+              <DialogDescription>
+                Seja sócio do Portal Voz do Povo para criar suas próprias salas de conversa.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setSocioDialogOpen(false)}>
+                Agora não
+              </Button>
+              <Button asChild>
+                <a href="https://pay.cakto.com.br/4gxfhf8_1336054" target="_blank" rel="noopener noreferrer">
+                  Quero me tornar sócio
+                </a>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={createRoomDialogOpen} onOpenChange={setCreateRoomDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Nova sala</DialogTitle>
+              <DialogDescription>
+                Dê um nome à sala e escolha quem poderá encontrá-la.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={createCommunityRoom} className="space-y-4">
+              <Input
+                autoFocus
+                value={roomName}
+                onChange={(event) => setRoomName(event.target.value)}
+                placeholder="Nome da sala"
+                aria-label="Nome da sala"
+                maxLength={60}
+                required
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  type="button"
+                  variant={roomIsPrivate ? "outline" : "default"}
+                  onClick={() => setRoomIsPrivate(false)}
+                >
+                  Pública
+                </Button>
+                <Button
+                  type="button"
+                  variant={roomIsPrivate ? "default" : "outline"}
+                  onClick={() => setRoomIsPrivate(true)}
+                >
+                  Privada
+                </Button>
+              </div>
+              {createRoomError && (
+                <p role="alert" className="text-sm text-destructive">{createRoomError}</p>
+              )}
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setCreateRoomDialogOpen(false)}>
+                  Cancelar
+                </Button>
+                <Button type="submit" disabled={!roomName.trim() || creatingRoom}>
+                  {creatingRoom ? "Criando..." : "Criar sala"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={roomLimitDialogOpen} onOpenChange={setRoomLimitDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Não foi possível criar uma sala</DialogTitle>
+              <DialogDescription>{createRoomError}</DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button onClick={() => setRoomLimitDialogOpen(false)}>Entendi</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
         </>
       )}
 

@@ -9,7 +9,17 @@ create table if not exists public.profiles (
 
 alter table public.profiles
   add column if not exists has_mfo boolean not null default false,
-  add column if not exists is_booster boolean not null default false;
+  add column if not exists is_booster boolean not null default false,
+  add column if not exists is_socio boolean not null default false;
+
+create table if not exists public.salas_comunidade (
+  id uuid primary key default gen_random_uuid(),
+  creator_id uuid not null references auth.users (id) on delete cascade,
+  creator_name text not null default '',
+  name text not null,
+  is_private boolean not null default false,
+  created_at timestamptz not null default now()
+);
 
 alter table public.mensagens_comunidade
   add column if not exists is_super_chat boolean not null default false,
@@ -71,3 +81,33 @@ create policy "Usuários atualizam o próprio perfil"
   to authenticated
   using ((select auth.uid()) = id)
   with check ((select auth.uid()) = id);
+
+alter table public.salas_comunidade enable row level security;
+grant select, insert on public.salas_comunidade to authenticated;
+
+drop policy if exists "Usuários leem salas disponíveis" on public.salas_comunidade;
+create policy "Usuários leem salas disponíveis"
+  on public.salas_comunidade
+  for select
+  to authenticated
+  using (not is_private or creator_id = (select auth.uid()));
+
+drop policy if exists "Sócios criam até duas salas" on public.salas_comunidade;
+create policy "Sócios criam até duas salas"
+  on public.salas_comunidade
+  for insert
+  to authenticated
+  with check (
+    creator_id = (select auth.uid())
+    and exists (
+      select 1
+      from public.profiles
+      where id = (select auth.uid())
+        and is_socio = true
+    )
+    and (
+      select count(*)
+      from public.salas_comunidade
+      where creator_id = (select auth.uid())
+    ) < 2
+  );
