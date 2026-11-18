@@ -227,6 +227,7 @@ export default function Home() {
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
   const [isReferralSliderInteracting, setIsReferralSliderInteracting] = useState(false);
+  const [referralLinkCopied, setReferralLinkCopied] = useState(false);
   const [isSocio, setIsSocio] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
@@ -1101,6 +1102,29 @@ async function openNews(item: NewsItem) {
                             >
                               SIM, CONTINUAR
                             </Button>
+                            <button
+                              type="button"
+                              aria-live="polite"
+                              onClick={async () => {
+                                try {
+                                  await navigator.clipboard.writeText(
+                                    "https://app.cakto.com.br/affiliate/invite/9a8924d5-b744-4b61-b184-e20992fd96b7",
+                                  );
+                                  setReferralLinkCopied(true);
+                                  window.setTimeout(
+                                    () => setReferralLinkCopied(false),
+                                    2200,
+                                  );
+                                } catch {
+                                  setReferralLinkCopied(false);
+                                }
+                              }}
+                              className="mx-auto mt-2 inline-flex min-h-11 items-center justify-center px-3 text-center text-xs leading-relaxed text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
+                            >
+                              {referralLinkCopied
+                                ? "Link copiado com sucesso!"
+                                : "Não conseguiu acessar? Copie este link para colar no seu navegador."}
+                            </button>
                             <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                               Ainda não leu? Volte ao material e confira todas as etapas.
                             </p>
