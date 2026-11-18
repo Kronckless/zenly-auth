@@ -864,23 +864,23 @@ async function openNews(item: NewsItem) {
                             </span>
                           </h2>
 
-                          <div className="relative mt-7 overflow-hidden rounded-3xl border border-zinc-400/30 bg-gradient-to-br from-zinc-950 via-zinc-800 to-zinc-950 text-white shadow-[0_24px_60px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.2)]">
+                          <div className="relative mt-7 overflow-hidden border border-zinc-500/40 bg-gradient-to-br from-zinc-800 via-zinc-700 to-zinc-800 text-white shadow-[0_12px_28px_rgba(0,0,0,0.18)]">
                             <div
                               aria-hidden="true"
-                              className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_12%,rgba(255,255,255,0.08)_28%,transparent_42%,rgba(255,255,255,0.04)_65%,transparent_82%)]"
+                              className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(105deg,rgba(255,255,255,0.025)_0px,rgba(255,255,255,0.025)_1px,transparent_1px,transparent_4px)]"
                             />
                             <div
                               aria-hidden="true"
-                              className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:radial-gradient(rgba(255,255,255,0.8)_0.7px,transparent_0.7px)] [background-size:8px_8px]"
+                              className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:radial-gradient(rgba(255,255,255,0.8)_0.7px,transparent_0.7px)] [background-size:8px_8px]"
                             />
                             <div
                               aria-hidden="true"
-                              className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-white/10 blur-3xl"
+                              className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-white/[0.025] blur-3xl"
                             />
 
                             <div className="relative grid grid-cols-1 lg:grid-cols-2">
-                              <div className="p-6 sm:p-9 lg:border-r lg:border-white/15 lg:p-10">
-                                <p className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-300">
+                              <div className="p-5 sm:p-7 lg:border-r lg:border-white/15 lg:p-8">
+                                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-300">
                                   Seus ganhos
                                 </p>
                                 <div className="mt-6 space-y-3">
@@ -891,12 +891,12 @@ async function openNews(item: NewsItem) {
                                   ].map((example) => (
                                     <div
                                       key={example.guests}
-                                      className="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
+                                      className="flex flex-col gap-1 border-b border-white/15 px-3 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-2"
                                     >
                                       <span className="text-sm font-medium text-zinc-300 sm:text-base">
                                         {example.guests}
                                       </span>
-                                      <span className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                                      <span className="font-display text-lg font-semibold tracking-tight text-white sm:text-xl">
                                         {example.amount}
                                       </span>
                                     </div>
@@ -904,18 +904,18 @@ async function openNews(item: NewsItem) {
                                 </div>
                               </div>
 
-                              <div className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden p-7 text-center sm:p-10">
+                              <div className="relative flex min-h-[260px] flex-col items-center justify-center overflow-hidden border-t border-white/15 p-6 text-center sm:p-8 lg:border-l lg:border-t-0">
                                 <div
                                   aria-hidden="true"
-                                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_65%)]"
+                                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.045),transparent_65%)]"
                                 />
-                                <p className="relative z-10 max-w-sm text-base font-medium leading-relaxed text-zinc-200 sm:text-lg">
+                                <p className="relative z-10 max-w-sm text-sm font-medium leading-relaxed text-zinc-200 sm:text-base">
                                   Você indica. O Voz do Povo cresce. E 90% da comissão fica com você!
                                 </p>
-                                <div className="relative z-10 my-2 bg-gradient-to-b from-white via-zinc-300 to-zinc-500 bg-clip-text font-display text-[6rem] font-black leading-none tracking-[-0.08em] text-transparent drop-shadow-[0_6px_18px_rgba(255,255,255,0.18)] sm:text-[8rem]">
+                                <div className="relative z-10 my-3 bg-gradient-to-b from-white via-zinc-300 to-zinc-500 bg-clip-text font-display text-5xl font-bold leading-none tracking-tight text-transparent sm:text-6xl">
                                   90%
                                 </div>
-                                <span className="relative z-10 text-xs font-bold uppercase tracking-[0.28em] text-zinc-300">
+                                <span className="relative z-10 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-300">
                                   da comissão é sua
                                 </span>
                                 <span
