@@ -91,6 +91,14 @@ export default function ComecePorAqui() {
   }
 
   return (
+    <main className="min-h-screen bg-background px-4 pt-20 sm:px-8 sm:pt-24">
+      <h1 className="mx-auto max-w-4xl text-center font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
+        É fácil, leia esse passo-a-passo:
+      </h1>
+    </main>
+  );
+
+  return (
     <main className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
       <AppNavigation />
 
