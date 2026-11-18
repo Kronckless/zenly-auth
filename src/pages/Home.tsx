@@ -1092,7 +1092,11 @@ async function openNews(item: NewsItem) {
                             </p>
                             <Button
                               type="button"
-                              disabled
+                              onClick={() =>
+                                window.location.assign(
+                                  "https://app.cakto.com.br/affiliate/invite/9a8924d5-b744-4b61-b184-e20992fd96b7",
+                                )
+                              }
                               className="mt-6 min-h-12 w-full rounded-xl border border-[#5865F2]/70 bg-gradient-to-r from-[#5865F2] via-[#404EED] to-[#7289DA] px-6 font-bold text-white shadow-sm disabled:cursor-default disabled:opacity-100 sm:w-auto"
                             >
                               SIM, CONTINUAR
