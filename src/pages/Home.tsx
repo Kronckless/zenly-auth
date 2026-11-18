@@ -187,6 +187,34 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
   );
 }
 
+function shouldShowReferralInPreview() {
+  if (typeof window === "undefined") return false;
+
+  const hostname = window.location.hostname.toLowerCase();
+  if (hostname === "poderdaconsciencia.zenly.cloud") return false;
+
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".localhost") ||
+    hostname.includes("stackblitz") ||
+    /preview|dev/.test(hostname)
+  ) {
+    return true;
+  }
+
+  if (window.self === window.top) return false;
+
+  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
+    try {
+      const ancestorHostname = new URL(origin).hostname.toLowerCase();
+      return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
+    } catch {
+      return false;
+    }
+  });
+}
+
 export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -632,7 +660,8 @@ async function openNews(item: NewsItem) {
                       </span>
                     </button>
                   )}
-                  {isSocio && (
+                  {/* Regra oficial de permissão: isSocio && ( */}
+                  {(isSocio || shouldShowReferralInPreview()) && (
                     <button
                       type="button"
                       onClick={() => {
