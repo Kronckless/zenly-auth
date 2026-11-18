@@ -849,6 +849,83 @@ async function openNews(item: NewsItem) {
                             aria-hidden="true"
                           />
                         </button>
+
+                        <section
+                          aria-labelledby="referral-commission-title"
+                          className="mx-auto mt-10 w-full max-w-6xl text-left"
+                        >
+                          <h2
+                            id="referral-commission-title"
+                            className="text-center font-display text-3xl font-black leading-tight tracking-tight text-zinc-950 sm:text-4xl md:text-5xl"
+                          >
+                            Um único convite. Você ganha{" "}
+                            <span className="bg-gradient-to-r from-zinc-500 via-zinc-950 to-zinc-500 bg-clip-text text-transparent">
+                              90% de comissão!
+                            </span>
+                          </h2>
+
+                          <div className="relative mt-7 overflow-hidden rounded-3xl border border-zinc-400/30 bg-gradient-to-br from-zinc-950 via-zinc-800 to-zinc-950 text-white shadow-[0_24px_60px_rgba(0,0,0,0.25),inset_0_1px_0_rgba(255,255,255,0.2)]">
+                            <div
+                              aria-hidden="true"
+                              className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,transparent_12%,rgba(255,255,255,0.08)_28%,transparent_42%,rgba(255,255,255,0.04)_65%,transparent_82%)]"
+                            />
+                            <div
+                              aria-hidden="true"
+                              className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:radial-gradient(rgba(255,255,255,0.8)_0.7px,transparent_0.7px)] [background-size:8px_8px]"
+                            />
+                            <div
+                              aria-hidden="true"
+                              className="pointer-events-none absolute -right-24 -top-24 size-72 rounded-full bg-white/10 blur-3xl"
+                            />
+
+                            <div className="relative grid grid-cols-1 lg:grid-cols-2">
+                              <div className="p-6 sm:p-9 lg:border-r lg:border-white/15 lg:p-10">
+                                <p className="text-xs font-bold uppercase tracking-[0.24em] text-zinc-300">
+                                  Seus ganhos
+                                </p>
+                                <div className="mt-6 space-y-3">
+                                  {[
+                                    { guests: "5 pessoas convidadas", amount: "R$ 44,55 por mês" },
+                                    { guests: "10 pessoas convidadas", amount: "R$ 89,10 por mês" },
+                                    { guests: "100 pessoas convidadas", amount: "R$ 891,00 por mês" },
+                                  ].map((example) => (
+                                    <div
+                                      key={example.guests}
+                                      className="flex flex-col gap-1 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5"
+                                    >
+                                      <span className="text-sm font-medium text-zinc-300 sm:text-base">
+                                        {example.guests}
+                                      </span>
+                                      <span className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                                        {example.amount}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div className="relative flex min-h-[300px] flex-col items-center justify-center overflow-hidden p-7 text-center sm:p-10">
+                                <div
+                                  aria-hidden="true"
+                                  className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_65%)]"
+                                />
+                                <p className="relative z-10 max-w-sm text-base font-medium leading-relaxed text-zinc-200 sm:text-lg">
+                                  Você indica. O Voz do Povo cresce. E 90% da comissão fica com você!
+                                </p>
+                                <div className="relative z-10 my-2 bg-gradient-to-b from-white via-zinc-300 to-zinc-500 bg-clip-text font-display text-[6rem] font-black leading-none tracking-[-0.08em] text-transparent drop-shadow-[0_6px_18px_rgba(255,255,255,0.18)] sm:text-[8rem]">
+                                  90%
+                                </div>
+                                <span className="relative z-10 text-xs font-bold uppercase tracking-[0.28em] text-zinc-300">
+                                  da comissão é sua
+                                </span>
+                                <span
+                                  aria-hidden="true"
+                                  className="pointer-events-none absolute bottom-8 left-1/2 h-px w-36 -translate-x-1/2 bg-gradient-to-r from-transparent via-white/60 to-transparent"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </section>
                       </section>
                     </section>
 
