@@ -704,10 +704,10 @@ async function openNews(item: NewsItem) {
                         <Gift className="size-5" aria-hidden="true" />
                       </span>
                       <DialogTitle className="font-display text-3xl font-bold leading-tight sm:text-4xl">
-                        Indique e Fature 💰
+                        Uma voz alcança mais pessoas quando é compartilhada.
                       </DialogTitle>
                       <DialogDescription className="max-w-2xl text-sm leading-relaxed sm:text-base">
-                        Mostre o Voz do Povo para seus amigos. Cada nova assinatura feita pelo seu link gera comissão automática.
+                        Compartilhe o Voz do Povo com outras pessoas, ajude a ampliar o alcance do portal e receba comissões pelas novas assinaturas feitas através do seu link.
                       </DialogDescription>
                     </DialogHeader>
 
