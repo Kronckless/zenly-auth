@@ -1079,7 +1079,7 @@ async function openNews(item: NewsItem) {
 
                           <section
                             aria-labelledby="referral-confirmation-title"
-                            className="mt-6 rounded-2xl border border-[#36B37E]/30 bg-[#36B37E]/5 px-5 py-8 text-center shadow-sm sm:px-8 sm:py-10"
+                            className="relative left-1/2 mt-6 w-[calc(100vw-2rem)] max-w-[60rem] -translate-x-1/2 rounded-2xl border border-[#36B37E]/30 bg-[linear-gradient(115deg,#FF1744_0%,#FF3030_35%,#FF5252_68%,#FF8A8A_100%)] px-5 py-8 text-center shadow-sm sm:w-[calc(100vw-4rem)] sm:px-8 sm:py-10"
                           >
                             <h3
                               id="referral-confirmation-title"
