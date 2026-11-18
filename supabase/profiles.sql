@@ -93,6 +93,11 @@ alter table public.mensagens_comunidade enable row level security;
 
 grant select on public.mensagens_comunidade to authenticated;
 
+-- O Chat da Comunidade é a conversa raiz: suas mensagens têm room_id nulo.
+-- Ele não é uma sala de sócio e não participa da cota ou do ciclo de vida das salas.
+comment on column public.mensagens_comunidade.room_id is
+  'NULL identifica o Chat da Comunidade, conversa raiz permanente do portal.';
+
 drop policy if exists "Usuários autenticados podem ler mensagens da comunidade"
   on public.mensagens_comunidade;
 create policy "Usuários autenticados podem ler mensagens da comunidade"
@@ -100,6 +105,27 @@ create policy "Usuários autenticados podem ler mensagens da comunidade"
   for select
   to authenticated
   using (true);
+
+-- Mesmo que outra política permita alterações em mensagens, usuários comuns
+-- não podem editar nem apagar mensagens do chat raiz. O envio continua permitido.
+drop policy if exists "Chat raiz não pode ser editado por usuários"
+  on public.mensagens_comunidade;
+create policy "Chat raiz não pode ser editado por usuários"
+  on public.mensagens_comunidade
+  as restrictive
+  for update
+  to anon, authenticated
+  using (room_id is not null)
+  with check (room_id is not null);
+
+drop policy if exists "Chat raiz não pode ser apagado por usuários"
+  on public.mensagens_comunidade;
+create policy "Chat raiz não pode ser apagado por usuários"
+  on public.mensagens_comunidade
+  as restrictive
+  for delete
+  to anon, authenticated
+  using (room_id is not null);
 
 revoke all on public.profiles from anon;
 grant select, insert, update on public.profiles to authenticated;
