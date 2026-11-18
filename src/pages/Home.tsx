@@ -817,6 +817,18 @@ async function openNews(item: NewsItem) {
                         <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-zinc-600 sm:text-base">
                           É mais simples do que parece! Preparamos um passo a passo para mostrar como compartilhar o Voz do Povo, convidar novas pessoas e receber comissões por cada adesão realizada através da sua indicação.
                         </p>
+                        <button
+                          type="button"
+                          className="mx-auto mt-7 flex w-full max-w-3xl items-center justify-between gap-4 rounded-2xl border border-destructive/25 bg-white px-5 py-4 text-left shadow-[0_2px_10px_rgba(0,0,0,0.04)] transition-all duration-200 hover:-translate-y-0.5 hover:border-destructive/50 hover:shadow-[0_6px_18px_rgba(0,0,0,0.08)] active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
+                        >
+                          <span className="font-display text-sm font-bold tracking-[0.14em] text-zinc-950 sm:text-base">
+                            COMECE POR AQUI
+                          </span>
+                          <ArrowRight
+                            className="size-5 shrink-0 text-destructive transition-transform duration-200 group-hover:translate-x-1"
+                            aria-hidden="true"
+                          />
+                        </button>
                       </section>
                     </section>
 
