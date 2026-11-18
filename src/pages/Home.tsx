@@ -1102,29 +1102,42 @@ async function openNews(item: NewsItem) {
                             >
                               SIM, CONTINUAR
                             </Button>
-                            <button
-                              type="button"
-                              aria-live="polite"
-                              onClick={async () => {
-                                try {
-                                  await navigator.clipboard.writeText(
-                                    "https://app.cakto.com.br/affiliate/invite/9a8924d5-b744-4b61-b184-e20992fd96b7",
-                                  );
-                                  setReferralLinkCopied(true);
-                                  window.setTimeout(
-                                    () => setReferralLinkCopied(false),
-                                    2200,
-                                  );
-                                } catch {
-                                  setReferralLinkCopied(false);
-                                }
-                              }}
-                              className="mx-auto mt-2 inline-flex min-h-11 items-center justify-center px-3 text-center text-xs leading-relaxed text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
-                            >
-                              {referralLinkCopied
-                                ? "Link copiado com sucesso!"
-                                : "Não conseguiu acessar? Copie este link para colar no seu navegador."}
-                            </button>
+                            <div className="relative flex flex-col items-center">
+                              <button
+                                type="button"
+                                aria-live="polite"
+                                onClick={async () => {
+                                  try {
+                                    await navigator.clipboard.writeText(
+                                      "https://app.cakto.com.br/affiliate/invite/9a8924d5-b744-4b61-b184-e20992fd96b7",
+                                    );
+                                    setReferralLinkCopied(true);
+                                    window.setTimeout(
+                                      () => setReferralLinkCopied(false),
+                                      2200,
+                                    );
+                                  } catch {
+                                    setReferralLinkCopied(false);
+                                  }
+                                }}
+                                className="mx-auto mt-2 inline-flex min-h-11 items-center justify-center px-3 text-center text-xs leading-relaxed text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
+                              >
+                                Não conseguiu acessar? Copie este link para colar no seu navegador.
+                              </button>
+                              <div
+                                role="status"
+                                aria-live="polite"
+                                aria-hidden={!referralLinkCopied}
+                                className={`pointer-events-none absolute left-1/2 top-full z-20 mt-1 inline-flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-lg border border-border bg-background/95 px-3 py-2 text-sm font-medium text-foreground shadow-md transition-all duration-200 ease-out ${
+                                  referralLinkCopied
+                                    ? "translate-y-0 opacity-100"
+                                    : "translate-y-1 opacity-0"
+                                }`}
+                              >
+                                <Check className="size-4 text-primary" aria-hidden="true" />
+                                Link copiado com sucesso!
+                              </div>
+                            </div>
                             <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                               Ainda não leu? Volte ao material e confira todas as etapas.
                             </p>
