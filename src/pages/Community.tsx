@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -49,7 +49,14 @@ type PortalArticle = {
   created_at: string;
 };
 
+type CommunityRoom = {
+  id: string;
+  name: string;
+  creator: string;
+  lastMessage: string;
+};
 
+const communityRooms: CommunityRoom[] = [];
 
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -153,6 +160,8 @@ function formatCooldown(seconds: number) {
 
 export default function Community() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isConversationOpen = location.pathname === "/comunidade/geral";
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [profileName, setProfileName] = useState("");
@@ -499,6 +508,7 @@ export default function Community() {
   const visibleMessages = mfoFilterEnabled
     ? orderedMessages.filter((message) => message.author_has_mfo)
     : orderedMessages;
+  const latestCommunityMessage = messages[messages.length - 1] ?? null;
   const firstName = profileName.trim().split(/\s+/)[0] || "Membro";
   const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailDraft.trim());
   const closeModal = () => {
@@ -513,6 +523,7 @@ export default function Community() {
       }`}
     >
       <AppNavigation />
+      {isConversationOpen ? (
       <section
         className={`mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x pb-[calc(5rem+env(safe-area-inset-bottom))] transition-all duration-300 sm:pb-0 ${
           mfoFilterEnabled
@@ -850,6 +861,88 @@ export default function Community() {
           </Button>
         </form>
       </section>
+      ) : (
+        <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x border-border bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
+          <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-4 py-4 sm:px-6">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+              <MessageSquare className="size-5" aria-hidden="true" />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold">Conversas</h1>
+              <p className="text-sm text-muted-foreground">Suas conversas ativas</p>
+            </div>
+          </header>
+
+          <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+            {error && (
+              <p role="alert" className="mb-3 text-sm text-destructive">
+                {error}
+              </p>
+            )}
+
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => navigate("/comunidade/geral")}
+              className="h-auto w-full justify-start rounded-2xl border border-border bg-card p-4 text-left shadow-sm hover:bg-muted"
+            >
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
+                <UsersRound className="size-6" aria-hidden="true" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-foreground">Chat da comunidade</span>
+                  {latestCommunityMessage && (
+                    <time className="shrink-0 text-xs text-muted-foreground">
+                      {new Date(latestCommunityMessage.created_at).toLocaleTimeString(
+                        "pt-BR",
+                        { hour: "2-digit", minute: "2-digit" },
+                      )}
+                    </time>
+                  )}
+                </span>
+                <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
+                  {loading
+                    ? "Carregando a última mensagem..."
+                    : latestCommunityMessage
+                      ? `${latestCommunityMessage.nome_usuario}: ${latestCommunityMessage.conteudo || latestCommunityMessage.dossier_name || "Matéria do portal"}`
+                      : "Ainda não há mensagens. Toque para abrir a conversa."}
+                </span>
+              </span>
+            </Button>
+
+            <section aria-labelledby="community-rooms-title" className="mt-8">
+              <h2 id="community-rooms-title" className="mb-3 text-sm font-semibold text-muted-foreground">
+                Salas de sócios
+              </h2>
+              {communityRooms.length > 0 ? (
+                <div className="space-y-2">
+                  {communityRooms.map((room) => (
+                    <Button
+                      key={room.id}
+                      type="button"
+                      variant="ghost"
+                      onClick={() => navigate(`/comunidade/salas/${room.id}`)}
+                      className="h-auto w-full justify-start rounded-2xl border border-border bg-card p-4 text-left"
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-semibold text-foreground">{room.name}</span>
+                        <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
+                          {room.creator} · {room.lastMessage}
+                        </span>
+                      </span>
+                    </Button>
+                  ))}
+                </div>
+              ) : (
+                <p className="rounded-2xl border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
+                  As salas criadas pelos sócios aparecerão aqui, com o nome da sala, criador e última mensagem.
+                </p>
+              )}
+            </section>
+          </div>
+        </section>
+      )}
 
       <Dialog open={articleDialogOpen} onOpenChange={setArticleDialogOpen}>
         <DialogContent className="max-h-[85dvh] overflow-y-auto sm:max-w-lg">

@@ -150,6 +150,7 @@ export default function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/todas-noticias" element={<AllNews />} />
             <Route path="/comunidade" element={<Community />} />
+            <Route path="/comunidade/geral" element={<Community />} />
             <Route path="/qg" element={<QG />} />
             <Route path="/explorar" element={<Explore />} />
             <Route path="/mfo" element={<MFO />} />
