@@ -1352,7 +1352,7 @@ export default function Community() {
               >
                 <span
                   aria-hidden="true"
-                  className="animate-button-shine pointer-events-none absolute inset-y-0 left-[-50%] w-1/3 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                  className="pointer-events-none absolute inset-y-0 left-[-50%] w-1/3 skew-x-[-20deg] animate-[button-shine_1.5s_ease-in-out_infinite] bg-gradient-to-r from-transparent via-white/40 to-transparent"
                 />
                 <span className="relative">Quero me tornar sócio</span>
               </Button>
