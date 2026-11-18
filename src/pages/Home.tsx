@@ -679,13 +679,99 @@ async function openNews(item: NewsItem) {
                 </div>
               )}
               <Dialog open={isReferralOpen} onOpenChange={setIsReferralOpen}>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>Indique e ganhe</DialogTitle>
-                    <DialogDescription>
-                      Em breve, você poderá indicar pessoas e acompanhar suas recompensas por aqui.
-                    </DialogDescription>
-                  </DialogHeader>
+                <DialogContent
+                  showCloseButton={false}
+                  className="fixed inset-0 left-0 top-0 block h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none border-0 bg-background p-0 sm:max-w-none"
+                >
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Fechar Indique e Ganhe"
+                      className="absolute right-4 top-4 z-10 size-10 rounded-full sm:right-6 sm:top-6"
+                    >
+                      <X className="size-5" />
+                    </Button>
+                  </DialogClose>
+
+                  <div className="mx-auto w-full max-w-6xl px-4 pb-10 pt-16 sm:px-8 sm:pb-14 sm:pt-20">
+                    <DialogHeader className="mx-auto max-w-3xl items-center text-center">
+                      <span className="mb-2 inline-flex size-12 items-center justify-center rounded-2xl bg-muted text-primary">
+                        <Gift className="size-6" aria-hidden="true" />
+                      </span>
+                      <DialogTitle className="font-display text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
+                        Indique e Ganhe com a Voz do Povo
+                      </DialogTitle>
+                      <DialogDescription className="max-w-2xl text-base leading-relaxed sm:text-lg">
+                        Ajude a expandir nossa voz e ganhe comissões por cada indicação realizada.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <section
+                      aria-label="Passo a passo para indicar"
+                      className="mt-10 grid grid-cols-1 gap-5 md:mt-14 md:grid-cols-3 md:gap-6"
+                    >
+                      {[
+                        {
+                          number: "1",
+                          title: "Crie sua conta gratuita na plataforma de pagamentos",
+                          description:
+                            "Para que possamos pagar suas comissões de forma 100% segura, você precisa de uma conta gratuita na Cakto (nossa processadora de pagamentos oficial).",
+                          action: "1. Criar Minha Conta na Cakto (Grátis)",
+                          linkNote: "Link de cadastro da Cakto será adicionado aqui.",
+                        },
+                        {
+                          number: "2",
+                          title: "Pegue seu link exclusivo de indicação",
+                          description:
+                            "Depois de entrar na sua conta, clique no botão abaixo para se afiliar ao nosso projeto com 1 clique. Você receberá um link pessoal exclusivo.",
+                          action: "2. Gerar Meu Link de Indicação",
+                          linkNote: "Link de afiliado será adicionado aqui.",
+                        },
+                        {
+                          number: "3",
+                          title: "Compartilhe com amigos e grupos",
+                          description:
+                            "Mande seu link para amigos, familiares ou em grupos de WhatsApp. Quando alguém comprar através do seu link, a comissão cairá na sua conta da Cakto automaticamente!",
+                        },
+                      ].map((step) => (
+                        <Card
+                          key={step.number}
+                          className="flex h-full flex-col rounded-2xl border-border bg-card shadow-sm"
+                        >
+                          <CardHeader className="space-y-4">
+                            <span className="flex size-10 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-primary-foreground">
+                              {step.number}
+                            </span>
+                            <CardTitle className="text-lg leading-snug sm:text-xl">
+                              {step.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="flex flex-1 flex-col">
+                            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                              {step.description}
+                            </p>
+                            {step.action && (
+                              <div className="mt-auto pt-6">
+                                <Button
+                                  type="button"
+                                  disabled
+                                  title={step.linkNote}
+                                  className="h-auto min-h-11 w-full whitespace-normal py-3 text-center leading-snug"
+                                >
+                                  {step.action}
+                                </Button>
+                                <p className="mt-2 text-center text-xs text-muted-foreground">
+                                  {step.linkNote}
+                                </p>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </section>
+                  </div>
                 </DialogContent>
               </Dialog>
             </div>
