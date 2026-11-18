@@ -149,45 +149,80 @@ export default function ComecePorAqui() {
             </AccordionTrigger>
 
             {!isWhatsAppGuideOpen && (
-              <div aria-hidden="true" className="mx-5 mb-4 space-y-1.5 opacity-40 blur-[2px] sm:mx-8">
+              <div aria-hidden="true" className="relative mx-5 mb-4 space-y-1.5 overflow-hidden opacity-40 blur-[2px] sm:mx-8">
                 <div className="h-1.5 w-4/5 rounded-full bg-muted-foreground/50" />
                 <div className="h-1.5 w-full rounded-full bg-muted-foreground/40" />
+                <div className="h-1.5 w-11/12 rounded-full bg-muted-foreground/40" />
                 <div className="h-1.5 w-2/3 rounded-full bg-muted-foreground/30" />
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#F5F6F8] to-transparent" />
               </div>
             )}
 
             <AccordionContent className="px-5 pb-5 sm:px-8 sm:pb-8">
-              <div className="space-y-4 border-t border-border/70 pt-4 text-sm leading-7 text-foreground sm:text-base">
+              <div className="space-y-5 border-t border-border/70 pt-5 text-sm leading-7 text-foreground sm:text-base">
                 <p>
-                  Participar de grupos de WhatsApp exige mais do que simplesmente estar presente. Para que suas conversas sejam naturais, construa uma participação genuína, respeite o assunto que está sendo discutido e contribua com informações que realmente tenham valor para os demais integrantes.
+                  Um grupo de WhatsApp funciona melhor quando você primeiro entende por que as pessoas estão ali e só depois decide o que acrescentar. O objetivo não é aparecer com um link, mas participar de uma conversa que já existe, compartilhar algo útil e deixar claro de onde veio a informação.
                 </p>
-                <p>
-                  <strong>1. Entenda o ambiente do grupo</strong>
-                  <br />
-                  Antes de começar a participar, observe como as pessoas conversam, quais assuntos são frequentes e qual é o propósito daquele grupo. Grupos de notícias, política, comunidade e assuntos cotidianos possuem dinâmicas diferentes. Entender esse ambiente ajuda você a contribuir de maneira apropriada.
-                </p>
-                <p>
-                  <strong>2. Participe de conversas reais</strong>
-                  <br />
-                  Não limite sua participação a enviar links ou mensagens prontas. Comente assuntos que estão sendo discutidos, compartilhe suas opiniões com respeito, responda quando tiver algo relevante a acrescentar e mantenha uma conversa natural com os outros participantes.
-                </p>
-                <p>
-                  <strong>3. Compartilhe informações que acrescentem algo</strong>
-                  <br />
-                  Quando surgir um assunto sobre o qual você tenha acompanhado notícias ou encontrado informações interessantes, compartilhe conteúdos que possam ajudar outras pessoas a compreender melhor o tema. Procure contextualizar o que está enviando, explicando por que aquilo chamou sua atenção, em vez de simplesmente despejar links no grupo.
-                </p>
-                <p>
-                  <strong>4. Apresente o Voz do Povo com naturalidade e transparência</strong>
-                  <br />
-                  Se o portal tiver uma matéria, notícia ou conteúdo que se relacione com o assunto discutido, você poderá compartilhá-lo, explicando claramente que se trata do Voz do Povo e por que acredita que aquele conteúdo seja relevante. Evite transformar toda conversa em divulgação. O objetivo é contribuir com a discussão, não interrompê-la.
-                </p>
-                <p>
-                  <strong>5. Construa relações e respeite os outros participantes</strong>
-                  <br />
-                  Uma boa participação envolve ouvir opiniões diferentes, evitar discussões desnecessárias e respeitar as regras de cada grupo. Não insista quando alguém não demonstrar interesse, não envie mensagens repetitivas e não faça abordagens invasivas.
-                </p>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">1. Encontre grupos que combinem com o assunto</h3>
+                  <p>
+                    Comece por espaços dos quais você já participa ou aos quais foi convidado: grupos de bairro, comunidade, trabalho, família ou discussão de notícias e política. Você também pode pedir a conhecidos recomendações de grupos ativos, verificando antes as regras e o propósito de cada um. Não entre em grupos apenas para divulgar seu convite e não publique links onde os administradores proíbem promoção.
+                  </p>
+                  <p>
+                    Prefira grupos em que as pessoas realmente conversam e trocam informações. Se o grupo é voltado a avisos do bairro, por exemplo, uma notícia sobre transporte ou segurança local pode ser pertinente; uma divulgação sem relação com o tema provavelmente não será.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">2. Observe antes de participar</h3>
+                  <p>
+                    Leia as mensagens recentes e repare nos temas mais comuns, no tom da conversa e nas regras fixadas pelos administradores. Veja se as pessoas compartilham links com comentários, se preferem mensagens curtas e como lidam com opiniões diferentes. Essa observação ajuda a evitar uma abordagem deslocada.
+                  </p>
+                  <p>
+                    Em um grupo que conversa sobre notícias locais, por exemplo, acompanhe alguns assuntos antes de enviar uma matéria. Se os participantes pedem fontes ou corrigem informações, leve isso em conta ao compartilhar. Se o grupo estiver tratando de outro tema, espere uma oportunidade mais apropriada.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">3. Entre na conversa com uma contribuição concreta</h3>
+                  <p>
+                    Responda ao assunto que está sendo discutido: faça uma pergunta pertinente, acrescente um dado que você consiga explicar ou conte brevemente uma experiência relacionada. Em uma conversa sobre uma decisão política, por exemplo, você pode perguntar qual aspecto as pessoas querem entender melhor ou comentar como a medida afeta a sua comunidade.
+                  </p>
+                  <p>
+                    Diferencie o que é informação confirmada do que é opinião. Se não souber a resposta, diga isso em vez de apresentar uma suposição como fato. E, quando houver discordância, responda ao ponto levantado sem atacar quem escreveu.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">4. Compartilhe notícias com contexto</h3>
+                  <p>
+                    Antes de encaminhar uma notícia, confira o título, a data, a publicação de origem e se o conteúdo realmente sustenta a afirmação que você pretende compartilhar. Leia além da chamada e, quando o assunto for importante ou controverso, procure confirmação em outras fontes. Evite repassar mensagens alarmistas ou antigas sem verificar se ainda são relevantes.
+                  </p>
+                  <p>
+                    Apresente o motivo do envio em uma frase e diga o que a pessoa encontrará no link. Por exemplo: “Vi esta matéria sobre a mudança no transporte da região. Ela explica o que foi anunciado e quando começa; alguém sabe como isso vai afetar as linhas do bairro?” Assim, o link abre uma conversa em vez de interrompê-la.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">5. Apresente o Voz do Povo com transparência</h3>
+                  <p>
+                    Quando uma matéria do Voz do Povo tiver relação direta com a conversa, identifique o portal pelo nome e explique por que está compartilhando aquele conteúdo. Você pode escrever: “Encontrei esta matéria no Voz do Povo sobre o assunto que estamos discutindo. Estou compartilhando porque reúne informações que ajudam a entender o tema.” Não apresente o portal como uma fonte independente de você nem esconda que está recomendando algo que acompanha.
+                  </p>
+                  <p>
+                    Dê espaço para as pessoas decidirem se querem abrir o link. Se alguém perguntar sobre o portal, responda com clareza; se ninguém demonstrar interesse, siga a conversa sem repetir o convite. Uma recomendação pontual e relacionada ao assunto é mais respeitosa do que transformar cada discussão em divulgação.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">6. Respeite o ritmo e os limites do grupo</h3>
+                  <p>
+                    Evite enviar várias mensagens seguidas, marcar pessoas sem necessidade ou insistir em uma discussão que já terminou. Respeite as orientações dos administradores e pare de compartilhar se alguém pedir. Se a conversa ficar tensa, faça uma pausa: nem toda divergência precisa ser resolvida naquele momento.
+                  </p>
+                </section>
+
                 <p className="rounded-lg border-l-2 border-primary bg-background/70 px-4 py-3 font-medium">
-                  Participar de grupos é, acima de tudo, saber conversar, ouvir e contribuir. Quando você compartilha algo relevante no momento certo, as pessoas têm mais contexto para conhecer uma informação, uma fonte ou um portal que talvez ainda não conhecessem.
+                  Antes de enviar, pergunte a si mesmo: isto tem relação com o assunto, está contextualizado e respeita as regras do grupo? Quando a resposta é sim, você contribui primeiro — e apresenta o Voz do Povo de forma clara e natural.
                 </p>
               </div>
             </AccordionContent>
