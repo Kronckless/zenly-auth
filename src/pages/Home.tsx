@@ -226,6 +226,7 @@ export default function Home() {
   const [isReferralOpen, setIsReferralOpen] = useState(false);
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
+  const [isReferralSliderInteracting, setIsReferralSliderInteracting] = useState(false);
   const [isSocio, setIsSocio] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
@@ -1042,7 +1043,14 @@ async function openNews(item: NewsItem) {
                                 step={1}
                                 value={[referralPeople]}
                                 onValueChange={(values) => setReferralPeople(values[0] ?? 1)}
-                                className="py-2 [&_[data-slot=slider-range]]:bg-[#36B37E] [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-[#36B37E] [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:shadow-sm [&_[data-slot=slider-track]]:h-1"
+                                data-animating={!isReferralSliderInteracting}
+                                onPointerDown={() => setIsReferralSliderInteracting(true)}
+                                onPointerUp={() => setIsReferralSliderInteracting(false)}
+                                onPointerCancel={() => setIsReferralSliderInteracting(false)}
+                                onKeyDown={() => setIsReferralSliderInteracting(true)}
+                                onKeyUp={() => setIsReferralSliderInteracting(false)}
+                                onBlur={() => setIsReferralSliderInteracting(false)}
+                                className="referral-slider py-2 [&_[data-slot=slider-range]]:bg-[#36B37E] [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-[#36B37E] [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:shadow-sm [&_[data-slot=slider-track]]:h-1"
                               />
                               <div className="mt-3 flex justify-between text-xs font-medium text-muted-foreground">
                                 <span>1</span>
