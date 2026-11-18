@@ -745,7 +745,7 @@ async function openNews(item: NewsItem) {
 
                     <section
                       aria-label="Passo a passo para indicar"
-                      className="mt-4 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-muted/30 md:grid-cols-3 md:divide-x md:divide-border"
+                      className="mt-4 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-muted/30 md:grid-cols-3 md:divide-x md:divide-border [&~*]:hidden"
                     >
                       {[
                         {
