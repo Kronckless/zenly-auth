@@ -800,6 +800,24 @@ async function openNews(item: NewsItem) {
                           </CardContent>
                         </Card>
                       ))}
+                      <section
+                        aria-labelledby="referral-first-step-title"
+                        className="col-span-full bg-white px-6 py-10 text-center sm:px-10 sm:py-12"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mx-auto mb-5 block h-1 w-12 rounded-full bg-destructive"
+                        />
+                        <h2
+                          id="referral-first-step-title"
+                          className="font-display text-2xl font-bold tracking-tight text-zinc-950 sm:text-3xl"
+                        >
+                          Tudo começa com um primeiro passo.
+                        </h2>
+                        <p className="mx-auto mt-3 max-w-3xl text-sm leading-7 text-zinc-600 sm:text-base">
+                          É mais simples do que parece! Preparamos um passo a passo para mostrar como compartilhar o Voz do Povo, convidar novas pessoas e receber comissões por cada adesão realizada através da sua indicação.
+                        </p>
+                      </section>
                     </section>
 
                     <div className="mx-auto mt-5 grid w-full max-w-6xl grid-cols-1 gap-3 lg:grid-cols-12 lg:items-start">
