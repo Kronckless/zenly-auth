@@ -136,6 +136,7 @@ import Community from "./pages/Community";
 import QG from "./pages/QG";
 import Explore from "./pages/Explore";
 import MFO from "./pages/MFO";
+import ComecePorAqui from "./pages/ComecePorAqui";
 
 export default function App() {
   return (
@@ -148,6 +149,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/comeceporaqui" element={<ComecePorAqui />} />
             <Route path="/todas-noticias" element={<AllNews />} />
             <Route path="/comunidade" element={<Community />} />
             <Route path="/comunidade/geral" element={<Community />} />

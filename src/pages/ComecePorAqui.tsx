@@ -1,0 +1,299 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Check, Gift } from "lucide-react";
+import AppNavigation from "@/components/AppNavigation";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+
+const referralLink =
+  "https://app.cakto.com.br/affiliate/invite/9a8924d5-b744-4b61-b184-e20992fd96b7";
+
+const steps = [
+  {
+    number: "1",
+    title: "Como divulgar",
+    description:
+      "Aprenda a compartilhar o Voz do Povo e apresentar o portal a outras pessoas usando seu link de indicação.",
+  },
+  {
+    number: "2",
+    title: "Como criar sua conta para receber comissões",
+    description:
+      "Veja como configurar sua conta de afiliado e informar seus dados para receber as comissões pelas indicações.",
+  },
+  {
+    number: "3",
+    title: "Acompanhe seus convites",
+    description:
+      "Descubra como acompanhar suas indicações, verificar novas adesões e consultar suas comissões.",
+  },
+];
+
+const questions = [
+  {
+    question: "Como funciona o programa de indicações?",
+    answer:
+      "Você compartilha seu link exclusivo e convida outras pessoas a conhecerem o Voz do Povo. Cada assinatura válida realizada por meio da sua indicação garante a você 90% de comissão.",
+  },
+  {
+    question: "Como posso compartilhar meu link?",
+    answer:
+      "Após configurar sua conta, seu link exclusivo estará disponível para compartilhamento. Copie e envie pelo WhatsApp, redes sociais, grupos ou diretamente para seus amigos e familiares.",
+  },
+  {
+    question: "Como minhas indicações são contabilizadas?",
+    answer:
+      "Todas as indicações realizadas pelo seu link exclusivo são identificadas e vinculadas à sua conta. Cada nova assinatura originada pelo seu convite fica associada ao seu cadastro.",
+  },
+  {
+    question: "Onde posso acompanhar meus resultados?",
+    answer:
+      "Na sua área de acompanhamento, você consulta suas indicações, acompanha novas adesões e visualiza suas comissões.",
+  },
+  {
+    question: "Como funciona o recebimento das comissões?",
+    answer:
+      "Você recebe 90% de comissão sobre cada assinatura válida realizada por meio do seu link exclusivo. Para receber, configure sua conta e informe seus dados de pagamento.",
+  },
+  {
+    question: "Preciso pagar alguma coisa para participar?",
+    answer:
+      "Não! Ser sócio do Voz do Povo já garante a você o direito de convidar novas pessoas, compartilhar seu link exclusivo e receber uma das comissões mais cobiçadas do mercado. É um benefício exclusivo de quem faz parte do nosso projeto, sem nenhuma taxa adicional para participar.\n\nAproveite esse benefício, compartilhe seu convite e ajude o Voz do Povo a chegar ainda mais longe!",
+  },
+  {
+    question: "Posso compartilhar meu convite nas redes sociais?",
+    answer:
+      "Sim! Compartilhe seu link pelo WhatsApp, Instagram, Facebook, grupos ou qualquer outro canal de comunicação. Quanto mais pessoas conhecerem o Voz do Povo por meio do seu convite, maior será o alcance das suas indicações.",
+  },
+  {
+    question: "O que acontece se alguém cancelar a assinatura?",
+    answer:
+      "Se alguém cancelar a assinatura, você deixa de receber comissões pelas próximas mensalidades dessa pessoa. Mas as comissões já geradas pelas mensalidades pagas continuam sendo suas, respeitando as condições de pagamento.",
+  },
+];
+
+export default function ComecePorAqui() {
+  const navigate = useNavigate();
+  const [referralPeople, setReferralPeople] = useState(1);
+  const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
+
+  async function copyReferralLink() {
+    try {
+      await navigator.clipboard.writeText(referralLink);
+      setLinkCopyStatus("success");
+      window.setTimeout(() => setLinkCopyStatus("idle"), 2200);
+    } catch {
+      setLinkCopyStatus("error");
+      window.setTimeout(() => setLinkCopyStatus("idle"), 3000);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
+      <AppNavigation />
+
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-8 sm:py-10">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => navigate(-1)}
+          className="mb-8 gap-2"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+          Voltar
+        </Button>
+
+        <header className="mx-auto max-w-4xl text-center">
+          <span className="mb-4 inline-flex size-11 items-center justify-center rounded-xl bg-destructive text-destructive-foreground">
+            <Gift className="size-5" aria-hidden="true" />
+          </span>
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl">
+            É fácil, leia esse passo-a-passo:
+          </h1>
+          <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
+            Saiba como compartilhar o Voz do Povo, convidar novas pessoas e acompanhar suas indicações.
+          </p>
+        </header>
+
+        <section aria-label="Etapas para indicar" className="mt-8 grid gap-4 md:grid-cols-3">
+          {steps.map((step) => (
+            <Card key={step.number} className="h-full">
+              <CardHeader className="flex-row items-center gap-3 space-y-0">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-destructive text-sm font-bold text-destructive-foreground">
+                  {step.number}
+                </span>
+                <CardTitle className="text-base leading-snug">{step.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm leading-6 text-muted-foreground">{step.description}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+
+        <section aria-labelledby="referral-commission-title" className="mt-10">
+          <h2
+            id="referral-commission-title"
+            className="text-center font-display text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl"
+          >
+            Um único convite. Você ganha{" "}
+            <span className="bg-gradient-to-r from-muted-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+              90% de comissão!
+            </span>
+          </h2>
+
+          <div className="relative mt-7 overflow-hidden border border-border bg-gradient-to-br from-zinc-800 via-zinc-700 to-zinc-800 text-white shadow-lg">
+            <div className="relative grid grid-cols-1 lg:grid-cols-2">
+              <div className="p-5 sm:p-8 lg:border-r lg:border-white/15">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-300">
+                  Seus ganhos
+                </p>
+                <div className="mt-4 space-y-3">
+                  {[
+                    { guests: "5 pessoas convidadas", amount: "R$ 44,55 por mês" },
+                    { guests: "10 pessoas convidadas", amount: "R$ 89,10 por mês" },
+                    { guests: "100 pessoas convidadas", amount: "R$ 891,00 por mês" },
+                  ].map((example) => (
+                    <div
+                      key={example.guests}
+                      className="flex flex-col gap-1 border-b border-white/15 px-2 py-4 last:border-b-0 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <span className="text-sm font-medium text-zinc-300">{example.guests}</span>
+                      <span className="font-display text-lg font-semibold text-white">{example.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex min-h-[240px] flex-col items-center justify-center border-t border-white/15 p-6 text-center lg:border-l lg:border-t-0">
+                <p className="max-w-sm text-sm font-medium leading-relaxed text-zinc-200 sm:text-base">
+                  Você indica. O Voz do Povo cresce. E 90% da comissão fica com você!
+                </p>
+                <div className="my-3 font-display text-5xl font-bold text-[#36B37E] sm:text-6xl">90%</div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-300">
+                  da comissão é sua
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section aria-labelledby="referral-faq-title" className="mt-8 rounded-2xl border border-border bg-muted/30 p-5 sm:p-7">
+          <h2 id="referral-faq-title" className="font-display text-xl font-bold sm:text-2xl">
+            Ficou com alguma dúvida?
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Para entender melhor como funciona, tire suas dúvidas aqui.
+          </p>
+          <Accordion type="single" collapsible className="mt-3">
+            {questions.map(({ question, answer }, index) => (
+              <AccordionItem key={question} value={`referral-page-faq-${index + 1}`} className="border-border">
+                <AccordionTrigger className="py-4 text-left text-sm font-semibold leading-6 hover:no-underline sm:text-base">
+                  {question}
+                </AccordionTrigger>
+                <AccordionContent className="whitespace-pre-line pb-4 text-sm leading-6 text-muted-foreground">
+                  {answer}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </section>
+
+        <section aria-labelledby="referral-simulator-title" className="mt-6 rounded-xl border border-border bg-background p-5 shadow-sm sm:p-8">
+          <h2 id="referral-simulator-title" className="font-display text-xl font-semibold sm:text-2xl">
+            Veja o potencial das suas indicações
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Veja quanto você recebe mensalmente convidando outras pessoas:
+          </p>
+
+          <div className="mx-auto mt-8 w-full max-w-4xl">
+            <div className="mb-5 flex items-end justify-between gap-4">
+              <p className="text-sm font-medium text-muted-foreground">Indicações selecionadas</p>
+              <p aria-live="polite" className="font-display text-2xl font-semibold sm:text-3xl">
+                {referralPeople}{" "}
+                <span className="text-base font-medium text-muted-foreground sm:text-lg">pessoas</span>
+              </p>
+            </div>
+            <Slider
+              aria-label="Quantidade de pessoas convidadas"
+              min={1}
+              max={500}
+              step={1}
+              value={[referralPeople]}
+              onValueChange={(values) => setReferralPeople(values[0] ?? 1)}
+              className="py-2 [&_[data-slot=slider-range]]:bg-[#36B37E] [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-[#36B37E] [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-track]]:h-1"
+            />
+            <div className="mt-3 flex justify-between text-xs font-medium text-muted-foreground">
+              <span>1</span>
+              <span>500</span>
+            </div>
+            <div className="mt-8 rounded-lg border border-border bg-muted/30 px-5 py-5 sm:px-7 sm:py-6">
+              <p className="text-sm font-medium text-muted-foreground">Comissão mensal estimada</p>
+              <p aria-live="polite" className="mt-2 font-display text-3xl font-bold text-[#36B37E] sm:text-4xl">
+                {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
+                  (referralPeople * 891) / 100,
+                )}
+              </p>
+              <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                A considerar que todos os seus convidados continuem ativos no portal.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          aria-labelledby="referral-confirmation-title"
+          className="mt-6 rounded-2xl border border-[#36B37E]/30 bg-[linear-gradient(115deg,#FFFFFF_0%,#F5F6F8_35%,#E9EAED_68%,#DCDDDF_100%)] px-5 py-8 text-center shadow-sm sm:px-8 sm:py-10"
+        >
+          <h2 id="referral-confirmation-title" className="font-display text-2xl font-bold sm:text-3xl">
+            Você já leu todo o passo a passo?
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Antes de continuar, certifique-se de que leu e compreendeu todas as etapas para compartilhar seu convite, configurar sua conta e acompanhar suas comissões.
+          </p>
+          <Button
+            type="button"
+            onClick={() => window.location.assign(referralLink)}
+            className="mt-6 min-h-12 w-full rounded-xl border border-[#5865F2]/70 bg-gradient-to-r from-[#5865F2] via-[#404EED] to-[#7289DA] px-6 font-bold text-white shadow-sm sm:w-auto"
+          >
+            SIM, CONTINUAR
+          </Button>
+
+          <div className="relative flex flex-col items-center">
+            <button
+              type="button"
+              aria-live="polite"
+              onClick={() => void copyReferralLink()}
+              className="mx-auto mt-2 inline-flex min-h-11 items-center justify-center px-3 text-center text-xs leading-relaxed text-muted-foreground transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-sm"
+            >
+              Não conseguiu acessar? Copie este link para colar no seu navegador.
+            </button>
+            <div
+              role="status"
+              aria-live="polite"
+              aria-hidden={linkCopyStatus === "idle"}
+              className={`pointer-events-none absolute left-1/2 top-full z-20 mt-1 inline-flex -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-lg border border-border bg-background/95 px-3 py-2 text-sm font-medium text-foreground shadow-md transition-all duration-200 ${
+                linkCopyStatus === "success" ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+              }`}
+            >
+              {linkCopyStatus === "success" ? (
+                <>
+                  <Check className="size-4 text-primary" aria-hidden="true" />
+                  Link copiado com sucesso!
+                </>
+              ) : linkCopyStatus === "error" ? (
+                "Não foi possível copiar o link."
+              ) : null}
+            </div>
+          </div>
+
+          <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+            Ainda não leu? Volte ao material e confira todas as etapas.
+          </p>
+        </section>
+      </div>
+    </main>
+  );
+}

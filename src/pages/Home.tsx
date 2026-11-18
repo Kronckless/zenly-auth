@@ -224,7 +224,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isReferralOpen, setIsReferralOpen] = useState(false);
-  const [isReferralGuideOpen, setIsReferralGuideOpen] = useState(false);
+
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
   const [isReferralSliderInteracting, setIsReferralSliderInteracting] = useState(false);
@@ -824,7 +824,7 @@ async function openNews(item: NewsItem) {
                         </p>
                         <button
                           type="button"
-                          onClick={() => setIsReferralGuideOpen(true)}
+                          onClick={() => navigate("/comeceporaqui")}
                           className="group relative isolate mx-auto mt-7 flex min-h-24 w-full max-w-3xl items-center justify-center overflow-hidden rounded-2xl border border-[#5865F2]/70 bg-gradient-to-r from-[#5865F2] via-[#404EED] to-[#7289DA] px-12 py-5 text-center text-white shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_10px_28px_rgba(64,78,237,0.38),inset_0_1px_0_rgba(255,255,255,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_14px_32px_rgba(64,78,237,0.48),inset_0_1px_0_rgba(255,255,255,0.4)] active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5865F2]/50"
                         >
                           <span
@@ -856,31 +856,7 @@ async function openNews(item: NewsItem) {
                           />
                         </button>
 
-                        {isReferralGuideOpen && (
-                          <div
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="referral-guide-title"
-                            className="fixed inset-0 z-[80] h-dvh w-screen overflow-y-auto bg-white text-zinc-950"
-                          >
-                            <button
-                              type="button"
-                              aria-label="Voltar à tela Indique e Ganhe"
-                              onClick={() => setIsReferralGuideOpen(false)}
-                              className="absolute right-5 top-5 z-10 flex size-11 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-900 shadow-sm transition-colors hover:bg-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 sm:right-7 sm:top-7"
-                            >
-                              <X className="size-5" />
-                            </button>
-                            <main className="mx-auto min-h-full w-full max-w-5xl px-6 pb-12 pt-24 sm:px-10 sm:pt-28">
-                              <h2
-                                id="referral-guide-title"
-                                className="font-display text-3xl font-extrabold tracking-tight text-zinc-950 sm:text-4xl md:text-5xl"
-                              >
-                                É fácil, leia esse passo-a-passo:
-                              </h2>
-                            </main>
-                          </div>
-                        )}
+
 
                         <section
                           aria-labelledby="referral-commission-title"
