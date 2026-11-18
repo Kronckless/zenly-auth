@@ -179,6 +179,50 @@ create policy "Sócios excluem salas após 30 dias"
     and created_at <= now() - interval '30 days'
   );
 
+-- Restrições adicionais impedem que outras políticas permissivas
+-- concedam acesso a salas que pertencem a outro usuário.
+drop policy if exists "Apenas o dono cria sua sala" on public.salas_comunidade;
+create policy "Apenas o dono cria sua sala"
+  on public.salas_comunidade
+  as restrictive
+  for insert
+  to authenticated
+  with check (
+    creator_id = (select auth.uid())
+    and exists (
+      select 1
+      from public.profiles
+      where id = (select auth.uid())
+        and is_socio = true
+    )
+  );
+
+drop policy if exists "Apenas o dono edita sua sala" on public.salas_comunidade;
+create policy "Apenas o dono edita sua sala"
+  on public.salas_comunidade
+  as restrictive
+  for update
+  to authenticated
+  using (
+    creator_id = (select auth.uid())
+    and created_at <= now() - interval '30 days'
+  )
+  with check (
+    creator_id = (select auth.uid())
+    and created_at <= now() - interval '30 days'
+  );
+
+drop policy if exists "Apenas o dono exclui sua sala" on public.salas_comunidade;
+create policy "Apenas o dono exclui sua sala"
+  on public.salas_comunidade
+  as restrictive
+  for delete
+  to authenticated
+  using (
+    creator_id = (select auth.uid())
+    and created_at <= now() - interval '30 days'
+  );
+
 create or replace function public.enforce_socio_room_lifecycle()
 returns trigger
 language plpgsql
