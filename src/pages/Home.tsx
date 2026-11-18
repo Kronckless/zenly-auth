@@ -819,19 +819,27 @@ async function openNews(item: NewsItem) {
                         </p>
                         <button
                           type="button"
-                          className="group relative isolate mx-auto mt-7 flex min-h-24 w-full max-w-3xl items-center justify-center overflow-hidden rounded-full border border-destructive/80 bg-gradient-to-br from-destructive via-destructive to-destructive/90 px-12 py-5 text-center text-white shadow-lg shadow-destructive/30 transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-xl hover:shadow-destructive/40 active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
+                          className="group relative isolate mx-auto mt-7 flex min-h-24 w-full max-w-3xl items-center justify-center overflow-hidden rounded-2xl border border-destructive/70 bg-gradient-to-r from-destructive via-destructive/90 to-destructive px-12 py-5 text-center text-white shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_10px_28px_rgba(180,20,32,0.38),inset_0_1px_0_rgba(255,255,255,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_0_0_1px_rgba(255,255,255,0.25),0_14px_32px_rgba(180,20,32,0.48),inset_0_1px_0_rgba(255,255,255,0.4)] active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
                         >
                           <span
                             aria-hidden="true"
-                            className="pointer-events-none absolute inset-[3px] rounded-full border border-white/45"
+                            className="pointer-events-none absolute inset-[3px] rounded-[13px] border border-white/35"
                           />
                           <span
                             aria-hidden="true"
-                            className="pointer-events-none absolute inset-x-8 top-1 h-1/2 rounded-full bg-gradient-to-b from-white/20 to-transparent blur-sm"
+                            className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),transparent_45%,rgba(80,0,0,0.16))]"
                           />
                           <span
                             aria-hidden="true"
-                            className="pointer-events-none absolute left-8 top-1/2 h-8 w-12 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.7)_1px,transparent_1.5px)] [background-size:8px_8px] opacity-70"
+                            className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-[radial-gradient(ellipse_at_left,rgba(255,255,255,0.28),transparent_72%)]"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-[radial-gradient(ellipse_at_right,rgba(255,255,255,0.3),transparent_72%)]"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-y-2 right-5 w-16 rounded-r-xl bg-[radial-gradient(circle,rgba(255,255,255,0.75)_1px,transparent_1.5px)] [background-size:7px_7px] opacity-50"
                           />
                           <span className="relative z-10 font-display text-base font-extrabold tracking-[0.14em] text-white sm:text-lg">
                             COMECE POR AQUI
