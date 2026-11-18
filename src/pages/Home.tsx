@@ -1063,7 +1063,7 @@ async function openNews(item: NewsItem) {
                                   }).format((referralPeople * 891) / 100)}
                                 </p>
                                 <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-                                  Estimativa considerando que todas as assinaturas permaneçam ativas e pagas.
+                                  A considerar que todos os seus convidados continuem ativos no portal.
                                 </p>
                               </div>
                             </div>
