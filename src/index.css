@@ -328,6 +328,19 @@
   animation: referral-slider-pulse 1.5s ease-in-out infinite;
 }
 
+.referral-slider [data-slot="slider-thumb"] {
+  position: relative;
+}
+
+.referral-slider [data-slot="slider-thumb"]::before {
+  position: absolute;
+  inset: -12px;
+  border-radius: 9999px;
+  background: transparent;
+  content: "";
+  pointer-events: auto;
+}
+
 @keyframes referral-slider-shine {
   from { left: -30%; }
   to { left: 100%; }
