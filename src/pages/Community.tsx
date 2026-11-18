@@ -864,6 +864,7 @@ export default function Community() {
         </form>
       </section>
       ) : (
+        <>
         <section className="flex min-h-0 w-full flex-1 flex-col bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
           <header className="shrink-0 border-b border-border bg-background px-4 pb-3 pt-4">
             <h1 className="text-2xl font-bold text-foreground">Conversas</h1>
@@ -938,6 +939,7 @@ export default function Community() {
         >
           <Plus className="size-6" aria-hidden="true" />
         </Button>
+        </>
       )}
 
       <Dialog open={articleDialogOpen} onOpenChange={setArticleDialogOpen}>
