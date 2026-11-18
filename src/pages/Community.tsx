@@ -1344,13 +1344,17 @@ export default function Community() {
             </DialogHeader>
             <div className="space-y-3">
               <Button
-                className="w-full rounded-xl bg-gradient-to-r from-foreground to-foreground/80 text-background transition-all hover:brightness-110"
+                className="relative h-14 w-full overflow-hidden rounded-xl bg-gradient-to-r from-[#5865F2] to-[#7983F5] py-4 font-bold text-white shadow-md transition-all hover:brightness-110"
                 onClick={() => {
                   setSocioDialogOpen(false);
                   navigate("/home", { state: { openSocioModal: true } });
                 }}
               >
-                Quero me tornar sócio
+                <span
+                  aria-hidden="true"
+                  className="animate-button-shine pointer-events-none absolute inset-y-0 left-[-50%] w-1/3 skew-x-[-20deg] bg-gradient-to-r from-transparent via-white/40 to-transparent"
+                />
+                <span className="relative">Quero me tornar sócio</span>
               </Button>
               <Button
                 type="button"
