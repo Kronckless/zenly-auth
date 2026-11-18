@@ -1227,6 +1227,26 @@ export default function Community() {
             </label>
           </header>
 
+          {isSocio && (
+            <a
+              href="https://t.me/+GbzAJ5p_HAVhNTYx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mx-4 mb-3 flex items-center gap-3 rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/10 via-background to-primary/5 p-4 text-foreground shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Send className="size-5" aria-hidden="true" />
+              </span>
+              <span className="flex-1 text-sm font-semibold">Acessar Telegram</span>
+              <span
+                aria-hidden="true"
+                className="text-lg text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              >
+                ↗
+              </span>
+            </a>
+          )}
+
           <div className="min-h-0 flex-1 overflow-y-auto divide-y divide-border bg-background">
             {showCommunityConversation && (
               <Button
