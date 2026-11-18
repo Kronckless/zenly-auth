@@ -713,6 +713,27 @@ async function openNews(item: NewsItem) {
                       </DialogDescription>
                     </DialogHeader>
 
+                    <div className="mx-auto mt-5 max-w-5xl space-y-4 rounded-2xl border border-border bg-background px-5 py-6 text-sm leading-7 text-muted-foreground shadow-sm sm:px-8 sm:py-7 sm:text-base">
+                      <p>
+                        Ser sócio é muito mais do que ter acesso a um conteúdo exclusivo. É acreditar que a informação deve chegar a todos, que diferentes vozes merecem ser ouvidas e que uma sociedade mais consciente começa pelo conhecimento.
+                      </p>
+                      <p>
+                        O Voz do Povo nasceu para dar espaço a diferentes perspectivas, ampliar o acesso à informação e permitir que cada pessoa forme suas próprias opiniões.
+                      </p>
+                      <p>
+                        Mas uma iniciativa como essa não cresce sozinha. Ela precisa de pessoas que acreditam em seu propósito e estejam dispostas a apresentá-la a outras pessoas.
+                      </p>
+                      <p>
+                        Por isso, fale sobre o Voz do Povo com seus amigos, compartilhe com sua família e apresente o portal às pessoas que fazem parte da sua vida.
+                      </p>
+                      <p>
+                        Você já conhece o nosso trabalho. Agora, ajude outras pessoas a conhecê-lo também.
+                      </p>
+                      <p>
+                        Uma conversa pode despertar a curiosidade. Uma indicação pode conquistar um novo sócio. E cada pessoa alcançada ajuda o Voz do Povo a chegar ainda mais longe.
+                      </p>
+                    </div>
+
                     <section
                       aria-label="Passo a passo para indicar"
                       className="mt-4 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-muted/30 md:grid-cols-3 md:divide-x md:divide-border"
