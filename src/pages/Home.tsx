@@ -776,53 +776,202 @@ async function openNews(item: NewsItem) {
                       ))}
                     </section>
 
-                    <section
-                      aria-labelledby="referral-whatsapp-heading"
-                      className="mx-auto mt-4 max-w-4xl rounded-2xl border border-border bg-muted/40 p-4 sm:p-5"
-                    >
-                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                          <h2 id="referral-whatsapp-heading" className="text-base font-semibold">
-                            Mensagem Pronta para o WhatsApp
+                    <div className="mx-auto mt-6 max-w-5xl space-y-5">
+                      <section
+                        aria-labelledby="referral-link-heading"
+                        className="border-l-4 border-destructive bg-muted/40 p-4 sm:p-5"
+                      >
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-destructive">
+                          Rede de indicação
+                        </p>
+                        <h2 id="referral-link-heading" className="mt-1 font-display text-xl font-bold">
+                          Seu link de indicação
+                        </h2>
+                        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                          As indicações serão contabilizadas quando as pessoas acessarem o Voz do Povo pelo seu link individual.
+                        </p>
+                        <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                          <div
+                            role="status"
+                            aria-label="Link individual de indicação"
+                            className="flex min-h-11 flex-1 items-center border border-border bg-background px-3 text-sm text-muted-foreground"
+                          >
+                            Seu link individual será exibido aqui quando o acesso de afiliado for liberado.
+                          </div>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            disabled
+                            className="w-full gap-2 sm:w-auto"
+                            title="O link individual ainda não está disponível."
+                          >
+                            <Copy className="size-4" aria-hidden="true" />
+                            Copiar link
+                          </Button>
+                        </div>
+                      </section>
+
+                      <section
+                        aria-labelledby="referral-whatsapp-heading"
+                        className="border border-border bg-background p-4 shadow-sm sm:p-5"
+                      >
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div className="border-l-2 border-destructive pl-3">
+                            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
+                              Convite pronto para compartilhar
+                            </p>
+                            <h2 id="referral-whatsapp-heading" className="mt-1 font-display text-lg font-bold">
+                              Mensagem para o WhatsApp
+                            </h2>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              Copie o convite e envie para quem pode se interessar pelo portal.
+                            </p>
+                          </div>
+                          <Button
+                            type="button"
+                            variant={referralCopyStatus === "success" ? "secondary" : "destructive"}
+                            className="w-full shrink-0 gap-2 sm:w-auto"
+                            aria-live="polite"
+                            onClick={async () => {
+                              const message =
+                                "Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]";
+                              try {
+                                await navigator.clipboard.writeText(message);
+                                setReferralCopyStatus("success");
+                                window.setTimeout(() => setReferralCopyStatus("idle"), 2200);
+                              } catch {
+                                setReferralCopyStatus("error");
+                                window.setTimeout(() => setReferralCopyStatus("idle"), 3000);
+                              }
+                            }}
+                          >
+                            {referralCopyStatus === "success" ? (
+                              <Check className="size-4" aria-hidden="true" />
+                            ) : (
+                              <Copy className="size-4" aria-hidden="true" />
+                            )}
+                            {referralCopyStatus === "success"
+                              ? "Mensagem copiada!"
+                              : referralCopyStatus === "error"
+                                ? "Não foi possível copiar"
+                                : "Copiar mensagem"}
+                          </Button>
+                        </div>
+                        <p className="mt-4 border border-border bg-muted/30 p-4 text-sm leading-relaxed text-foreground sm:p-5">
+                          Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]
+                        </p>
+                      </section>
+
+                      <section
+                        aria-labelledby="referral-materials-heading"
+                        className="bg-muted/30 p-4 sm:p-5"
+                      >
+                        <div className="mb-4">
+                          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
+                            Para ampliar o alcance
+                          </p>
+                          <h2 id="referral-materials-heading" className="mt-1 font-display text-xl font-bold">
+                            Materiais para compartilhar
                           </h2>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            Copie, personalize se quiser e compartilhe seu convite.
+                            Os espaços abaixo estão preparados para receber os materiais oficiais de divulgação.
                           </p>
                         </div>
-                        <Button
-                          type="button"
-                          variant={referralCopyStatus === "success" ? "secondary" : "default"}
-                          className="shrink-0 gap-2"
-                          aria-live="polite"
-                          onClick={async () => {
-                            const message =
-                              "Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]";
-                            try {
-                              await navigator.clipboard.writeText(message);
-                              setReferralCopyStatus("success");
-                              window.setTimeout(() => setReferralCopyStatus("idle"), 2200);
-                            } catch {
-                              setReferralCopyStatus("error");
-                              window.setTimeout(() => setReferralCopyStatus("idle"), 3000);
-                            }
-                          }}
-                        >
-                          {referralCopyStatus === "success" ? (
-                            <Check className="size-4" aria-hidden="true" />
-                          ) : (
-                            <Copy className="size-4" aria-hidden="true" />
-                          )}
-                          {referralCopyStatus === "success"
-                            ? "Mensagem copiada!"
-                            : referralCopyStatus === "error"
-                              ? "Não foi possível copiar"
-                              : "Copiar Mensagem"}
-                        </Button>
-                      </div>
-                      <p className="mt-3 rounded-xl border border-border bg-background p-3 text-sm leading-relaxed text-foreground sm:p-4">
-                        Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]
-                      </p>
-                    </section>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                          {[
+                            {
+                              number: "01",
+                              title: "Stories",
+                              description: "Peças verticais para apresentar o portal nos stories.",
+                            },
+                            {
+                              number: "02",
+                              title: "Publicações para redes sociais",
+                              description: "Imagens e textos para compartilhar no seu perfil.",
+                            },
+                            {
+                              number: "03",
+                              title: "Vídeos",
+                              description: "Conteúdos audiovisuais para divulgar a iniciativa.",
+                            },
+                            {
+                              number: "04",
+                              title: "Textos prontos",
+                              description: "Mensagens para apresentar o Voz do Povo à sua rede.",
+                            },
+                          ].map((material) => (
+                            <article
+                              key={material.number}
+                              className="flex items-start gap-3 border border-border bg-background p-3 sm:p-4"
+                            >
+                              <span className="font-display text-sm font-bold text-destructive">
+                                {material.number}
+                              </span>
+                              <div>
+                                <h3 className="text-sm font-semibold">{material.title}</h3>
+                                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                                  {material.description}
+                                </p>
+                                <span className="mt-2 inline-block text-xs font-medium text-muted-foreground">
+                                  Material em preparação
+                                </span>
+                              </div>
+                            </article>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section aria-labelledby="referral-faq-heading" className="pt-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
+                          Informações
+                        </p>
+                        <h2 id="referral-faq-heading" className="mt-1 font-display text-xl font-bold">
+                          Dúvidas frequentes
+                        </h2>
+                        <Accordion type="single" collapsible className="mt-3">
+                          {[
+                            {
+                              question: "Como começo a participar?",
+                              answer:
+                                "Siga as etapas acima: crie sua conta gratuita na Cakto e solicite seu link individual de indicação quando essa opção estiver disponível.",
+                            },
+                            {
+                              question: "Como as indicações são contabilizadas?",
+                              answer:
+                                "As indicações são associadas ao link individual. Compartilhe o link oficial com seus amigos e grupos quando ele for liberado.",
+                            },
+                            {
+                              question: "Como funcionam as comissões e os pagamentos?",
+                              answer:
+                                "As comissões estão relacionadas às novas assinaturas feitas pelo seu link. Os valores e prazos de pagamento não estão informados nesta página.",
+                            },
+                            {
+                              question: "Onde encontro meu link?",
+                              answer:
+                                "O espaço do link individual está nesta página. Ele poderá ser copiado quando o acesso de afiliado e o link oficial forem disponibilizados.",
+                            },
+                            {
+                              question: "Como posso divulgar o Voz do Povo?",
+                              answer:
+                                "Você pode compartilhar a mensagem pronta por WhatsApp e apresentar o portal a amigos, familiares e grupos. Os materiais oficiais serão publicados nesta página quando estiverem disponíveis.",
+                            },
+                          ].map(({ question, answer }, index) => (
+                            <AccordionItem
+                              key={question}
+                              value={`referral-faq-${index + 1}`}
+                              className="border-border"
+                            >
+                              <AccordionTrigger className="py-4 text-left text-sm font-semibold hover:no-underline">
+                                {question}
+                              </AccordionTrigger>
+                              <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground">
+                                {answer}
+                              </AccordionContent>
+                            </AccordionItem>
+                          ))}
+                        </Accordion>
+                      </section>
+                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
