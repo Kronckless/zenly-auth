@@ -20,6 +20,8 @@ import {
   Crosshair,
   MessageSquare,
   Paperclip,
+  Pin,
+  Plus,
   Send,
   Smile,
   Sparkles,
@@ -862,44 +864,37 @@ export default function Community() {
         </form>
       </section>
       ) : (
-        <section className="mx-auto flex min-h-0 w-full max-w-4xl flex-1 flex-col border-x border-border bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
-          <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-4 py-4 sm:px-6">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
-              <MessageSquare className="size-5" aria-hidden="true" />
-            </div>
-            <div>
-              <h1 className="text-lg font-semibold">Conversas</h1>
-              <p className="text-sm text-muted-foreground">Suas conversas ativas</p>
-            </div>
+        <section className="flex min-h-0 w-full flex-1 flex-col bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
+          <header className="shrink-0 border-b border-border bg-background px-4 pb-3 pt-4">
+            <h1 className="text-2xl font-bold text-foreground">Conversas</h1>
           </header>
 
-          <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
-            {error && (
-              <p role="alert" className="mb-3 text-sm text-destructive">
-                {error}
-              </p>
-            )}
-
+          <div className="min-h-0 flex-1 overflow-y-auto divide-y divide-border bg-background">
             <Button
               type="button"
               variant="ghost"
               onClick={() => navigate("/comunidade/geral")}
-              className="h-auto w-full justify-start rounded-2xl border border-border bg-card p-4 text-left shadow-sm hover:bg-muted"
+              className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3 text-left hover:bg-muted/50"
             >
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
                 <UsersRound className="size-6" aria-hidden="true" />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="flex items-center justify-between gap-3">
-                  <span className="font-semibold text-foreground">Chat da comunidade</span>
-                  {latestCommunityMessage && (
-                    <time className="shrink-0 text-xs text-muted-foreground">
-                      {new Date(latestCommunityMessage.created_at).toLocaleTimeString(
-                        "pt-BR",
-                        { hour: "2-digit", minute: "2-digit" },
-                      )}
-                    </time>
-                  )}
+                <span className="flex items-start justify-between gap-3">
+                  <span className="truncate text-base font-semibold text-foreground">
+                    Chat da comunidade
+                  </span>
+                  <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
+                    {latestCommunityMessage && (
+                      <time>
+                        {new Date(latestCommunityMessage.created_at).toLocaleTimeString(
+                          "pt-BR",
+                          { hour: "2-digit", minute: "2-digit" },
+                        )}
+                      </time>
+                    )}
+                    <Pin className="size-3.5" aria-label="Conversa fixada" />
+                  </span>
                 </span>
                 <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
                   {loading
@@ -911,37 +906,38 @@ export default function Community() {
               </span>
             </Button>
 
-            <section aria-labelledby="community-rooms-title" className="mt-8">
-              <h2 id="community-rooms-title" className="mb-3 text-sm font-semibold text-muted-foreground">
-                Salas de sócios
-              </h2>
-              {communityRooms.length > 0 ? (
-                <div className="space-y-2">
-                  {communityRooms.map((room) => (
-                    <Button
-                      key={room.id}
-                      type="button"
-                      variant="ghost"
-                      onClick={() => navigate(`/comunidade/salas/${room.id}`)}
-                      className="h-auto w-full justify-start rounded-2xl border border-border bg-card p-4 text-left"
-                    >
-                      <span className="min-w-0 flex-1">
-                        <span className="block truncate font-semibold text-foreground">{room.name}</span>
-                        <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
-                          {room.creator} · {room.lastMessage}
-                        </span>
-                      </span>
-                    </Button>
-                  ))}
-                </div>
-              ) : (
-                <p className="rounded-2xl border border-dashed border-border px-4 py-5 text-sm text-muted-foreground">
-                  As salas criadas pelos sócios aparecerão aqui, com o nome da sala, criador e última mensagem.
-                </p>
-              )}
-            </section>
+            {communityRooms.map((room) => (
+              <Button
+                key={room.id}
+                type="button"
+                variant="ghost"
+                onClick={() => navigate(`/comunidade/salas/${room.id}`)}
+                className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3 text-left hover:bg-muted/50"
+              >
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+                  <UsersRound className="size-6" aria-hidden="true" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-base font-semibold text-foreground">
+                    {room.name}
+                  </span>
+                  <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
+                    {room.creator}: {room.lastMessage}
+                  </span>
+                </span>
+              </Button>
+            ))}
           </div>
         </section>
+        <Button
+          type="button"
+          size="icon"
+          aria-label="Iniciar conversa"
+          onClick={() => navigate("/comunidade/geral")}
+          className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-primary text-primary-foreground shadow-lg transition active:scale-95 hover:bg-primary/90"
+        >
+          <Plus className="size-6" aria-hidden="true" />
+        </Button>
       )}
 
       <Dialog open={articleDialogOpen} onOpenChange={setArticleDialogOpen}>
