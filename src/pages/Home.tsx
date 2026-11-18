@@ -754,15 +754,13 @@ async function openNews(item: NewsItem) {
                           description:
                             "Aprenda a compartilhar o Voz do Povo e apresentar o portal a outras pessoas usando seu link de indicação.",
                           action: "Saiba mais",
-                          linkNote: "Link de cadastro da Cakto será adicionado aqui.",
                         },
                         {
                           number: "2",
                           title: "Como criar sua conta para receber comissões",
                           description:
                             "Veja como configurar sua conta de afiliado e informar seus dados para receber as comissões pelas indicações.",
-                          action: "Criar minha conta para receber comissões",
-                          linkNote: "Link de afiliado será adicionado aqui.",
+
                         },
                         {
                           number: "3",
@@ -792,14 +790,11 @@ async function openNews(item: NewsItem) {
                                 <Button
                                   type="button"
                                   disabled
-                                  title={step.linkNote}
                                   className="h-auto min-h-11 w-full whitespace-normal rounded-xl py-2.5 text-center font-semibold leading-snug shadow-sm transition-all hover:shadow-md disabled:opacity-100"
                                 >
                                   {step.action}
                                 </Button>
-                                <p className="mt-1.5 text-center text-xs text-muted-foreground">
-                                  {step.linkNote}
-                                </p>
+
                               </div>
                             )}
                           </CardContent>
