@@ -925,6 +925,49 @@ async function openNews(item: NewsItem) {
                               </div>
                             </div>
                           </div>
+
+                          <section
+                            aria-labelledby="referral-faq-title"
+                            className="mt-8 rounded-2xl border border-border bg-muted/30 p-5 text-left sm:p-7"
+                          >
+                            <header className="mb-3">
+                              <h3
+                                id="referral-faq-title"
+                                className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+                              >
+                                Ficou com alguma dúvida?
+                              </h3>
+                              <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                                Para entender melhor como funciona, tire suas dúvidas aqui.
+                              </p>
+                            </header>
+
+                            <Accordion type="single" collapsible>
+                              {[
+                                "Como funciona o programa de indicações?",
+                                "Como posso compartilhar meu link?",
+                                "Como minhas indicações são contabilizadas?",
+                                "Onde posso acompanhar meus resultados?",
+                                "Como funciona o recebimento das comissões?",
+                                "Preciso pagar alguma coisa para participar?",
+                                "Posso compartilhar meu convite nas redes sociais?",
+                                "O que acontece se alguém cancelar a assinatura?",
+                              ].map((question, index) => (
+                                <AccordionItem
+                                  key={question}
+                                  value={`referral-program-faq-${index + 1}`}
+                                  className="border-border"
+                                >
+                                  <AccordionTrigger className="py-4 text-left text-sm font-semibold leading-6 text-foreground hover:no-underline [&>svg]:text-[#36B37E] sm:text-base">
+                                    {question}
+                                  </AccordionTrigger>
+                                  <AccordionContent className="pb-4 text-sm leading-6 text-muted-foreground">
+                                    Conteúdo da resposta em preparação.
+                                  </AccordionContent>
+                                </AccordionItem>
+                              ))}
+                            </Accordion>
+                          </section>
                         </section>
                       </section>
                     </section>
