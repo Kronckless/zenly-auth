@@ -79,6 +79,7 @@ export default function ComecePorAqui() {
   const [referralPeople, setReferralPeople] = useState(1);
   const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [isWhatsAppGuideOpen, setIsWhatsAppGuideOpen] = useState(false);
+  const [isInstagramGuideOpen, setIsInstagramGuideOpen] = useState(false);
 
   async function copyReferralLink() {
     try {
@@ -227,6 +228,104 @@ export default function ComecePorAqui() {
 
                 <p className="rounded-lg border-l-2 border-primary bg-background/70 px-4 py-3 font-medium">
                   Antes de enviar, pergunte a si mesmo: isto tem relação com o assunto, está contextualizado e respeita as regras do grupo? Quando a resposta é sim, você contribui primeiro — e apresenta o Voz do Povo de forma clara e natural.
+                </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
+      <section className="mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-xl border border-white/50 bg-gradient-to-br from-[#833AB4] via-[#C13584] to-[#FCAF45] text-left shadow-sm">
+        <Accordion
+          type="single"
+          collapsible
+          value={isInstagramGuideOpen ? "instagram-engagement" : ""}
+          onValueChange={(value) => setIsInstagramGuideOpen(value === "instagram-engagement")}
+        >
+          <AccordionItem value="instagram-engagement" className="border-0">
+            <AccordionTrigger className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:no-underline [&>svg]:hidden sm:px-8">
+              <span className="min-w-0">
+                <span className="block text-base font-bold leading-snug text-white sm:text-lg">
+                  Como divulgar o Voz do Povo no Instagram?
+                </span>
+                <span className="mt-2 inline-flex w-fit items-center rounded-full border border-white/80 bg-white px-3 py-1.5 text-xs font-bold text-[#833AB4] shadow-md transition-all group-hover:scale-[1.03] group-hover:shadow-lg sm:text-sm">
+                  {isInstagramGuideOpen ? "Ocultar detalhes ↑" : "Mais detalhes ↓"}
+                </span>
+              </span>
+            </AccordionTrigger>
+
+            {!isInstagramGuideOpen && (
+              <div aria-hidden="true" className="relative mx-5 mb-4 space-y-1.5 overflow-hidden opacity-50 blur-[2px] sm:mx-8">
+                <div className="h-1.5 w-4/5 rounded-full bg-white/70" />
+                <div className="h-1.5 w-full rounded-full bg-white/60" />
+                <div className="h-1.5 w-11/12 rounded-full bg-white/60" />
+                <div className="h-1.5 w-2/3 rounded-full bg-white/50" />
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#C13584]/70 to-transparent" />
+              </div>
+            )}
+
+            <AccordionContent className="px-4 pb-4 sm:px-6 sm:pb-6">
+              <div className="space-y-5 rounded-lg border border-white/70 bg-background/95 p-5 text-sm leading-7 text-foreground sm:p-7 sm:text-base">
+                <p>
+                  O Instagram oferece diferentes espaços de interação, desde grupos de conversa até mensagens privadas. Cada ambiente possui uma dinâmica própria, e entender essas diferenças ajuda a apresentar o Voz do Povo de maneira contextualizada, respeitosa e transparente.
+                </p>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">1. Identifique conversas e grupos relevantes</h3>
+                  <p>
+                    Observe quais grupos e conversas estão relacionados a política, notícias, acontecimentos recentes e assuntos de interesse público.
+                  </p>
+                  <p>
+                    Antes de compartilhar qualquer conteúdo, compreenda o propósito daquele espaço e verifique se os integrantes permitem esse tipo de compartilhamento.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">2. Participe das conversas nos grupos</h3>
+                  <p>
+                    Não utilize os grupos exclusivamente para publicar links. Participe das discussões, compartilhe opiniões próprias e contribua com informações pertinentes. Quando surgir um assunto relacionado a uma matéria do Voz do Povo, apresente o conteúdo explicando sua relação com a conversa.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">3. Compartilhe informações de maneira contextualizada</h3>
+                  <p>
+                    Em vez de enviar apenas um endereço de site, explique brevemente o que a pessoa encontrará ao acessar o conteúdo.
+                  </p>
+                  <p>
+                    Por exemplo, se o grupo estiver discutindo um acontecimento político, você poderá apresentar uma matéria relacionada ao tema, deixando claro que ela foi publicada pelo Voz do Povo.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">4. Utilize as conversas privadas com naturalidade</h3>
+                  <p>
+                    As mensagens privadas permitem uma comunicação individualizada. Quando alguém demonstrar interesse por determinado assunto ou perguntar sobre o portal, você poderá explicar o projeto, apresentar sua proposta e compartilhar seu convite de maneira transparente.
+                  </p>
+                  <p>
+                    Evite enviar mensagens promocionais indiscriminadamente para pessoas que não conhecem você ou que não demonstraram interesse.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">5. Utilize os recursos do próprio Instagram</h3>
+                  <p>
+                    Você também pode aproveitar recursos como Stories, publicações e compartilhamentos para apresentar o Voz do Povo.
+                  </p>
+                  <p>
+                    Ao publicar um conteúdo, contextualize o assunto, indique a origem da informação e disponibilize o acesso ao portal para quem desejar conhecer melhor o projeto.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">6. Respeite o espaço e o interesse das pessoas</h3>
+                  <p>
+                    Não transforme conversas em sequências de divulgações. Evite mensagens repetitivas, respeite as regras dos grupos e não insista quando alguém não demonstrar interesse. A divulgação deve acontecer de maneira transparente e adequada ao contexto.
+                  </p>
+                </section>
+
+                <p className="rounded-lg border-l-2 border-primary bg-muted/40 px-4 py-3 font-semibold">
+                  Uma boa indicação começa com uma apresentação relevante. O Instagram oferece diferentes maneiras de compartilhar informações e apresentar o Voz do Povo. Utilize cada espaço com bom senso, participe de conversas legítimas e permita que as pessoas conheçam o projeto por vontade própria.
                 </p>
               </div>
             </AccordionContent>
