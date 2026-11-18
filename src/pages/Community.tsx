@@ -21,8 +21,11 @@ import {
   MessageSquare,
   MessageSquarePlus,
   Paperclip,
+  Pencil,
   Pin,
   Search,
+  Settings2,
+  Trash2,
   Send,
   Smile,
   Sparkles,
@@ -56,6 +59,9 @@ type CommunityRoom = {
   id: string;
   name: string;
   creator: string;
+  creatorId: string;
+  isPrivate: boolean;
+  createdAt: string;
   lastMessage: string;
   lastMessageAt: string | null;
   unreadCount: number;
@@ -173,8 +179,13 @@ export default function Community() {
   const [hasMfo, setHasMfo] = useState(false);
   const [isSocio, setIsSocio] = useState(false);
   const [communityRooms, setCommunityRooms] = useState<CommunityRoom[]>([]);
+  const [ownedRoomCount, setOwnedRoomCount] = useState(0);
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
   const [createRoomDialogOpen, setCreateRoomDialogOpen] = useState(false);
+  const [roomSettingsDialogOpen, setRoomSettingsDialogOpen] = useState(false);
+  const [roomEditName, setRoomEditName] = useState("");
+  const [roomManagementError, setRoomManagementError] = useState("");
+  const [savingRoom, setSavingRoom] = useState(false);
   const [socioDialogOpen, setSocioDialogOpen] = useState(false);
   const [roomLimitDialogOpen, setRoomLimitDialogOpen] = useState(false);
   const [roomName, setRoomName] = useState("");
@@ -222,7 +233,7 @@ export default function Community() {
 
     const { data: rooms, error: roomsError } = await supabase
       .from("salas_comunidade")
-      .select("id, name, creator_name, is_private, created_at")
+      .select("id, name, creator_id, creator_name, is_private, created_at")
       .order("created_at", { ascending: false });
 
     if (roomsError) return;
@@ -279,6 +290,9 @@ export default function Community() {
           id: room.id,
           name: room.name,
           creator: room.creator_name,
+          creatorId: room.creator_id,
+          isPrivate: room.is_private,
+          createdAt: room.created_at,
           lastMessage: latestMessage
             ? `${latestMessage.nome_usuario}: ${latestMessage.conteudo || latestMessage.dossier_name || "Matéria do portal"}`
             : "Nova sala",
@@ -289,6 +303,9 @@ export default function Community() {
     );
 
     setCommunityRooms(roomsWithUnread);
+    setOwnedRoomCount(
+      roomsWithUnread.filter((room) => room.creatorId === userId).length,
+    );
     setUnreadCounts({
       general: generalUnreadCount,
       ...Object.fromEntries(roomsWithUnread.map((room) => [room.id, room.unreadCount])),
@@ -654,6 +671,14 @@ export default function Community() {
   const activeRoom = roomId
     ? communityRooms.find((room) => room.id === roomId)
     : null;
+  const roomEditableAt = activeRoom
+    ? new Date(new Date(activeRoom.createdAt).getTime() + 30 * 24 * 60 * 60 * 1000)
+    : null;
+  const roomDaysRemaining = roomEditableAt
+    ? Math.max(0, Math.ceil((roomEditableAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
+    : 0;
+  const canManageRoom = Boolean(activeRoom && activeRoom.creatorId === userId);
+  const canEditRoom = Boolean(canManageRoom && roomDaysRemaining === 0);
   const conversationSearchTerm = conversationSearch.trim().toLocaleLowerCase();
   const showCommunityConversation = "chat da comunidade".includes(conversationSearchTerm);
   const filteredCommunityRooms = communityRooms.filter((room) =>
@@ -689,22 +714,25 @@ export default function Community() {
       return;
     }
 
-    if ((count ?? 0) >= 2) {
-      setCreateRoomError("Você atingiu o limite máximo de 2 salas.");
-      setRoomLimitDialogOpen(true);
+    const currentCount = count ?? 0;
+    setOwnedRoomCount(currentCount);
+    setRoomName("");
+    setRoomIsPrivate(false);
+
+    if (currentCount >= 2) {
+      setCreateRoomError("Você já atingiu o limite de 2 salas. Exclua uma sala elegível para liberar uma vaga.");
+      setCreateRoomDialogOpen(true);
       return;
     }
 
     setCreateRoomError("");
-    setRoomName("");
-    setRoomIsPrivate(false);
     setCreateRoomDialogOpen(true);
   };
 
   const createCommunityRoom = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const name = roomName.trim();
-    if (!name || !supabase || !userId || creatingRoom) return;
+    if (!name || !supabase || !userId || creatingRoom || ownedRoomCount >= 2) return;
 
     setCreatingRoom(true);
     setCreateRoomError("");
@@ -717,7 +745,7 @@ export default function Community() {
         name,
         is_private: roomIsPrivate,
       })
-      .select("id, name, creator_name, is_private")
+      .select("id, name, creator_id, creator_name, is_private, created_at")
       .single();
 
     if (insertError || !data) {
@@ -731,14 +759,76 @@ export default function Community() {
         id: data.id,
         name: data.name,
         creator: data.creator_name,
+        creatorId: data.creator_id,
+        isPrivate: data.is_private,
+        createdAt: data.created_at,
         lastMessage: "Nova sala",
         lastMessageAt: null,
         unreadCount: 0,
       },
       ...rooms,
     ]);
+    setOwnedRoomCount((count) => count + 1);
     setCreateRoomDialogOpen(false);
     setCreatingRoom(false);
+  };
+
+  const openRoomSettings = () => {
+    if (!activeRoom || activeRoom.creatorId !== userId) return;
+    setRoomEditName(activeRoom.name);
+    setRoomManagementError("");
+    setRoomSettingsDialogOpen(true);
+  };
+
+  const updateCommunityRoom = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const name = roomEditName.trim();
+    if (!activeRoom || !canEditRoom || !name || !supabase || savingRoom) return;
+
+    setSavingRoom(true);
+    setRoomManagementError("");
+    const { error: updateError } = await supabase
+      .from("salas_comunidade")
+      .update({ name })
+      .eq("id", activeRoom.id)
+      .eq("creator_id", userId);
+
+    if (updateError) {
+      setRoomManagementError("Não foi possível renomear a sala. Tente novamente.");
+      setSavingRoom(false);
+      return;
+    }
+
+    setCommunityRooms((rooms) =>
+      rooms.map((room) => room.id === activeRoom.id ? { ...room, name } : room),
+    );
+    setRoomSettingsDialogOpen(false);
+    setSavingRoom(false);
+  };
+
+  const deleteCommunityRoom = async () => {
+    if (!activeRoom || !canEditRoom || !supabase || savingRoom) return;
+    if (!window.confirm(`Excluir a sala “${activeRoom.name}”? Essa ação não pode ser desfeita.`)) return;
+
+    setSavingRoom(true);
+    setRoomManagementError("");
+    const { error: deleteError } = await supabase
+      .from("salas_comunidade")
+      .delete()
+      .eq("id", activeRoom.id)
+      .eq("creator_id", userId);
+
+    if (deleteError) {
+      setRoomManagementError("Não foi possível excluir a sala. Tente novamente.");
+      setSavingRoom(false);
+      return;
+    }
+
+    setCommunityRooms((rooms) => rooms.filter((room) => room.id !== activeRoom.id));
+    setOwnedRoomCount((count) => Math.max(0, count - 1));
+    setRoomSettingsDialogOpen(false);
+    setSavingRoom(false);
+    navigate("/comunidade");
   };
 
   return (
@@ -777,6 +867,18 @@ export default function Community() {
               </Badge>
             )}
           </div>
+          {canManageRoom && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Configurações da sala"
+              onClick={openRoomSettings}
+              className="shrink-0"
+            >
+              <Settings2 className="size-5" aria-hidden="true" />
+            </Button>
+          )}
           <div
             role="group"
             aria-label="Modo de visualização do chat"
@@ -1241,8 +1343,20 @@ export default function Community() {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={createCommunityRoom} className="space-y-4">
+              <p className="text-xs text-muted-foreground">
+                Salas criadas: {ownedRoomCount} de 2
+              </p>
+              {ownedRoomCount >= 2 && (
+                <p role="status" className="text-sm text-destructive">
+                  Você já atingiu o limite de 2 salas. Exclua uma sala elegível para liberar uma vaga.
+                </p>
+              )}
+              {createRoomError && (
+                <p role="alert" className="text-sm text-destructive">{createRoomError}</p>
+              )}
               <Input
                 autoFocus
+                disabled={ownedRoomCount >= 2}
                 value={roomName}
                 onChange={(event) => setRoomName(event.target.value)}
                 placeholder="Nome da sala"
@@ -1253,6 +1367,7 @@ export default function Community() {
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   type="button"
+                  disabled={ownedRoomCount >= 2}
                   variant={roomIsPrivate ? "outline" : "default"}
                   onClick={() => setRoomIsPrivate(false)}
                 >
@@ -1260,24 +1375,76 @@ export default function Community() {
                 </Button>
                 <Button
                   type="button"
+                  disabled={ownedRoomCount >= 2}
                   variant={roomIsPrivate ? "default" : "outline"}
                   onClick={() => setRoomIsPrivate(true)}
                 >
                   Privada
                 </Button>
               </div>
-              {createRoomError && (
-                <p role="alert" className="text-sm text-destructive">{createRoomError}</p>
-              )}
               <DialogFooter>
                 <Button type="button" variant="outline" onClick={() => setCreateRoomDialogOpen(false)}>
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={!roomName.trim() || creatingRoom}>
+                <Button type="submit" disabled={!roomName.trim() || creatingRoom || ownedRoomCount >= 2}>
                   {creatingRoom ? "Criando..." : "Criar sala"}
                 </Button>
               </DialogFooter>
             </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={roomSettingsDialogOpen} onOpenChange={setRoomSettingsDialogOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Configurações da sala</DialogTitle>
+              <DialogDescription>
+                {activeRoom?.name} · {activeRoom?.isPrivate ? "Restrita" : "Pública"}
+              </DialogDescription>
+            </DialogHeader>
+            {canEditRoom ? (
+              <form onSubmit={updateCommunityRoom} className="space-y-4">
+                <label htmlFor="edit-room-name" className="text-sm font-medium">
+                  Nome da sala
+                </label>
+                <Input
+                  id="edit-room-name"
+                  value={roomEditName}
+                  onChange={(event) => setRoomEditName(event.target.value)}
+                  maxLength={60}
+                  required
+                />
+                {roomManagementError && (
+                  <p role="alert" className="text-sm text-destructive">{roomManagementError}</p>
+                )}
+                <DialogFooter className="gap-2 sm:justify-between">
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => void deleteCommunityRoom()}
+                    disabled={savingRoom}
+                  >
+                    <Trash2 className="mr-2 size-4" aria-hidden="true" />
+                    Excluir sala
+                  </Button>
+                  <Button type="submit" disabled={!roomEditName.trim() || savingRoom}>
+                    <Pencil className="mr-2 size-4" aria-hidden="true" />
+                    {savingRoom ? "Salvando..." : "Salvar nome"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            ) : (
+              <>
+                <p className="rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground">
+                  Edição e exclusão liberadas em {roomDaysRemaining} {roomDaysRemaining === 1 ? "dia" : "dias"}.
+                </p>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setRoomSettingsDialogOpen(false)}>
+                    Fechar
+                  </Button>
+                </DialogFooter>
+              </>
+            )}
           </DialogContent>
         </Dialog>
 

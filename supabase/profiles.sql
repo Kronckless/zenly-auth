@@ -152,3 +152,87 @@ create policy "Sócios criam até duas salas"
       where creator_id = (select auth.uid())
     ) < 2
   );
+
+grant update (name), delete on public.salas_comunidade to authenticated;
+
+drop policy if exists "Sócios editam salas após 30 dias" on public.salas_comunidade;
+create policy "Sócios editam salas após 30 dias"
+  on public.salas_comunidade
+  for update
+  to authenticated
+  using (
+    creator_id = (select auth.uid())
+    and created_at <= now() - interval '30 days'
+  )
+  with check (
+    creator_id = (select auth.uid())
+    and created_at <= now() - interval '30 days'
+  );
+
+drop policy if exists "Sócios excluem salas após 30 dias" on public.salas_comunidade;
+create policy "Sócios excluem salas após 30 dias"
+  on public.salas_comunidade
+  for delete
+  to authenticated
+  using (
+    creator_id = (select auth.uid())
+    and created_at <= now() - interval '30 days'
+  );
+
+create or replace function public.enforce_socio_room_lifecycle()
+returns trigger
+language plpgsql
+set search_path = public
+as $$
+begin
+  if tg_op = 'INSERT' then
+    perform pg_advisory_xact_lock(hashtextextended(new.creator_id::text, 0));
+
+    if not exists (
+      select 1 from public.profiles
+      where id = new.creator_id and is_socio = true
+    ) then
+      raise exception 'Apenas sócios podem criar salas.';
+    end if;
+
+    if (
+      select count(*) from public.salas_comunidade
+      where creator_id = new.creator_id
+    ) >= 2 then
+      raise exception 'Limite de duas salas atingido.';
+    end if;
+
+    return new;
+  end if;
+
+  if tg_op = 'UPDATE' then
+    if new.creator_id is distinct from old.creator_id
+      or new.creator_name is distinct from old.creator_name
+      or new.is_private is distinct from old.is_private
+      or new.created_at is distinct from old.created_at then
+      raise exception 'Os dados de criação da sala são imutáveis.';
+    end if;
+
+    if old.created_at > now() - interval '30 days' then
+      raise exception 'A sala só pode ser editada após 30 dias.';
+    end if;
+
+    return new;
+  end if;
+
+  if tg_op = 'DELETE' then
+    if old.created_at > now() - interval '30 days' then
+      raise exception 'A sala só pode ser excluída após 30 dias.';
+    end if;
+
+    return old;
+  end if;
+
+  return null;
+end;
+$$;
+
+drop trigger if exists enforce_socio_room_lifecycle on public.salas_comunidade;
+create trigger enforce_socio_room_lifecycle
+  before insert or update or delete on public.salas_comunidade
+  for each row execute function public.enforce_socio_room_lifecycle();
