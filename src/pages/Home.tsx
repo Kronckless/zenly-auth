@@ -25,6 +25,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Accordion,
@@ -224,6 +225,7 @@ export default function Home() {
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isReferralOpen, setIsReferralOpen] = useState(false);
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
+  const [referralPeople, setReferralPeople] = useState(1);
   const [isSocio, setIsSocio] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
@@ -999,6 +1001,61 @@ async function openNews(item: NewsItem) {
                                 </AccordionItem>
                               ))}
                             </Accordion>
+                          </section>
+
+                          <section
+                            aria-labelledby="referral-simulator-title"
+                            className="mt-6 rounded-2xl border border-border bg-muted/30 p-5 text-center sm:p-7"
+                          >
+                            <h3
+                              id="referral-simulator-title"
+                              className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl"
+                            >
+                              Imagine o alcance das suas indicações.
+                            </h3>
+                            <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                              Deslize para descobrir quanto você pode receber mensalmente.
+                            </p>
+
+                            <div className="mx-auto mt-7 w-full max-w-3xl text-left">
+                              <p
+                                aria-live="polite"
+                                className="mb-4 text-center font-display text-lg font-semibold text-foreground sm:text-xl"
+                              >
+                                {referralPeople} {referralPeople === 1 ? "pessoa convidada" : "pessoas convidadas"}
+                              </p>
+                              <Slider
+                                aria-label="Quantidade de pessoas convidadas"
+                                min={1}
+                                max={500}
+                                step={1}
+                                value={[referralPeople]}
+                                onValueChange={(values) => setReferralPeople(values[0] ?? 1)}
+                                className="[&_[data-slot=slider-range]]:bg-[#36B37E] [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-[#36B37E]"
+                              />
+                              <div className="mt-3 flex justify-between text-xs font-medium text-muted-foreground">
+                                <span>1 pessoa</span>
+                                <span>500 pessoas</span>
+                              </div>
+                            </div>
+
+                            <div className="mx-auto mt-7 max-w-3xl rounded-xl border border-border bg-background px-4 py-5 sm:py-6">
+                              <p className="text-sm font-medium text-muted-foreground">
+                                Você receberia por mês
+                              </p>
+                              <p
+                                aria-live="polite"
+                                className="mt-2 font-display text-4xl font-bold tracking-tight text-[#36B37E] sm:text-5xl"
+                              >
+                                {new Intl.NumberFormat("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                }).format((referralPeople * 891) / 100)}
+                              </p>
+                              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                                Estimativa considerando que todas as assinaturas indicadas permaneçam ativas e pagas.
+                              </p>
+                            </div>
                           </section>
                         </section>
                       </section>
