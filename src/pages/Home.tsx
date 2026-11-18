@@ -819,13 +819,25 @@ async function openNews(item: NewsItem) {
                         </p>
                         <button
                           type="button"
-                          className="group mx-auto mt-7 flex min-h-24 w-full max-w-3xl items-center justify-between gap-4 rounded-2xl border-2 border-destructive/80 bg-gradient-to-br from-destructive via-destructive to-destructive/90 p-1 text-left text-destructive-foreground shadow-lg shadow-destructive/20 transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-xl hover:shadow-destructive/25 active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
+                          className="group relative isolate mx-auto mt-7 flex min-h-24 w-full max-w-3xl items-center justify-center overflow-hidden rounded-full border border-destructive/80 bg-gradient-to-br from-destructive via-destructive to-destructive/90 px-12 py-5 text-center text-white shadow-lg shadow-destructive/30 transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-xl hover:shadow-destructive/40 active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50"
                         >
-                          <span className="flex min-h-20 flex-1 items-center justify-center rounded-xl border border-white/50 px-5 py-5 font-display text-base font-extrabold tracking-[0.14em] text-white sm:text-lg">
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-[3px] rounded-full border border-white/45"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-x-8 top-1 h-1/2 rounded-full bg-gradient-to-b from-white/20 to-transparent blur-sm"
+                          />
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute left-8 top-1/2 h-8 w-12 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.7)_1px,transparent_1.5px)] [background-size:8px_8px] opacity-70"
+                          />
+                          <span className="relative z-10 font-display text-base font-extrabold tracking-[0.14em] text-white sm:text-lg">
                             COMECE POR AQUI
                           </span>
                           <ArrowRight
-                            className="mr-5 size-6 shrink-0 text-white transition-transform duration-200 group-hover:translate-x-1"
+                            className="absolute right-7 z-10 size-6 text-white transition-transform duration-200 group-hover:translate-x-1"
                             aria-hidden="true"
                           />
                         </button>
