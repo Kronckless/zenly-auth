@@ -753,7 +753,7 @@ async function openNews(item: NewsItem) {
                           title: "Como divulgar",
                           description:
                             "Aprenda a compartilhar o Voz do Povo e apresentar o portal a outras pessoas usando seu link de indicação.",
-                          action: "Criar Conta na Cakto (Grátis)",
+                          action: "Saiba mais",
                           linkNote: "Link de cadastro da Cakto será adicionado aqui.",
                         },
                         {
@@ -761,7 +761,7 @@ async function openNews(item: NewsItem) {
                           title: "Como criar sua conta para receber comissões",
                           description:
                             "Veja como configurar sua conta de afiliado e informar seus dados para receber as comissões pelas indicações.",
-                          action: "Gerar Meu Link de Indicação",
+                          action: "Criar minha conta para receber comissões",
                           linkNote: "Link de afiliado será adicionado aqui.",
                         },
                         {
