@@ -100,13 +100,30 @@ export default function ComecePorAqui() {
         <h2 className="text-lg font-bold leading-snug text-foreground sm:text-xl">No WhatsApp:</h2>
         <div className="mt-4 space-y-4 text-sm leading-7 text-foreground sm:text-base">
           <p>
-            Enviar apenas links soltos, sem qualquer contexto, dificilmente deixará alguém confortável ou interessado em aceitar seu convite. O ideal é que o compartilhamento aconteça de maneira natural, dentro de conversas e grupos em que política e noticiário já sejam assuntos frequentes.
+            Não adianta simplesmente entrar em um grupo, jogar o link do Voz do Povo e esperar que alguém assine. Um convite sem contexto dificilmente desperta interesse. O segredo é participar de conversas que já acontecem naturalmente, principalmente em grupos onde política, acontecimentos recentes e notícias fazem parte do dia a dia.
           </p>
           <p>
-            Participe das conversas, interaja com as pessoas, compartilhe suas opiniões e contribua para as discussões. Quando o assunto surgir naturalmente, apresente o Voz do Povo e explique por que você acredita que vale a pena conhecer o portal.
+            <strong>1. Participe antes de divulgar</strong>
+            <br />
+            Não apareça no grupo somente quando quiser compartilhar seu convite. Converse, responda às mensagens, comente acontecimentos recentes e participe de discussões que realmente lhe interessem. Seja alguém presente na conversa, e não apenas alguém que está ali para divulgar um link.
           </p>
           <p>
-            Além disso, você também pode conversar individualmente com pessoas que demonstrem interesse, apresentar seu convite no privado e explicar como funciona. Uma conversa com contexto e atenção costuma ser muito mais acolhedora do que simplesmente enviar um link sem explicação.
+            <strong>2. Aproveite assuntos que já estão sendo discutidos</strong>
+            <br />
+            Quando surgir uma conversa sobre eleições, decisões do governo, acontecimentos políticos, notícias ou assuntos que repercutem no momento, participe normalmente. Compartilhe sua opinião, comente o assunto e, quando fizer sentido, apresente o Voz do Povo como uma fonte de notícias e conteúdos que você acompanha.
+          </p>
+          <p>
+            <strong>3. Apresente o portal de maneira natural</strong>
+            <br />
+            Em vez de enviar somente um link, explique brevemente o que é o Voz do Povo, por que você acompanha o portal e o que a pessoa poderá encontrar nele. O convite ganha contexto quando a pessoa entende o que está recebendo e por que aquilo pode ser interessante.
+          </p>
+          <p>
+            <strong>4. Converse também no privado</strong>
+            <br />
+            Se alguém demonstrar interesse no assunto, continuar a conversa ou perguntar sobre o portal, você também pode apresentar seu convite individualmente. Explique como funciona, tire dúvidas e compartilhe seu link, sem insistência ou pressão.
+          </p>
+          <p>
+            Participar de conversas, construir familiaridade e apresentar o portal no momento apropriado torna a divulgação muito mais contextualizada do que simplesmente despejar links em grupos.
           </p>
         </div>
       </section>
