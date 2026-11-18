@@ -734,6 +734,15 @@ async function openNews(item: NewsItem) {
                       </p>
                     </div>
 
+                    <div className="mx-auto mt-5 max-w-4xl px-5 text-center sm:px-8">
+                      <h2 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                        Fácil e rápido
+                      </h2>
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base">
+                        Toda grande iniciativa começa com pessoas que acreditam nela.
+                      </p>
+                    </div>
+
                     <section
                       aria-label="Passo a passo para indicar"
                       className="mt-4 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-muted/30 md:grid-cols-3 md:divide-x md:divide-border"
