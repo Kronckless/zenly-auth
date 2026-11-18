@@ -700,20 +700,20 @@ async function openNews(item: NewsItem) {
                   </DialogClose>
 
                   <div className="mx-auto w-full max-w-5xl px-4 pb-8 pt-16 sm:px-8 sm:pb-10 sm:pt-16">
-                    <DialogHeader className="mx-auto max-w-6xl items-start rounded-2xl border border-border bg-muted/30 px-5 py-7 text-left shadow-sm sm:px-8 sm:py-9">
+                    <DialogHeader className="mx-auto max-w-6xl items-center px-5 py-7 text-center sm:px-8 sm:py-9">
                       <span className="mb-4 inline-flex size-11 items-center justify-center rounded-xl bg-destructive text-destructive-foreground">
                         <Gift className="size-5" aria-hidden="true" />
                       </span>
-                      <DialogTitle className="max-w-3xl font-display text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                      <DialogTitle className="mx-auto w-full max-w-3xl text-center font-display text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl md:text-4xl">
                         Uma conversa pode levar o Voz do Povo a mais gente.
                       </DialogTitle>
-                      <DialogDescription className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                      <DialogDescription className="mt-3 max-w-2xl text-center text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                         Indique o portal a pessoas que possam se interessar — em uma conversa, grupo ou rede social.{" "}
                         <strong>As novas assinaturas feitas pelo seu link podem gerar comissão.</strong>
                       </DialogDescription>
                     </DialogHeader>
 
-                    <div className="mx-auto mt-5 max-w-5xl space-y-4 rounded-2xl border border-border bg-background px-5 py-6 text-sm leading-7 text-muted-foreground shadow-sm sm:px-8 sm:py-7 sm:text-base">
+                    <div className="mx-auto mt-5 max-w-4xl space-y-4 px-5 py-4 text-sm leading-7 text-black sm:px-8 sm:py-5 sm:text-base">
                       <p>
                         Ser sócio é muito mais do que ter acesso a um conteúdo exclusivo. É acreditar que a informação deve chegar a todos, que diferentes vozes merecem ser ouvidas e que uma sociedade mais consciente começa pelo conhecimento.
                       </p>
