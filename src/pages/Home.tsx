@@ -1093,9 +1093,9 @@ async function openNews(item: NewsItem) {
                             <Button
                               type="button"
                               disabled
-                              className="mt-6 min-h-12 w-full rounded-xl bg-[#36B37E] px-6 font-bold text-zinc-950 shadow-sm hover:bg-[#36B37E] disabled:cursor-default disabled:opacity-100 sm:w-auto"
+                              className="mt-6 min-h-12 w-full rounded-xl border border-[#5865F2]/70 bg-gradient-to-r from-[#5865F2] via-[#404EED] to-[#7289DA] px-6 font-bold text-white shadow-sm disabled:cursor-default disabled:opacity-100 sm:w-auto"
                             >
-                              SIM, JÁ LI E QUERO CONTINUAR
+                              SIM, CONTINUAR
                             </Button>
                             <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                               Ainda não leu? Volte ao material e confira todas as etapas.
