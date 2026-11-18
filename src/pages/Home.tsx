@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
+  Check,
+  Copy,
   Gift,
   Headset,
   LayoutDashboard,
@@ -221,6 +223,7 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isReferralOpen, setIsReferralOpen] = useState(false);
+  const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [isSocio, setIsSocio] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
@@ -686,83 +689,83 @@ async function openNews(item: NewsItem) {
                   <DialogClose asChild>
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="outline"
                       size="icon"
                       aria-label="Fechar Indique e Ganhe"
-                      className="absolute right-4 top-4 z-10 size-10 rounded-full sm:right-6 sm:top-6"
+                      className="absolute right-4 top-4 z-10 size-10 rounded-full bg-background shadow-md hover:bg-muted sm:right-6 sm:top-6"
                     >
                       <X className="size-5" />
                     </Button>
                   </DialogClose>
 
-                  <div className="mx-auto w-full max-w-6xl px-4 pb-10 pt-16 sm:px-8 sm:pb-14 sm:pt-20">
+                  <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-16 sm:px-8 sm:pb-10 sm:pt-16">
                     <DialogHeader className="mx-auto max-w-3xl items-center text-center">
-                      <span className="mb-2 inline-flex size-12 items-center justify-center rounded-2xl bg-muted text-primary">
-                        <Gift className="size-6" aria-hidden="true" />
+                      <span className="mb-2 inline-flex size-10 items-center justify-center rounded-2xl bg-muted text-primary">
+                        <Gift className="size-5" aria-hidden="true" />
                       </span>
-                      <DialogTitle className="font-display text-3xl font-bold leading-tight sm:text-4xl md:text-5xl">
-                        Indique e Ganhe com a Voz do Povo
+                      <DialogTitle className="font-display text-3xl font-bold leading-tight sm:text-4xl">
+                        Indique e Fature 💰
                       </DialogTitle>
-                      <DialogDescription className="max-w-2xl text-base leading-relaxed sm:text-lg">
-                        Ajude a expandir nossa voz e ganhe comissões por cada indicação realizada.
+                      <DialogDescription className="max-w-2xl text-sm leading-relaxed sm:text-base">
+                        Mostre o Voz do Povo para seus amigos. Cada nova assinatura feita pelo seu link gera comissão automática.
                       </DialogDescription>
                     </DialogHeader>
 
                     <section
                       aria-label="Passo a passo para indicar"
-                      className="mt-10 grid grid-cols-1 gap-5 md:mt-14 md:grid-cols-3 md:gap-6"
+                      className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-3 md:gap-4"
                     >
                       {[
                         {
                           number: "1",
-                          title: "Crie sua conta gratuita na plataforma de pagamentos",
+                          title: "1. Crie sua conta (Grátis)",
                           description:
-                            "Para que possamos pagar suas comissões de forma 100% segura, você precisa de uma conta gratuita na Cakto (nossa processadora de pagamentos oficial).",
-                          action: "1. Criar Minha Conta na Cakto (Grátis)",
+                            "Para receber seus pagamentos com segurança, tenha sua conta gratuita na Cakto (nossa plataforma oficial).",
+                          action: "Criar Conta na Cakto (Grátis)",
                           linkNote: "Link de cadastro da Cakto será adicionado aqui.",
                         },
                         {
                           number: "2",
-                          title: "Pegue seu link exclusivo de indicação",
+                          title: "2. Pegue seu Link VIP",
                           description:
-                            "Depois de entrar na sua conta, clique no botão abaixo para se afiliar ao nosso projeto com 1 clique. Você receberá um link pessoal exclusivo.",
-                          action: "2. Gerar Meu Link de Indicação",
+                            "Clique abaixo para liberar seu link de indicação exclusivo com aprovação instantânea.",
+                          action: "Gerar Meu Link de Indicação",
                           linkNote: "Link de afiliado será adicionado aqui.",
                         },
                         {
                           number: "3",
-                          title: "Compartilhe com amigos e grupos",
+                          title: "3. Compartilhe e Lucre",
                           description:
-                            "Mande seu link para amigos, familiares ou em grupos de WhatsApp. Quando alguém comprar através do seu link, a comissão cairá na sua conta da Cakto automaticamente!",
+                            "Envie seu link para amigos ou em grupos. O que for vendido por ele vira comissão para você!",
                         },
                       ].map((step) => (
                         <Card
                           key={step.number}
-                          className="flex h-full flex-col rounded-2xl border-border bg-card shadow-sm"
+                          className="flex h-full flex-col rounded-2xl border-border bg-muted/40 shadow-sm"
                         >
-                          <CardHeader className="space-y-4">
-                            <span className="flex size-10 items-center justify-center rounded-full bg-primary font-display text-lg font-bold text-primary-foreground">
+                          <CardHeader className="space-y-2 p-4 pb-2">
+                            <span className="flex size-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground">
                               {step.number}
                             </span>
-                            <CardTitle className="text-lg leading-snug sm:text-xl">
+                            <CardTitle className="text-base leading-snug sm:text-lg">
                               {step.title}
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="flex flex-1 flex-col">
-                            <p className="text-sm leading-relaxed text-muted-foreground sm:text-base">
+                          <CardContent className="flex flex-1 flex-col px-4 pb-4 pt-1">
+                            <p className="text-sm leading-relaxed text-muted-foreground">
                               {step.description}
                             </p>
                             {step.action && (
-                              <div className="mt-auto pt-6">
+                              <div className="mt-auto pt-4">
                                 <Button
                                   type="button"
                                   disabled
                                   title={step.linkNote}
-                                  className="h-auto min-h-11 w-full whitespace-normal py-3 text-center leading-snug"
+                                  className="h-auto min-h-10 w-full whitespace-normal py-2.5 text-center leading-snug"
                                 >
                                   {step.action}
                                 </Button>
-                                <p className="mt-2 text-center text-xs text-muted-foreground">
+                                <p className="mt-1.5 text-center text-xs text-muted-foreground">
                                   {step.linkNote}
                                 </p>
                               </div>
@@ -770,6 +773,54 @@ async function openNews(item: NewsItem) {
                           </CardContent>
                         </Card>
                       ))}
+                    </section>
+
+                    <section
+                      aria-labelledby="referral-whatsapp-heading"
+                      className="mx-auto mt-4 max-w-4xl rounded-2xl border border-border bg-muted/40 p-4 sm:p-5"
+                    >
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                          <h2 id="referral-whatsapp-heading" className="text-base font-semibold">
+                            Mensagem Pronta para o WhatsApp
+                          </h2>
+                          <p className="mt-1 text-sm text-muted-foreground">
+                            Copie, personalize se quiser e compartilhe seu convite.
+                          </p>
+                        </div>
+                        <Button
+                          type="button"
+                          variant={referralCopyStatus === "success" ? "secondary" : "default"}
+                          className="shrink-0 gap-2"
+                          aria-live="polite"
+                          onClick={async () => {
+                            const message =
+                              "Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]";
+                            try {
+                              await navigator.clipboard.writeText(message);
+                              setReferralCopyStatus("success");
+                              window.setTimeout(() => setReferralCopyStatus("idle"), 2200);
+                            } catch {
+                              setReferralCopyStatus("error");
+                              window.setTimeout(() => setReferralCopyStatus("idle"), 3000);
+                            }
+                          }}
+                        >
+                          {referralCopyStatus === "success" ? (
+                            <Check className="size-4" aria-hidden="true" />
+                          ) : (
+                            <Copy className="size-4" aria-hidden="true" />
+                          )}
+                          {referralCopyStatus === "success"
+                            ? "Mensagem copiada!"
+                            : referralCopyStatus === "error"
+                              ? "Não foi possível copiar"
+                              : "Copiar Mensagem"}
+                        </Button>
+                      </div>
+                      <p className="mt-3 rounded-xl border border-border bg-background p-3 text-sm leading-relaxed text-foreground sm:p-4">
+                        Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]
+                      </p>
                     </section>
                   </div>
                 </DialogContent>
