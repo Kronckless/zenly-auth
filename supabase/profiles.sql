@@ -22,6 +22,47 @@ create table if not exists public.salas_comunidade (
 );
 
 alter table public.mensagens_comunidade
+  add column if not exists room_id uuid references public.salas_comunidade (id) on delete cascade;
+
+create index if not exists mensagens_comunidade_room_created_at_idx
+  on public.mensagens_comunidade (room_id, created_at);
+
+create table if not exists public.leituras_salas (
+  user_id uuid not null references auth.users (id) on delete cascade,
+  conversation_id text not null,
+  last_read_at timestamptz not null default now(),
+  primary key (user_id, conversation_id)
+);
+
+alter table public.leituras_salas enable row level security;
+grant select, insert, update on public.leituras_salas to authenticated;
+
+drop policy if exists "Usuários leem suas leituras de salas"
+  on public.leituras_salas;
+create policy "Usuários leem suas leituras de salas"
+  on public.leituras_salas
+  for select
+  to authenticated
+  using ((select auth.uid()) = user_id);
+
+drop policy if exists "Usuários registram suas leituras de salas"
+  on public.leituras_salas;
+create policy "Usuários registram suas leituras de salas"
+  on public.leituras_salas
+  for insert
+  to authenticated
+  with check ((select auth.uid()) = user_id);
+
+drop policy if exists "Usuários atualizam suas leituras de salas"
+  on public.leituras_salas;
+create policy "Usuários atualizam suas leituras de salas"
+  on public.leituras_salas
+  for update
+  to authenticated
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+alter table public.mensagens_comunidade
   add column if not exists is_super_chat boolean not null default false,
   add column if not exists dossier_url text,
   add column if not exists dossier_name text,

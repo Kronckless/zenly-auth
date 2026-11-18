@@ -1,5 +1,5 @@
 import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import AppNavigation from "@/components/AppNavigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +57,8 @@ type CommunityRoom = {
   name: string;
   creator: string;
   lastMessage: string;
+  lastMessageAt: string | null;
+  unreadCount: number;
 };
 
 function formatFileSize(bytes: number) {
@@ -162,13 +164,16 @@ function formatCooldown(seconds: number) {
 export default function Community() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isConversationOpen = location.pathname === "/comunidade/geral";
+  const { roomId } = useParams<{ roomId: string }>();
+  const isConversationOpen =
+    location.pathname === "/comunidade/geral" || Boolean(roomId);
   const [messages, setMessages] = useState<CommunityMessage[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [profileName, setProfileName] = useState("");
   const [hasMfo, setHasMfo] = useState(false);
   const [isSocio, setIsSocio] = useState(false);
   const [communityRooms, setCommunityRooms] = useState<CommunityRoom[]>([]);
+  const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
   const [createRoomDialogOpen, setCreateRoomDialogOpen] = useState(false);
   const [socioDialogOpen, setSocioDialogOpen] = useState(false);
   const [roomLimitDialogOpen, setRoomLimitDialogOpen] = useState(false);
@@ -212,32 +217,103 @@ export default function Community() {
   }, []);
 
 
-  useEffect(() => {
+  const loadCommunityRooms = useCallback(async () => {
     if (!supabase) return;
 
-    let active = true;
-    const loadCommunityRooms = async () => {
-      const { data } = await supabase
-        .from("salas_comunidade")
-        .select("id, name, creator_name, is_private")
-        .order("created_at", { ascending: false });
+    const { data: rooms, error: roomsError } = await supabase
+      .from("salas_comunidade")
+      .select("id, name, creator_name, is_private, created_at")
+      .order("created_at", { ascending: false });
 
-      if (!active) return;
-      setCommunityRooms(
-        (data ?? []).map((room) => ({
+    if (roomsError) return;
+
+    const readTimes = new Map<string, string>();
+    if (userId) {
+      const { data: reads } = await supabase
+        .from("leituras_salas")
+        .select("conversation_id, last_read_at")
+        .eq("user_id", userId);
+
+      (reads ?? []).forEach((read) => {
+        readTimes.set(read.conversation_id, read.last_read_at);
+      });
+    }
+
+    const fallbackReadAt = new Date(0).toISOString();
+    let generalUnreadCount = 0;
+
+    if (userId) {
+      const { count } = await supabase
+        .from("mensagens_comunidade")
+        .select("id", { count: "exact", head: true })
+        .is("room_id", null)
+        .gt("created_at", readTimes.get("general") ?? fallbackReadAt)
+        .neq("user_id", userId);
+
+      generalUnreadCount = count ?? 0;
+    }
+
+    const roomsWithUnread = await Promise.all(
+      (rooms ?? []).map(async (room) => {
+        const readAt = readTimes.get(room.id) ?? fallbackReadAt;
+        const [countResult, latestResult] = await Promise.all([
+          userId
+            ? supabase
+                .from("mensagens_comunidade")
+                .select("id", { count: "exact", head: true })
+                .eq("room_id", room.id)
+                .gt("created_at", readAt)
+                .neq("user_id", userId)
+            : Promise.resolve({ count: 0 }),
+          supabase
+            .from("mensagens_comunidade")
+            .select("nome_usuario, conteudo, dossier_name, created_at")
+            .eq("room_id", room.id)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+        ]);
+
+        const latestMessage = latestResult.data;
+        return {
           id: room.id,
           name: room.name,
           creator: room.creator_name,
-          lastMessage: "Nova sala",
-        })),
-      );
-    };
+          lastMessage: latestMessage
+            ? `${latestMessage.nome_usuario}: ${latestMessage.conteudo || latestMessage.dossier_name || "Matéria do portal"}`
+            : "Nova sala",
+          lastMessageAt: latestMessage?.created_at ?? null,
+          unreadCount: countResult.count ?? 0,
+        };
+      }),
+    );
 
+    setCommunityRooms(roomsWithUnread);
+    setUnreadCounts({
+      general: generalUnreadCount,
+      ...Object.fromEntries(roomsWithUnread.map((room) => [room.id, room.unreadCount])),
+    });
+  }, [userId]);
+
+  useEffect(() => {
     void loadCommunityRooms();
-    return () => {
-      active = false;
-    };
-  }, []);
+  }, [loadCommunityRooms]);
+
+  useEffect(() => {
+    if (!isConversationOpen || !userId || !supabase) return;
+
+    const conversationId = roomId ?? "general";
+    const lastReadAt = new Date().toISOString();
+    setUnreadCounts((counts) => ({ ...counts, [conversationId]: 0 }));
+    void supabase.from("leituras_salas").upsert(
+      {
+        user_id: userId,
+        conversation_id: conversationId,
+        last_read_at: lastReadAt,
+      },
+      { onConflict: "user_id,conversation_id" },
+    );
+  }, [isConversationOpen, roomId, userId]);
 
   useEffect(() => {
     if (!articleDialogOpen || !supabase) return;
@@ -322,11 +398,19 @@ export default function Community() {
       Date.now() - 7 * 24 * 60 * 60 * 1000,
     ).toISOString();
 
-    const { data, error: fetchError } = await supabase
+    let messagesQuery = supabase
       .from("mensagens_comunidade")
       .select("id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size")
-      .gte("created_at", sevenDaysAgo)
-      .order("created_at", { ascending: true });
+      .gte("created_at", sevenDaysAgo);
+
+    messagesQuery = roomId
+      ? messagesQuery.eq("room_id", roomId)
+      : messagesQuery.is("room_id", null);
+
+    const { data, error: fetchError } = await messagesQuery.order(
+      "created_at",
+      { ascending: true },
+    );
 
     if (fetchError) {
       setError("Não foi possível carregar as mensagens.");
@@ -355,7 +439,7 @@ export default function Community() {
     );
     setError("");
     setLoading(false);
-  }, []);
+  }, [roomId]);
 
   useEffect(() => {
     if (!supabase) {
@@ -412,7 +496,24 @@ export default function Community() {
           table: "mensagens_comunidade",
         },
         () => {
-          if (active) void loadMessages();
+          if (active) {
+            void loadMessages();
+            void loadCommunityRooms();
+
+            if (isConversationOpen && userId) {
+              const conversationId = roomId ?? "general";
+              const lastReadAt = new Date().toISOString();
+              setUnreadCounts((counts) => ({ ...counts, [conversationId]: 0 }));
+              void supabase.from("leituras_salas").upsert(
+                {
+                  user_id: userId,
+                  conversation_id: conversationId,
+                  last_read_at: lastReadAt,
+                },
+                { onConflict: "user_id,conversation_id" },
+              );
+            }
+          }
         },
       )
       .subscribe();
@@ -421,7 +522,7 @@ export default function Community() {
       active = false;
       void supabase.removeChannel(channel);
     };
-  }, [loadMessages]);
+  }, [loadMessages, loadCommunityRooms, isConversationOpen, roomId, userId]);
 
   const sendMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -473,6 +574,7 @@ export default function Community() {
       .from("mensagens_comunidade")
       .insert({
         user_id: userId,
+        room_id: roomId ?? null,
         nome_usuario: profileName || "Membro",
         conteudo: content,
         is_super_chat: isSuperChatMessage,
@@ -549,6 +651,9 @@ export default function Community() {
     ? orderedMessages.filter((message) => message.author_has_mfo)
     : orderedMessages;
   const latestCommunityMessage = messages[messages.length - 1] ?? null;
+  const activeRoom = roomId
+    ? communityRooms.find((room) => room.id === roomId)
+    : null;
   const conversationSearchTerm = conversationSearch.trim().toLocaleLowerCase();
   const showCommunityConversation = "chat da comunidade".includes(conversationSearchTerm);
   const filteredCommunityRooms = communityRooms.filter((room) =>
@@ -627,6 +732,8 @@ export default function Community() {
         name: data.name,
         creator: data.creator_name,
         lastMessage: "Nova sala",
+        lastMessageAt: null,
+        unreadCount: 0,
       },
       ...rooms,
     ]);
@@ -660,7 +767,9 @@ export default function Community() {
             <UsersRound className="size-5" aria-hidden="true" />
           </div>
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-sm font-semibold">Chat da comunidade</h1>
+            <h1 className="truncate text-sm font-semibold">
+              {activeRoom?.name ?? (roomId ? "Sala de conversa" : "Chat da comunidade")}
+            </h1>
             {mfoFilterEnabled && (
               <Badge variant="secondary" className="mt-1 h-5 gap-1 px-2 text-[10px]">
                 <Sparkles aria-hidden="true" />
@@ -1002,7 +1111,10 @@ export default function Community() {
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => navigate("/comunidade/geral")}
+                onClick={() => {
+                  setUnreadCounts((counts) => ({ ...counts, general: 0 }));
+                  navigate("/comunidade/geral");
+                }}
                 className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5 text-left hover:bg-muted/50"
               >
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
@@ -1013,16 +1125,23 @@ export default function Community() {
                   <span className="truncate text-base font-semibold text-foreground">
                     Chat da comunidade
                   </span>
-                  <span className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
-                    {latestCommunityMessage && (
-                      <time>
-                        {new Date(latestCommunityMessage.created_at).toLocaleTimeString(
-                          "pt-BR",
-                          { hour: "2-digit", minute: "2-digit" },
-                        )}
-                      </time>
+                  <span className="flex shrink-0 flex-col items-end gap-1 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                      {latestCommunityMessage && (
+                        <time>
+                          {new Date(latestCommunityMessage.created_at).toLocaleTimeString(
+                            "pt-BR",
+                            { hour: "2-digit", minute: "2-digit" },
+                          )}
+                        </time>
+                      )}
+                      <Pin className="size-3.5" aria-label="Conversa fixada" />
+                    </span>
+                    {(unreadCounts.general ?? 0) > 0 && (
+                      <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-500 px-1.5 text-[11px] font-bold text-white">
+                        {unreadCounts.general}
+                      </span>
                     )}
-                    <Pin className="size-3.5" aria-label="Conversa fixada" />
                   </span>
                 </span>
                 <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
@@ -1041,18 +1160,38 @@ export default function Community() {
                 key={room.id}
                 type="button"
                 variant="ghost"
-                onClick={() => navigate(`/comunidade/salas/${room.id}`)}
+                onClick={() => {
+                  setUnreadCounts((counts) => ({ ...counts, [room.id]: 0 }));
+                  navigate(`/comunidade/salas/${room.id}`);
+                }}
                 className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5 text-left hover:bg-muted/50"
               >
                 <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
                   <UsersRound className="size-6" aria-hidden="true" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-base font-semibold text-foreground">
-                    {room.name}
+                  <span className="flex items-start justify-between gap-3">
+                    <span className="truncate text-base font-semibold text-foreground">
+                      {room.name}
+                    </span>
+                    <span className="flex shrink-0 flex-col items-end gap-1 text-xs text-muted-foreground">
+                      {room.lastMessageAt && (
+                        <time>
+                          {new Date(room.lastMessageAt).toLocaleTimeString(
+                            "pt-BR",
+                            { hour: "2-digit", minute: "2-digit" },
+                          )}
+                        </time>
+                      )}
+                      {room.unreadCount > 0 && (
+                        <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-emerald-500 px-1.5 text-[11px] font-bold text-white">
+                          {room.unreadCount}
+                        </span>
+                      )}
+                    </span>
                   </span>
                   <span className="mt-1 block truncate text-sm font-normal text-muted-foreground">
-                    {room.creator}: {room.lastMessage}
+                    {room.lastMessage}
                   </span>
                 </span>
               </Button>
