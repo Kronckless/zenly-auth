@@ -1005,25 +1005,36 @@ async function openNews(item: NewsItem) {
 
                           <section
                             aria-labelledby="referral-simulator-title"
-                            className="mt-6 rounded-2xl border border-border bg-muted/30 p-5 text-center sm:p-7"
+                            className="mt-6 rounded-xl border border-border bg-background p-5 shadow-sm sm:p-8"
                           >
-                            <h3
-                              id="referral-simulator-title"
-                              className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl"
-                            >
-                              Imagine o alcance das suas indicações.
-                            </h3>
-                            <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                              Deslize para descobrir quanto você pode receber mensalmente.
-                            </p>
-
-                            <div className="mx-auto mt-7 w-full max-w-3xl text-left">
-                              <p
-                                aria-live="polite"
-                                className="mb-4 text-center font-display text-lg font-semibold text-foreground sm:text-xl"
+                            <header>
+                              <h3
+                                id="referral-simulator-title"
+                                className="font-display text-xl font-semibold tracking-tight text-foreground sm:text-2xl"
                               >
-                                {referralPeople} {referralPeople === 1 ? "pessoa convidada" : "pessoas convidadas"}
+                                Veja o potencial das suas indicações
+                              </h3>
+                              <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                                Simule quanto você pode receber mensalmente compartilhando seu convite.
                               </p>
+                            </header>
+
+                            <div className="mx-auto mt-8 w-full max-w-4xl">
+                              <div className="mb-5 flex items-end justify-between gap-4">
+                                <p className="text-sm font-medium text-muted-foreground">
+                                  Indicações selecionadas
+                                </p>
+                                <p
+                                  aria-live="polite"
+                                  className="font-display text-2xl font-semibold leading-none tracking-tight text-foreground sm:text-3xl"
+                                >
+                                  {referralPeople}{" "}
+                                  <span className="text-base font-medium text-muted-foreground sm:text-lg">
+                                    pessoas
+                                  </span>
+                                </p>
+                              </div>
+
                               <Slider
                                 aria-label="Quantidade de pessoas convidadas"
                                 min={1}
@@ -1031,30 +1042,30 @@ async function openNews(item: NewsItem) {
                                 step={1}
                                 value={[referralPeople]}
                                 onValueChange={(values) => setReferralPeople(values[0] ?? 1)}
-                                className="[&_[data-slot=slider-range]]:bg-[#36B37E] [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-[#36B37E]"
+                                className="py-2 [&_[data-slot=slider-range]]:bg-[#36B37E] [&_[data-slot=slider-thumb]]:size-5 [&_[data-slot=slider-thumb]]:border-2 [&_[data-slot=slider-thumb]]:border-[#36B37E] [&_[data-slot=slider-thumb]]:bg-background [&_[data-slot=slider-thumb]]:shadow-sm [&_[data-slot=slider-track]]:h-1"
                               />
                               <div className="mt-3 flex justify-between text-xs font-medium text-muted-foreground">
-                                <span>1 pessoa</span>
-                                <span>500 pessoas</span>
+                                <span>1</span>
+                                <span>500</span>
                               </div>
-                            </div>
 
-                            <div className="mx-auto mt-7 max-w-3xl rounded-xl border border-border bg-background px-4 py-5 sm:py-6">
-                              <p className="text-sm font-medium text-muted-foreground">
-                                Você receberia por mês
-                              </p>
-                              <p
-                                aria-live="polite"
-                                className="mt-2 font-display text-4xl font-bold tracking-tight text-[#36B37E] sm:text-5xl"
-                              >
-                                {new Intl.NumberFormat("pt-BR", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                }).format((referralPeople * 891) / 100)}
-                              </p>
-                              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                                Estimativa considerando que todas as assinaturas indicadas permaneçam ativas e pagas.
-                              </p>
+                              <div className="mt-8 rounded-lg border border-border bg-muted/30 px-5 py-5 sm:px-7 sm:py-6">
+                                <p className="text-sm font-medium text-muted-foreground">
+                                  Comissão mensal estimada
+                                </p>
+                                <p
+                                  aria-live="polite"
+                                  className="mt-2 font-display text-3xl font-bold tracking-tight text-[#36B37E] sm:text-4xl"
+                                >
+                                  {new Intl.NumberFormat("pt-BR", {
+                                    style: "currency",
+                                    currency: "BRL",
+                                  }).format((referralPeople * 891) / 100)}
+                                </p>
+                                <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
+                                  Estimativa considerando que todas as assinaturas permaneçam ativas e pagas.
+                                </p>
+                              </div>
                             </div>
                           </section>
                         </section>
