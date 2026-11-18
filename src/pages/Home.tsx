@@ -1015,7 +1015,7 @@ async function openNews(item: NewsItem) {
                                 Veja o potencial das suas indicações
                               </h3>
                               <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                                Simule quanto você pode receber mensalmente compartilhando seu convite.
+                                Veja quanto você recebe mensalmente convidando outras pessoas:
                               </p>
                             </header>
 
