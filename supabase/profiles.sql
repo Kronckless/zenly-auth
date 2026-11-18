@@ -254,7 +254,17 @@ returns trigger
 language plpgsql
 set search_path = public
 as $$
+declare
+  reserved_room_names text[] := array['Chat da comunidade'];
 begin
+  if tg_op in ('INSERT', 'UPDATE') and exists (
+    select 1
+    from unnest(reserved_room_names) as reserved(term)
+    where lower(btrim(new.name)) = lower(btrim(reserved.term))
+  ) then
+    raise exception 'Este nome é reservado para a sala oficial do portal e não pode ser utilizado.';
+  end if;
+
   if tg_op = 'INSERT' then
     perform pg_advisory_xact_lock(hashtextextended(new.creator_id::text, 0));
 

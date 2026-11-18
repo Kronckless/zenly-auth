@@ -74,6 +74,14 @@ function formatFileSize(bytes: number) {
 
 const SUPER_CHAT_COOLDOWN_MS = 5 * 60 * 1000;
 const SUPER_CHAT_DAILY_LIMIT = 10;
+const RESERVED_ROOM_NAMES = ["Chat da comunidade"];
+
+function isReservedRoomName(name: string) {
+  const normalizedName = name.trim().toLowerCase();
+  return RESERVED_ROOM_NAMES.some(
+    (reservedName) => normalizedName === reservedName.toLowerCase(),
+  );
+}
 
 function MfoStep3Checkout({ email }: { email: string }) {
   const checkoutUrl = new URL("https://pay.cakto.com.br/y5pewwd_1277398");
@@ -734,6 +742,11 @@ export default function Community() {
     const name = roomName.trim();
     if (!name || !supabase || !userId || creatingRoom || ownedRoomCount >= 2) return;
 
+    if (isReservedRoomName(name)) {
+      setCreateRoomError("Este nome é reservado para a sala oficial do portal e não pode ser utilizado.");
+      return;
+    }
+
     setCreatingRoom(true);
     setCreateRoomError("");
 
@@ -784,6 +797,11 @@ export default function Community() {
     event.preventDefault();
     const name = roomEditName.trim();
     if (!activeRoom || !canEditRoom || !name || !supabase || savingRoom) return;
+
+    if (isReservedRoomName(name)) {
+      setRoomManagementError("Este nome é reservado para a sala oficial do portal e não pode ser utilizado.");
+      return;
+    }
 
     setSavingRoom(true);
     setRoomManagementError("");
