@@ -22,6 +22,7 @@ import {
   MessageSquarePlus,
   Paperclip,
   Pin,
+  Search,
   Send,
   Smile,
   Sparkles,
@@ -177,6 +178,7 @@ export default function Community() {
   const [createRoomError, setCreateRoomError] = useState("");
   const [mfoFilterEnabled, setMfoFilterEnabled] = useState(false);
   const [messageText, setMessageText] = useState("");
+  const [conversationSearch, setConversationSearch] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<PortalArticle | null>(null);
   const [portalArticles, setPortalArticles] = useState<PortalArticle[]>([]);
   const [articleDialogOpen, setArticleDialogOpen] = useState(false);
@@ -547,6 +549,11 @@ export default function Community() {
     ? orderedMessages.filter((message) => message.author_has_mfo)
     : orderedMessages;
   const latestCommunityMessage = messages[messages.length - 1] ?? null;
+  const conversationSearchTerm = conversationSearch.trim().toLocaleLowerCase();
+  const showCommunityConversation = "chat da comunidade".includes(conversationSearchTerm);
+  const filteredCommunityRooms = communityRooms.filter((room) =>
+    room.name.toLocaleLowerCase().includes(conversationSearchTerm),
+  );
   const firstName = profileName.trim().split(/\s+/)[0] || "Membro";
   const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailDraft.trim());
   const closeModal = () => {
@@ -975,17 +982,29 @@ export default function Community() {
       ) : (
         <>
         <section className="flex min-h-0 w-full flex-1 flex-col bg-background pb-[calc(5rem+env(safe-area-inset-bottom))] sm:pb-0">
-          <header className="shrink-0 border-b border-border bg-background px-4 pb-3 pt-4">
-            <h1 className="text-2xl font-bold text-foreground">Conversas</h1>
+          <header className="shrink-0 bg-background pt-6">
+            <h1 className="px-4 pb-3 text-2xl font-bold text-foreground">Conversas</h1>
+            <label className="mx-4 mb-4 flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-2.5 text-sm text-zinc-500">
+              <Search className="size-4 shrink-0" aria-hidden="true" />
+              <Input
+                type="search"
+                value={conversationSearch}
+                onChange={(event) => setConversationSearch(event.target.value)}
+                placeholder="Pesquisar..."
+                aria-label="Pesquisar conversas"
+                className="h-auto min-w-0 border-0 bg-transparent p-0 text-sm text-zinc-500 shadow-none placeholder:text-zinc-500 focus-visible:ring-0 focus-visible:ring-offset-0"
+              />
+            </label>
           </header>
 
           <div className="min-h-0 flex-1 overflow-y-auto divide-y divide-border bg-background">
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => navigate("/comunidade/geral")}
-              className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3 text-left hover:bg-muted/50"
-            >
+            {showCommunityConversation && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => navigate("/comunidade/geral")}
+                className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5 text-left hover:bg-muted/50"
+              >
               <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
                 <UsersRound className="size-6" aria-hidden="true" />
               </span>
@@ -1014,15 +1033,16 @@ export default function Community() {
                       : "Ainda não há mensagens. Toque para abrir a conversa."}
                 </span>
               </span>
-            </Button>
+              </Button>
+            )}
 
-            {communityRooms.map((room) => (
+            {filteredCommunityRooms.map((room) => (
               <Button
                 key={room.id}
                 type="button"
                 variant="ghost"
                 onClick={() => navigate(`/comunidade/salas/${room.id}`)}
-                className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3 text-left hover:bg-muted/50"
+                className="h-auto w-full justify-start gap-3 rounded-none px-4 py-3.5 text-left hover:bg-muted/50"
               >
                 <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
                   <UsersRound className="size-6" aria-hidden="true" />
