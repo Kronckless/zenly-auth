@@ -684,7 +684,7 @@ async function openNews(item: NewsItem) {
               <Dialog open={isReferralOpen} onOpenChange={setIsReferralOpen}>
                 <DialogContent
                   showCloseButton={false}
-                  className="fixed inset-0 left-0 top-0 block h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none border-0 bg-background p-0 shadow-2xl sm:max-w-none"
+                  className="fixed inset-0 left-0 top-0 block h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-y-auto rounded-none border-0 bg-muted/30 p-0 shadow-2xl sm:max-w-none"
                 >
                   <DialogClose asChild>
                     <Button
@@ -692,21 +692,21 @@ async function openNews(item: NewsItem) {
                       variant="outline"
                       size="icon"
                       aria-label="Fechar Indique e Ganhe"
-                      className="absolute right-4 top-4 z-20 size-11 rounded-full border border-border bg-background text-foreground shadow-lg transition-all hover:border-destructive/40 hover:bg-muted focus-visible:ring-2 focus-visible:ring-destructive sm:right-6 sm:top-6"
+                      className="absolute right-4 top-4 z-20 size-10 rounded-xl border border-border/70 bg-background text-foreground shadow-sm transition-all hover:border-destructive/40 hover:bg-muted focus-visible:ring-2 focus-visible:ring-destructive sm:right-6 sm:top-6"
                     >
                       <X className="size-5" />
                     </Button>
                   </DialogClose>
 
-                  <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-20 sm:px-8 sm:pb-12 sm:pt-20">
-                    <DialogHeader className="mx-auto max-w-3xl items-center text-center">
-                      <span className="mb-3 inline-flex size-12 items-center justify-center rounded-2xl border border-destructive/15 bg-destructive/5 text-destructive shadow-sm">
+                  <div className="mx-auto w-full max-w-5xl px-4 pb-8 pt-16 sm:px-8 sm:pb-10 sm:pt-16">
+                    <DialogHeader className="mx-auto max-w-5xl items-start rounded-2xl border border-border/70 bg-background px-5 py-6 text-left shadow-sm sm:px-8 sm:py-8">
+                      <span className="mb-4 inline-flex size-10 items-center justify-center rounded-xl border border-destructive/15 bg-destructive/5 text-destructive">
                         <Gift className="size-5" aria-hidden="true" />
                       </span>
-                      <DialogTitle className="max-w-3xl font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-foreground sm:text-4xl md:text-5xl">
+                      <DialogTitle className="max-w-3xl font-display text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl md:text-4xl">
                         Uma voz alcança mais pessoas quando é compartilhada.
                       </DialogTitle>
-                      <DialogDescription className="mt-1 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+                      <DialogDescription className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                         Compartilhe o Voz do Povo com outras pessoas, ajude a ampliar o alcance do portal e{" "}
                         <strong>receba comissões pelas novas assinaturas feitas através do seu link.</strong>
                       </DialogDescription>
@@ -714,7 +714,7 @@ async function openNews(item: NewsItem) {
 
                     <section
                       aria-label="Passo a passo para indicar"
-                      className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-5"
+                      className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3"
                     >
                       {[
                         {
@@ -742,17 +742,17 @@ async function openNews(item: NewsItem) {
                       ].map((step) => (
                         <Card
                           key={step.number}
-                          className="flex h-full flex-col rounded-2xl border-border/80 bg-gradient-to-br from-muted/60 via-background to-muted/25 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-destructive/25 hover:shadow-md"
+                          className="flex h-full flex-col rounded-xl border-border/70 bg-background shadow-sm transition-colors duration-200 hover:border-destructive/30"
                         >
-                          <CardHeader className="space-y-3 p-5 pb-2">
-                            <span className="flex size-9 items-center justify-center rounded-xl bg-destructive text-sm font-bold text-destructive-foreground shadow-sm">
+                          <CardHeader className="flex-row items-center gap-3 space-y-0 p-4 pb-2">
+                            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-destructive text-sm font-bold text-destructive-foreground">
                               {step.number}
                             </span>
-                            <CardTitle className="font-display text-base font-bold leading-snug tracking-tight sm:text-lg">
+                            <CardTitle className="font-display text-sm font-semibold leading-snug tracking-tight sm:text-base">
                               {step.title}
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="flex flex-1 flex-col px-5 pb-5 pt-1">
+                          <CardContent className="flex flex-1 flex-col px-4 pb-4 pt-1">
                             <p className="text-sm leading-6 text-muted-foreground">
                               {step.description}
                             </p>
@@ -776,15 +776,15 @@ async function openNews(item: NewsItem) {
                       ))}
                     </section>
 
-                    <div className="mx-auto mt-8 max-w-5xl space-y-6">
+                    <div className="mx-auto mt-5 grid w-full max-w-5xl grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch">
                       <section
                         aria-labelledby="referral-link-heading"
-                        className="relative overflow-hidden rounded-2xl border border-destructive/20 bg-gradient-to-br from-muted/60 via-background to-muted/30 p-5 shadow-sm sm:p-6"
+                        className="relative overflow-hidden rounded-2xl border border-destructive/20 bg-background p-5 shadow-sm sm:col-span-5 sm:p-6 lg:col-span-5"
                       >
-                        <p className="text-xs font-bold uppercase tracking-[0.18em] text-destructive">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-destructive">
                           Rede de indicação
                         </p>
-                        <h2 id="referral-link-heading" className="mt-1 font-display text-2xl font-bold tracking-tight text-foreground">
+                        <h2 id="referral-link-heading" className="mt-1 font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                           Seu link de indicação
                         </h2>
                         <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
@@ -794,7 +794,7 @@ async function openNews(item: NewsItem) {
                           <div
                             role="status"
                             aria-label="Link individual de indicação"
-                            className="flex min-h-12 flex-1 items-center rounded-xl border border-border bg-background px-4 text-sm leading-relaxed text-muted-foreground shadow-inner"
+                            className="flex min-h-12 flex-1 items-center rounded-lg border border-border/70 bg-muted/30 px-3 text-sm leading-relaxed text-muted-foreground"
                           >
                             Seu link individual será exibido aqui quando o acesso de afiliado for liberado.
                           </div>
@@ -802,7 +802,7 @@ async function openNews(item: NewsItem) {
                             type="button"
                             variant="destructive"
                             disabled
-                            className="w-full gap-2 rounded-xl px-5 font-semibold shadow-sm transition-all hover:shadow-md sm:w-auto"
+                            className="w-full gap-2 rounded-lg px-5 font-semibold shadow-sm transition-all hover:shadow-md sm:w-auto"
                             title="O link individual ainda não está disponível."
                           >
                             <Copy className="size-4" aria-hidden="true" />
@@ -813,10 +813,10 @@ async function openNews(item: NewsItem) {
 
                       <section
                         aria-labelledby="referral-whatsapp-heading"
-                        className="overflow-hidden rounded-2xl border border-border/80 bg-background p-5 shadow-sm sm:p-6"
+                        className="overflow-hidden rounded-2xl border border-border/70 bg-background p-5 shadow-sm sm:col-span-7 sm:p-6 lg:col-span-7"
                       >
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                          <div className="border-l-2 border-destructive pl-4">
+                          <div className="min-w-0 border-l-2 border-destructive pl-4">
                             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
                               Convite pronto para compartilhar
                             </p>
@@ -830,7 +830,7 @@ async function openNews(item: NewsItem) {
                           <Button
                             type="button"
                             variant={referralCopyStatus === "success" ? "secondary" : "destructive"}
-                            className="w-full shrink-0 gap-2 rounded-xl px-5 font-semibold shadow-sm transition-all hover:shadow-md sm:w-auto"
+                            className="w-full shrink-0 gap-2 rounded-lg px-5 font-semibold shadow-sm transition-all hover:shadow-md sm:w-auto"
                             aria-live="polite"
                             onClick={async () => {
                               const message =
@@ -857,16 +857,16 @@ async function openNews(item: NewsItem) {
                                 : "Copiar mensagem"}
                           </Button>
                         </div>
-                        <p className="mt-5 rounded-xl border border-border/70 bg-muted/40 p-4 text-sm leading-7 text-foreground sm:p-5">
+                        <p className="mt-4 rounded-xl border border-border/60 border-l-2 border-l-destructive/60 bg-muted/30 p-4 text-sm leading-6 text-foreground sm:p-5 sm:leading-7">
                           Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]
                         </p>
                       </section>
 
                       <section
                         aria-labelledby="referral-materials-heading"
-                        className="rounded-2xl border border-border/70 bg-muted/30 p-5 sm:p-6"
+                        className="rounded-2xl border border-border/70 bg-muted/20 p-5 sm:col-span-7 sm:p-6 lg:col-span-7"
                       >
-                        <div className="mb-5 border-l-2 border-destructive pl-4">
+                        <div className="mb-4 border-l-2 border-destructive pl-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
                             Para ampliar o alcance
                           </p>
@@ -877,7 +877,7 @@ async function openNews(item: NewsItem) {
                             Os espaços abaixo estão preparados para receber os materiais oficiais de divulgação.
                           </p>
                         </div>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                           {[
                             {
                               number: "01",
@@ -902,7 +902,7 @@ async function openNews(item: NewsItem) {
                           ].map((material) => (
                             <article
                               key={material.number}
-                              className="flex items-start gap-3 rounded-xl border border-border/80 bg-background p-4 shadow-sm transition-all hover:border-destructive/25 hover:shadow-md sm:p-5"
+                              className="flex items-start gap-3 rounded-xl border border-border/70 bg-background p-3 shadow-sm transition-colors hover:border-destructive/30 sm:p-4"
                             >
                               <span className="font-display text-sm font-bold text-destructive">
                                 {material.number}
@@ -912,7 +912,7 @@ async function openNews(item: NewsItem) {
                                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                                   {material.description}
                                 </p>
-                                <span className="mt-3 inline-flex rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs font-medium text-muted-foreground">
+                                <span className="mt-3 inline-flex rounded-md border border-border/70 bg-muted/30 px-2.5 py-1 text-xs font-medium text-muted-foreground">
                                   Material em preparação
                                 </span>
                               </div>
@@ -921,14 +921,14 @@ async function openNews(item: NewsItem) {
                         </div>
                       </section>
 
-                      <section aria-labelledby="referral-faq-heading" className="border-t border-border pt-6">
+                      <section aria-labelledby="referral-faq-heading" className="rounded-2xl border border-border/70 bg-background p-5 sm:col-span-5 sm:p-6 lg:col-span-5">
                         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
                           Informações
                         </p>
                         <h2 id="referral-faq-heading" className="mt-1 font-display text-2xl font-bold tracking-tight">
                           Dúvidas frequentes
                         </h2>
-                        <Accordion type="single" collapsible className="mt-3">
+                        <Accordion type="single" collapsible className="mt-2">
                           {[
                             {
                               question: "Como começo a participar?",
@@ -959,12 +959,12 @@ async function openNews(item: NewsItem) {
                             <AccordionItem
                               key={question}
                               value={`referral-faq-${index + 1}`}
-                              className="border-border"
+                              className="border-border/70"
                             >
-                              <AccordionTrigger className="py-4 text-left text-sm font-semibold leading-relaxed hover:text-destructive hover:no-underline">
+                              <AccordionTrigger className="py-3 text-left text-sm font-semibold leading-relaxed hover:text-destructive hover:no-underline">
                                 {question}
                               </AccordionTrigger>
-                              <AccordionContent className="pb-5 text-sm leading-6 text-muted-foreground">
+                              <AccordionContent className="pb-4 text-sm leading-6 text-muted-foreground">
                                 {answer}
                               </AccordionContent>
                             </AccordionItem>
