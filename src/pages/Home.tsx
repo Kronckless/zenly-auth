@@ -709,7 +709,7 @@ async function openNews(item: NewsItem) {
                         <Gift className="size-5" aria-hidden="true" />
                       </span>
                       <DialogTitle className="mx-auto w-full max-w-3xl text-center font-display text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl md:text-4xl">
-                        Uma conversa pode levar o Voz do Povo a mais gente.
+                        Uma conversa leva a Voz do Povo a mais gente...
                       </DialogTitle>
                       <DialogDescription className="mt-3 max-w-2xl text-center text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                         Indique o portal a pessoas que possam se interessar — em uma conversa, grupo ou rede social.{" "}
