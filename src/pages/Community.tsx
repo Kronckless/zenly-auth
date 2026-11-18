@@ -1044,7 +1044,7 @@ export default function Community() {
           size="icon"
           aria-label="Criar sala"
           onClick={() => void openRoomCreation()}
-          className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-[#5865F2] text-white shadow-lg shadow-[#5865F2]/30 transition-all duration-150 hover:bg-[#4752C4] active:scale-95"
+          className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 text-white shadow-lg shadow-black/20 transition-all duration-150 active:scale-95"
         >
           <MessageSquarePlus className="size-6" strokeWidth={2.2} aria-hidden="true" />
         </Button>
