@@ -947,41 +947,41 @@ async function openNews(item: NewsItem) {
                                 {
                                   question: "Como funciona o programa de indicações?",
                                   answer:
-                                    "É simples! Você compartilha seu link de indicação com outras pessoas. Quando alguém conhece o Voz do Povo e realiza uma assinatura por meio do seu convite, você recebe 90% de comissão, conforme as regras do programa.",
+                                    "Você compartilha seu link exclusivo e convida outras pessoas a conhecerem o Voz do Povo. Cada assinatura válida realizada por meio da sua indicação garante a você 90% de comissão.",
                                 },
                                 {
                                   question: "Como posso compartilhar meu link?",
                                   answer:
-                                    "Depois de configurar sua conta, você terá acesso ao seu link de indicação. Basta copiá-lo e compartilhá-lo com amigos, familiares e conhecidos, seja pelo WhatsApp, redes sociais ou outros canais.",
+                                    "Após configurar sua conta, seu link exclusivo estará disponível para compartilhamento. Copie e envie pelo WhatsApp, redes sociais, grupos ou diretamente para seus amigos e familiares.",
                                 },
                                 {
                                   question: "Como minhas indicações são contabilizadas?",
                                   answer:
-                                    "As indicações são identificadas por meio do seu link individual. Quando alguém realiza uma assinatura utilizando seu convite, a indicação pode ser associada à sua conta.",
+                                    "Todas as indicações realizadas pelo seu link exclusivo são identificadas e vinculadas à sua conta. Cada nova assinatura originada pelo seu convite fica associada ao seu cadastro.",
                                 },
                                 {
                                   question: "Onde posso acompanhar meus resultados?",
                                   answer:
-                                    "Você pode acompanhar suas indicações e consultar suas comissões por meio da área disponibilizada para isso. Assim, fica mais fácil visualizar o desempenho dos seus convites.",
+                                    "Na sua área de acompanhamento, você consulta suas indicações, acompanha novas adesões e visualiza suas comissões.",
                                 },
                                 {
                                   question: "Como funciona o recebimento das comissões?",
                                   answer:
-                                    "Você recebe 90% de comissão pelas assinaturas válidas realizadas por meio do seu link de indicação. Para receber, é necessário configurar sua conta e informar os dados solicitados para pagamento. Os prazos e as condições de saque seguem as regras da plataforma.",
+                                    "Você recebe 90% de comissão sobre cada assinatura válida realizada por meio do seu link exclusivo. Para receber, configure sua conta e informe seus dados de pagamento.",
                                 },
                                 {
                                   question: "Preciso pagar alguma coisa para participar?",
-                                  answer: "Resposta em preparação.",
+                                  answer: "Resposta pendente de confirmação da gratuidade da participação.",
                                 },
                                 {
                                   question: "Posso compartilhar meu convite nas redes sociais?",
                                   answer:
-                                    "Sim! Você pode divulgar seu link em conversas, grupos e redes sociais, compartilhando o Voz do Povo com pessoas que possam se interessar pelo conteúdo do portal.",
+                                    "Sim! Compartilhe seu link pelo WhatsApp, Instagram, Facebook, grupos ou qualquer outro canal de comunicação. Quanto mais pessoas conhecerem o Voz do Povo por meio do seu convite, maior será o alcance das suas indicações.",
                                 },
                                 {
                                   question: "O que acontece se alguém cancelar a assinatura?",
                                   answer:
-                                    "As condições de comissão em casos de cancelamento seguem as regras do programa. Consulte os termos aplicáveis para entender como esses casos afetam as indicações e os valores registrados.",
+                                    "As condições de cancelamento e seus efeitos sobre as indicações e comissões dependem das regras oficiais do programa. Consulte os termos vigentes para conhecer a política aplicável.",
                                 },
                               ].map(({ question, answer }, index) => (
                                 <AccordionItem
