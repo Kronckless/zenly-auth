@@ -78,6 +78,7 @@ export default function ComecePorAqui() {
   const navigate = useNavigate();
   const [referralPeople, setReferralPeople] = useState(1);
   const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
+  const [isWhatsAppGuideOpen, setIsWhatsAppGuideOpen] = useState(false);
 
   async function copyReferralLink() {
     try {
@@ -126,6 +127,72 @@ export default function ComecePorAqui() {
             Participar de conversas, construir familiaridade e apresentar o portal no momento apropriado torna a divulgação muito mais contextualizada do que simplesmente despejar links em grupos.
           </p>
         </div>
+      </section>
+
+      <section className="mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-xl border border-border bg-[#F5F6F8] text-left">
+        <Accordion
+          type="single"
+          collapsible
+          value={isWhatsAppGuideOpen ? "whatsapp-engagement" : ""}
+          onValueChange={(value) => setIsWhatsAppGuideOpen(value === "whatsapp-engagement")}
+        >
+          <AccordionItem value="whatsapp-engagement" className="border-0">
+            <AccordionTrigger className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:no-underline [&>svg]:hidden sm:px-8">
+              <span className="min-w-0">
+                <span className="block text-base font-bold leading-snug text-foreground sm:text-lg">
+                  Como se engajar em grupos de WhatsApp?
+                </span>
+                <span className="mt-1 block text-xs font-medium text-muted-foreground transition-colors group-hover:text-foreground sm:text-sm">
+                  {isWhatsAppGuideOpen ? "Ocultar detalhes ↑" : "Mais detalhes ↓"}
+                </span>
+              </span>
+            </AccordionTrigger>
+
+            {!isWhatsAppGuideOpen && (
+              <div aria-hidden="true" className="mx-5 mb-4 space-y-1.5 opacity-40 blur-[2px] sm:mx-8">
+                <div className="h-1.5 w-4/5 rounded-full bg-muted-foreground/50" />
+                <div className="h-1.5 w-full rounded-full bg-muted-foreground/40" />
+                <div className="h-1.5 w-2/3 rounded-full bg-muted-foreground/30" />
+              </div>
+            )}
+
+            <AccordionContent className="px-5 pb-5 sm:px-8 sm:pb-8">
+              <div className="space-y-4 border-t border-border/70 pt-4 text-sm leading-7 text-foreground sm:text-base">
+                <p>
+                  Participar de grupos de WhatsApp exige mais do que simplesmente estar presente. Para que suas conversas sejam naturais, construa uma participação genuína, respeite o assunto que está sendo discutido e contribua com informações que realmente tenham valor para os demais integrantes.
+                </p>
+                <p>
+                  <strong>1. Entenda o ambiente do grupo</strong>
+                  <br />
+                  Antes de começar a participar, observe como as pessoas conversam, quais assuntos são frequentes e qual é o propósito daquele grupo. Grupos de notícias, política, comunidade e assuntos cotidianos possuem dinâmicas diferentes. Entender esse ambiente ajuda você a contribuir de maneira apropriada.
+                </p>
+                <p>
+                  <strong>2. Participe de conversas reais</strong>
+                  <br />
+                  Não limite sua participação a enviar links ou mensagens prontas. Comente assuntos que estão sendo discutidos, compartilhe suas opiniões com respeito, responda quando tiver algo relevante a acrescentar e mantenha uma conversa natural com os outros participantes.
+                </p>
+                <p>
+                  <strong>3. Compartilhe informações que acrescentem algo</strong>
+                  <br />
+                  Quando surgir um assunto sobre o qual você tenha acompanhado notícias ou encontrado informações interessantes, compartilhe conteúdos que possam ajudar outras pessoas a compreender melhor o tema. Procure contextualizar o que está enviando, explicando por que aquilo chamou sua atenção, em vez de simplesmente despejar links no grupo.
+                </p>
+                <p>
+                  <strong>4. Apresente o Voz do Povo com naturalidade e transparência</strong>
+                  <br />
+                  Se o portal tiver uma matéria, notícia ou conteúdo que se relacione com o assunto discutido, você poderá compartilhá-lo, explicando claramente que se trata do Voz do Povo e por que acredita que aquele conteúdo seja relevante. Evite transformar toda conversa em divulgação. O objetivo é contribuir com a discussão, não interrompê-la.
+                </p>
+                <p>
+                  <strong>5. Construa relações e respeite os outros participantes</strong>
+                  <br />
+                  Uma boa participação envolve ouvir opiniões diferentes, evitar discussões desnecessárias e respeitar as regras de cada grupo. Não insista quando alguém não demonstrar interesse, não envie mensagens repetitivas e não faça abordagens invasivas.
+                </p>
+                <p className="rounded-lg border-l-2 border-primary bg-background/70 px-4 py-3 font-medium">
+                  Participar de grupos é, acima de tudo, saber conversar, ouvir e contribuir. Quando você compartilha algo relevante no momento certo, as pessoas têm mais contexto para conhecer uma informação, uma fonte ou um portal que talvez ainda não conhecessem.
+                </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </section>
     </main>
   );
