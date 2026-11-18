@@ -1227,22 +1227,7 @@ export default function Community() {
             </label>
           </header>
 
-          {(isSocio ||
-            (typeof window !== "undefined" &&
-              (/preview|dev/.test(window.location.hostname.toLowerCase()) ||
-                window.location.hostname === "localhost" ||
-                window.location.hostname === "127.0.0.1" ||
-                window.location.hostname.endsWith(".localhost") ||
-                window.location.hostname.includes("stackblitz") ||
-                (window.self !== window.top &&
-                  Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
-                    try {
-                      const hostname = new URL(origin).hostname.toLowerCase();
-                      return hostname === "zenly.cloud" || hostname.endsWith(".zenly.cloud");
-                    } catch {
-                      return false;
-                    }
-                  }))))) && (
+          {isSocio && (
             <a
               href="https://t.me/+GbzAJ5p_HAVhNTYx"
               target="_blank"
