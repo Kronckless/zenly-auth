@@ -944,15 +944,46 @@ async function openNews(item: NewsItem) {
 
                             <Accordion type="single" collapsible>
                               {[
-                                "Como funciona o programa de indicações?",
-                                "Como posso compartilhar meu link?",
-                                "Como minhas indicações são contabilizadas?",
-                                "Onde posso acompanhar meus resultados?",
-                                "Como funciona o recebimento das comissões?",
-                                "Preciso pagar alguma coisa para participar?",
-                                "Posso compartilhar meu convite nas redes sociais?",
-                                "O que acontece se alguém cancelar a assinatura?",
-                              ].map((question, index) => (
+                                {
+                                  question: "Como funciona o programa de indicações?",
+                                  answer:
+                                    "É simples! Você compartilha seu link de indicação com outras pessoas. Quando alguém conhece o Voz do Povo e realiza uma assinatura por meio do seu convite, você recebe 90% de comissão, conforme as regras do programa.",
+                                },
+                                {
+                                  question: "Como posso compartilhar meu link?",
+                                  answer:
+                                    "Depois de configurar sua conta, você terá acesso ao seu link de indicação. Basta copiá-lo e compartilhá-lo com amigos, familiares e conhecidos, seja pelo WhatsApp, redes sociais ou outros canais.",
+                                },
+                                {
+                                  question: "Como minhas indicações são contabilizadas?",
+                                  answer:
+                                    "As indicações são identificadas por meio do seu link individual. Quando alguém realiza uma assinatura utilizando seu convite, a indicação pode ser associada à sua conta.",
+                                },
+                                {
+                                  question: "Onde posso acompanhar meus resultados?",
+                                  answer:
+                                    "Você pode acompanhar suas indicações e consultar suas comissões por meio da área disponibilizada para isso. Assim, fica mais fácil visualizar o desempenho dos seus convites.",
+                                },
+                                {
+                                  question: "Como funciona o recebimento das comissões?",
+                                  answer:
+                                    "Você recebe 90% de comissão pelas assinaturas válidas realizadas por meio do seu link de indicação. Para receber, é necessário configurar sua conta e informar os dados solicitados para pagamento. Os prazos e as condições de saque seguem as regras da plataforma.",
+                                },
+                                {
+                                  question: "Preciso pagar alguma coisa para participar?",
+                                  answer: "Resposta em preparação.",
+                                },
+                                {
+                                  question: "Posso compartilhar meu convite nas redes sociais?",
+                                  answer:
+                                    "Sim! Você pode divulgar seu link em conversas, grupos e redes sociais, compartilhando o Voz do Povo com pessoas que possam se interessar pelo conteúdo do portal.",
+                                },
+                                {
+                                  question: "O que acontece se alguém cancelar a assinatura?",
+                                  answer:
+                                    "As condições de comissão em casos de cancelamento seguem as regras do programa. Consulte os termos aplicáveis para entender como esses casos afetam as indicações e os valores registrados.",
+                                },
+                              ].map(({ question, answer }, index) => (
                                 <AccordionItem
                                   key={question}
                                   value={`referral-program-faq-${index + 1}`}
@@ -962,7 +993,7 @@ async function openNews(item: NewsItem) {
                                     {question}
                                   </AccordionTrigger>
                                   <AccordionContent className="pb-4 text-sm leading-6 text-muted-foreground">
-                                    Conteúdo da resposta em preparação.
+                                    {answer}
                                   </AccordionContent>
                                 </AccordionItem>
                               ))}
