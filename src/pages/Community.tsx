@@ -1061,10 +1061,13 @@ export default function Community() {
               <Button variant="outline" onClick={() => setSocioDialogOpen(false)}>
                 Agora não
               </Button>
-              <Button asChild>
-                <a href="https://pay.cakto.com.br/4gxfhf8_1336054" target="_blank" rel="noopener noreferrer">
-                  Quero me tornar sócio
-                </a>
+              <Button
+                onClick={() => {
+                  setSocioDialogOpen(false);
+                  navigate("/home", { state: { openSocioModal: true } });
+                }}
+              >
+                Quero me tornar sócio
               </Button>
             </DialogFooter>
           </DialogContent>

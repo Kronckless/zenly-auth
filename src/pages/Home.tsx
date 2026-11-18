@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   Headset,
@@ -188,6 +188,7 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
 
 export default function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -208,6 +209,17 @@ export default function Home() {
   const [textoIndex, setTextoIndex] = useState(0);
   const [comDestaque, setComDestaque] = useState(false);
   const socioFinalTitleRef = useRef<HTMLHeadingElement | null>(null);
+
+  useEffect(() => {
+    const shouldOpenSocioModal = (
+      location.state as { openSocioModal?: boolean } | null
+    )?.openSocioModal;
+
+    if (!shouldOpenSocioModal) return;
+
+    setIsSocioModalOpen(true);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
     if (!supabase) return;
