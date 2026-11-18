@@ -700,52 +700,52 @@ async function openNews(item: NewsItem) {
                   </DialogClose>
 
                   <div className="mx-auto w-full max-w-5xl px-4 pb-8 pt-16 sm:px-8 sm:pb-10 sm:pt-16">
-                    <DialogHeader className="mx-auto max-w-5xl items-start rounded-2xl border border-border bg-background px-5 py-6 text-left shadow-sm sm:px-8 sm:py-8">
-                      <span className="mb-4 inline-flex size-10 items-center justify-center rounded-xl border border-destructive bg-muted text-destructive">
+                    <DialogHeader className="mx-auto max-w-6xl items-start rounded-2xl border border-border bg-muted/30 px-5 py-7 text-left shadow-sm sm:px-8 sm:py-9">
+                      <span className="mb-4 inline-flex size-11 items-center justify-center rounded-xl bg-destructive text-destructive-foreground">
                         <Gift className="size-5" aria-hidden="true" />
                       </span>
                       <DialogTitle className="max-w-3xl font-display text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl md:text-4xl">
-                        Uma voz alcança mais pessoas quando é compartilhada.
+                        Uma conversa pode levar o Voz do Povo a mais gente.
                       </DialogTitle>
                       <DialogDescription className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
-                        Compartilhe o Voz do Povo com outras pessoas, ajude a ampliar o alcance do portal e{" "}
-                        <strong>receba comissões pelas novas assinaturas feitas através do seu link.</strong>
+                        Indique o portal a pessoas que possam se interessar — em uma conversa, grupo ou rede social.{" "}
+                        <strong>As novas assinaturas feitas pelo seu link podem gerar comissão.</strong>
                       </DialogDescription>
                     </DialogHeader>
 
                     <section
                       aria-label="Passo a passo para indicar"
-                      className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3"
+                      className="mt-4 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-muted/30 md:grid-cols-3 md:divide-x md:divide-border"
                     >
                       {[
                         {
                           number: "1",
-                          title: "1. Crie sua conta (Grátis)",
+                          title: "Prepare seu acesso",
                           description:
-                            "Para receber seus pagamentos com segurança, tenha sua conta gratuita na Cakto (nossa plataforma oficial).",
+                            "Crie sua conta gratuita na Cakto, a plataforma usada para receber os pagamentos das indicações.",
                           action: "Criar Conta na Cakto (Grátis)",
                           linkNote: "Link de cadastro da Cakto será adicionado aqui.",
                         },
                         {
                           number: "2",
-                          title: "2. Pegue seu Link VIP",
+                          title: "Escolha como compartilhar",
                           description:
-                            "Clique abaixo para liberar seu link de indicação exclusivo com aprovação instantânea.",
+                            "Quando seu link individual estiver disponível, compartilhe em conversas, grupos, Stories ou publicações com quem possa se interessar pelo portal.",
                           action: "Gerar Meu Link de Indicação",
                           linkNote: "Link de afiliado será adicionado aqui.",
                         },
                         {
                           number: "3",
-                          title: "3. Compartilhe e Lucre",
+                          title: "Acompanhe indicações e comissões",
                           description:
-                            "Envie seu link para amigos ou em grupos. O que for vendido por ele vira comissão para você!",
+                            "As indicações são associadas ao seu link. As comissões estão relacionadas às novas assinaturas feitas através dele.",
                         },
                       ].map((step) => (
                         <Card
                           key={step.number}
-                          className="flex h-full flex-col rounded-xl border-border bg-background shadow-sm transition-colors duration-200 hover:border-destructive"
+                          className="flex h-full flex-col rounded-none border-0 bg-transparent shadow-none transition-colors duration-200 hover:bg-background/70"
                         >
-                          <CardHeader className="flex-row items-center gap-3 space-y-0 p-4 pb-2">
+                          <CardHeader className="flex-row items-center gap-3 space-y-0 p-4 pb-2 sm:p-5 sm:pb-2">
                             <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-destructive text-sm font-bold text-destructive-foreground">
                               {step.number}
                             </span>
@@ -753,7 +753,7 @@ async function openNews(item: NewsItem) {
                               {step.title}
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="flex flex-1 flex-col px-4 pb-4 pt-1">
+                          <CardContent className="flex flex-1 flex-col px-4 pb-4 pt-1 sm:px-5 sm:pb-5">
                             <p className="text-sm leading-6 text-muted-foreground">
                               {step.description}
                             </p>
@@ -777,10 +777,10 @@ async function openNews(item: NewsItem) {
                       ))}
                     </section>
 
-                    <div className="mx-auto mt-5 grid w-full max-w-5xl grid-cols-1 gap-4 lg:grid-cols-12 lg:items-stretch">
+                    <div className="mx-auto mt-5 grid w-full max-w-6xl grid-cols-1 gap-3 lg:grid-cols-12 lg:items-start">
                       <section
                         aria-labelledby="referral-link-heading"
-                        className="relative overflow-hidden rounded-2xl border border-destructive bg-background p-5 shadow-sm sm:col-span-5 sm:p-6 lg:col-span-5"
+                        className="relative overflow-hidden rounded-2xl border border-destructive/30 bg-muted/30 p-5 shadow-sm sm:col-span-5 sm:p-6 lg:col-span-5"
                       >
                         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-destructive">
                           Rede de indicação
@@ -795,7 +795,7 @@ async function openNews(item: NewsItem) {
                           <div
                             role="status"
                             aria-label="Link individual de indicação"
-                            className="flex min-h-12 flex-1 items-center rounded-lg border border-border bg-muted px-3 text-sm leading-relaxed text-muted-foreground"
+                            className="flex min-h-12 flex-1 items-center rounded-lg border border-border bg-background px-3 text-sm leading-relaxed text-muted-foreground"
                           >
                             Seu link individual será exibido aqui quando o acesso de afiliado for liberado.
                           </div>
@@ -822,10 +822,10 @@ async function openNews(item: NewsItem) {
                               Convite pronto para compartilhar
                             </p>
                             <h2 id="referral-whatsapp-heading" className="mt-1 font-display text-xl font-bold tracking-tight">
-                              Mensagem para o WhatsApp
+                              Um convite que soa como você
                             </h2>
                             <p className="mt-1 text-sm text-muted-foreground">
-                              Copie o convite e envie para quem pode se interessar pelo portal.
+                              Compartilhe com alguém que possa gostar do portal. A mensagem é só um ponto de partida: envie no seu ritmo.
                             </p>
                           </div>
                           <Button
@@ -835,7 +835,7 @@ async function openNews(item: NewsItem) {
                             aria-live="polite"
                             onClick={async () => {
                               const message =
-                                "Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]";
+                                "Oi! Encontrei o Voz do Povo, um portal independente com espaço para diferentes vozes. Achei que você poderia gostar: [cole aqui seu link VIP]";
                               try {
                                 await navigator.clipboard.writeText(message);
                                 setReferralCopyStatus("success");
@@ -858,15 +858,15 @@ async function openNews(item: NewsItem) {
                                 : "Copiar mensagem"}
                           </Button>
                         </div>
-                        <p className="mt-4 rounded-xl border border-border border-l-2 border-l-destructive bg-muted p-4 text-sm leading-6 text-foreground sm:p-5 sm:leading-7">
-                          Oi! Quero te apresentar o Voz do Povo, um portal independente que dá espaço para diferentes vozes. Conheça e faça parte: [cole aqui seu link VIP]
+                        <p className="mt-4 rounded-xl border border-border border-l-2 border-l-destructive bg-muted/60 p-4 text-sm leading-6 text-foreground sm:p-5 sm:leading-7">
+                          Oi! Encontrei o Voz do Povo, um portal independente com espaço para diferentes vozes. Achei que você poderia gostar: [cole aqui seu link VIP]
                         </p>
                       </section>
 
                       <section
-                        aria-labelledby="referral-materials-heading"
-                        className="rounded-2xl border border-border bg-muted p-5 sm:col-span-7 sm:p-6 lg:col-span-7"
-                      >
+                      aria-labelledby="referral-materials-heading"
+                      className="rounded-2xl border border-border bg-muted/50 p-5 sm:col-span-7 sm:p-6 lg:col-span-7"
+                    >
                         <div className="mb-4 border-l-2 border-destructive pl-4">
                           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-destructive">
                             Para ampliar o alcance
@@ -875,7 +875,7 @@ async function openNews(item: NewsItem) {
                             Materiais para compartilhar
                           </h2>
                           <p className="mt-1 text-sm text-muted-foreground">
-                            Os espaços abaixo estão preparados para receber os materiais oficiais de divulgação.
+                            Escolha o formato que combina com a conversa. Os materiais oficiais serão disponibilizados aqui quando estiverem prontos.
                           </p>
                         </div>
                         <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
@@ -883,22 +883,22 @@ async function openNews(item: NewsItem) {
                             {
                               number: "01",
                               title: "Stories",
-                              description: "Peças verticais para apresentar o portal nos stories.",
+                              description: "Conteúdos verticais para compartilhar o portal nos seus Stories.",
                             },
                             {
                               number: "02",
                               title: "Publicações para redes sociais",
-                              description: "Imagens e textos para compartilhar no seu perfil.",
+                              description: "Publicações para apresentar o portal no seu perfil e abrir uma conversa.",
                             },
                             {
                               number: "03",
                               title: "Vídeos",
-                              description: "Conteúdos audiovisuais para divulgar a iniciativa.",
+                              description: "Vídeos para mostrar o portal de um jeito direto e pessoal.",
                             },
                             {
                               number: "04",
                               title: "Textos prontos",
-                              description: "Mensagens para apresentar o Voz do Povo à sua rede.",
+                              description: "Sugestões de texto para começar uma conversa com seus contatos.",
                             },
                           ].map((material) => (
                             <article
