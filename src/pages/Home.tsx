@@ -1076,6 +1076,31 @@ async function openNews(item: NewsItem) {
                               </div>
                             </div>
                           </section>
+
+                          <section
+                            aria-labelledby="referral-confirmation-title"
+                            className="mt-6 rounded-2xl border border-[#36B37E]/30 bg-[#36B37E]/5 px-5 py-8 text-center shadow-sm sm:px-8 sm:py-10"
+                          >
+                            <h3
+                              id="referral-confirmation-title"
+                              className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+                            >
+                              Você já leu todo o passo a passo?
+                            </h3>
+                            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                              Antes de continuar, certifique-se de que leu e compreendeu todas as etapas para compartilhar seu convite, configurar sua conta e acompanhar suas comissões.
+                            </p>
+                            <Button
+                              type="button"
+                              disabled
+                              className="mt-6 min-h-12 w-full rounded-xl bg-[#36B37E] px-6 font-bold text-zinc-950 shadow-sm hover:bg-[#36B37E] disabled:cursor-default disabled:opacity-100 sm:w-auto"
+                            >
+                              SIM, JÁ LI E QUERO CONTINUAR
+                            </Button>
+                            <p className="mt-4 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                              Ainda não leu? Volte ao material e confira todas as etapas.
+                            </p>
+                          </section>
                         </section>
                       </section>
                     </section>
