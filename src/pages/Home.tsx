@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
+  Gift,
   Headset,
   LayoutDashboard,
   Megaphone,
@@ -191,6 +192,8 @@ export default function Home() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
+  const [isReferralOpen, setIsReferralOpen] = useState(false);
+  const [isSocio, setIsSocio] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isBooster, setIsBooster] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -228,17 +231,23 @@ export default function Home() {
 
     const loadBoosterStatus = async (userId?: string) => {
       if (!userId) {
-        if (active) setIsBooster(false);
+        if (active) {
+          setIsBooster(false);
+          setIsSocio(false);
+        }
         return;
       }
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("is_booster")
+        .select("is_booster, is_socio")
         .eq("id", userId)
         .maybeSingle();
 
-      if (active) setIsBooster(!error && data?.is_booster === true);
+      if (active) {
+        setIsBooster(!error && data?.is_booster === true);
+        setIsSocio(!error && data?.is_socio === true);
+      }
     };
 
     void supabase.auth.getUser().then(({ data: { user } }) => {
@@ -623,8 +632,33 @@ async function openNews(item: NewsItem) {
                       </span>
                     </button>
                   )}
+                  {isSocio && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setIsReferralOpen(true);
+                      }}
+                      className="mt-2 block w-full rounded-md border border-white/60 bg-white/95 px-3 py-3 text-left text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <span className="flex items-center gap-2 text-sm font-bold">
+                        <Gift className="size-4" aria-hidden="true" />
+                        Indique e ganhe
+                      </span>
+                    </button>
+                  )}
                 </div>
               )}
+              <Dialog open={isReferralOpen} onOpenChange={setIsReferralOpen}>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Indique e ganhe</DialogTitle>
+                    <DialogDescription>
+                      Em breve, você poderá indicar pessoas e acompanhar suas recompensas por aqui.
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
 
