@@ -433,54 +433,39 @@ export default function ComecePorAqui() {
       </section>
 
       <section
-        aria-label="Identidade visual do Instagram"
-        className="relative isolate mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-2xl border border-white/50 bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#FCAF45] p-7 text-white shadow-lg sm:p-9"
+        aria-label="Ações finais"
+        className="relative isolate mx-auto mt-32 mb-32 flex w-full max-w-4xl justify-center gap-3 overflow-hidden rounded-2xl border border-white/50 bg-[linear-gradient(135deg,#833AB4_0%,#6A35B5_22%,#C13584_48%,#E1306C_66%,#F77737_84%,#FCAF45_100%)] px-5 py-40 shadow-lg sm:py-52"
       >
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[radial-gradient(ellipse_at_12%_100%,rgba(255,214,102,0.9),transparent_34%),radial-gradient(ellipse_at_88%_0%,rgba(131,58,180,0.9),transparent_40%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_12%_100%,rgba(255,214,102,0.92),transparent_38%),radial-gradient(ellipse_at_88%_0%,rgba(131,58,180,0.92),transparent_42%),radial-gradient(ellipse_at_55%_45%,rgba(255,255,255,0.22),transparent_48%)]"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 opacity-35 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.17)_0px,rgba(255,255,255,0.17)_1px,transparent_1px,transparent_13px)]"
+          className="pointer-events-none absolute inset-0 opacity-35 [background-image:repeating-linear-gradient(135deg,rgba(255,255,255,0.19)_0px,rgba(255,255,255,0.19)_1px,transparent_1px,transparent_14px)]"
         />
         <div
           aria-hidden="true"
-          className="absolute -right-12 -top-20 size-64 rounded-full border-[28px] border-white/15 blur-sm"
+          className="pointer-events-none absolute -right-12 -top-20 size-64 rounded-full border-[28px] border-white/20 blur-sm"
         />
-        <div className="relative flex min-h-36 items-center justify-center gap-4 text-center">
-          <div
-            aria-hidden="true"
-            className="flex size-14 items-center justify-center rounded-[17px] border-2 border-white/90 bg-white/10 shadow-lg backdrop-blur-sm"
+        <div className="relative z-10 flex flex-wrap justify-center gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate("/home")}
+            className="min-h-12 rounded-md px-6"
           >
-            <span className="relative size-8 rounded-[10px] border-[2.5px] border-white">
-              <span className="absolute left-1/2 top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white" />
-              <span className="absolute right-1 top-1 size-1 rounded-full bg-white" />
-            </span>
-          </div>
-          <span className="font-display text-2xl font-extrabold tracking-wide drop-shadow sm:text-3xl">
-            Instagram
-          </span>
+            Fechar
+          </Button>
+          <Button
+            type="button"
+            onClick={() => window.location.assign(referralLink)}
+            className="min-h-12 rounded-md bg-[#5865F2] px-8 font-bold text-white hover:bg-[#4752C4]"
+          >
+            Continuar
+          </Button>
         </div>
       </section>
-
-      <div aria-label="Ações finais" className="mt-32 mb-32 flex justify-center gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => navigate("/home")}
-          className="min-h-12 rounded-md px-6"
-        >
-          Fechar
-        </Button>
-        <Button
-          type="button"
-          onClick={() => window.location.assign(referralLink)}
-          className="min-h-12 rounded-md bg-[#5865F2] px-8 font-bold text-white hover:bg-[#4752C4]"
-        >
-          Continuar
-        </Button>
-      </div>
     </main>
   );
 
