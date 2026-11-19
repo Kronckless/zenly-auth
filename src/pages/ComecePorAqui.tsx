@@ -434,7 +434,7 @@ export default function ComecePorAqui() {
 
       <section
         aria-label="Ações finais"
-        className="relative isolate mx-auto mt-32 mb-32 flex w-full max-w-4xl justify-center gap-3 overflow-hidden rounded-2xl border border-white/50 bg-[linear-gradient(135deg,#833AB4_0%,#6A35B5_22%,#C13584_48%,#E1306C_66%,#F77737_84%,#FCAF45_100%)] px-5 py-40 shadow-lg sm:py-52"
+        className="relative isolate mx-auto mt-4 mb-32 flex w-full max-w-4xl justify-center gap-3 overflow-hidden rounded-2xl border border-white/50 bg-[linear-gradient(135deg,#833AB4_0%,#6A35B5_22%,#C13584_48%,#E1306C_66%,#F77737_84%,#FCAF45_100%)] px-5 py-40 shadow-lg sm:py-52"
       >
         <div
           aria-hidden="true"
