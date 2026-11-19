@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, Gift } from "lucide-react";
 import AppNavigation from "@/components/AppNavigation";
@@ -74,8 +74,42 @@ const questions = [
   },
 ];
 
+const referralTitlePhrases = [
+  "Convide e ganhe recompensas.",
+  "Indique e ganhe.",
+  "Chame seus amigos.",
+  "Compartilhe e receba!",
+  "Recomende e Lucre!",
+  "Apresente a alguém...",
+];
+
 export default function ComecePorAqui() {
   const navigate = useNavigate();
+  const [titlePhraseIndex, setTitlePhraseIndex] = useState(0);
+  const [isTitleVisible, setIsTitleVisible] = useState(true);
+
+  useEffect(() => {
+    let fadeTimer: number;
+    let swapTimer: number;
+
+    function scheduleNextPhrase() {
+      fadeTimer = window.setTimeout(() => {
+        setIsTitleVisible(false);
+        swapTimer = window.setTimeout(() => {
+          setTitlePhraseIndex((index) => (index + 1) % referralTitlePhrases.length);
+          setIsTitleVisible(true);
+          scheduleNextPhrase();
+        }, 300);
+      }, 2700);
+    }
+
+    scheduleNextPhrase();
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(swapTimer);
+    };
+  }, []);
   const [referralPeople, setReferralPeople] = useState(1);
   const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [isWhatsAppGuideOpen, setIsWhatsAppGuideOpen] = useState(false);
@@ -449,9 +483,15 @@ export default function ComecePorAqui() {
           className="pointer-events-none absolute -right-12 -top-20 size-64 rounded-full border-[28px] border-white/20 blur-sm"
         />
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-5">
-          <h2 className="w-full text-center font-serif text-3xl font-bold italic tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] sm:text-4xl">
-            Convide e ganhe recompensas.
-          </h2>
+          <div className="relative flex h-20 w-full items-center justify-center sm:h-12">
+            <h2
+              className={`absolute w-full text-center font-serif text-3xl font-bold italic tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] transition-opacity duration-300 sm:text-4xl ${
+                isTitleVisible ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {referralTitlePhrases[titlePhraseIndex]}
+            </h2>
+          </div>
           <div className="flex w-full flex-wrap justify-center gap-3">
           <Button
             type="button"
