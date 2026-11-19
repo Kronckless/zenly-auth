@@ -253,6 +253,34 @@ function shouldShowReferralInPreview() {
 }
 
 export default function Home() {
+  async function copyAffiliateLink(link: string): Promise<boolean> {
+    try {
+      if (typeof navigator.clipboard?.writeText === "function") {
+        await navigator.clipboard.writeText(link);
+        return true;
+      }
+    } catch {
+      // Tenta o método compatível com navegadores mais restritivos.
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = link;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
+
+    try {
+      document.body.appendChild(textarea);
+      textarea.select();
+      textarea.setSelectionRange(0, textarea.value.length);
+      return document.execCommand("copy");
+    } catch {
+      return false;
+    } finally {
+      textarea.remove();
+    }
+  }
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -266,7 +294,7 @@ export default function Home() {
   const [affiliateLinkSaving, setAffiliateLinkSaving] = useState(false);
   const [isEditingAffiliateLink, setIsEditingAffiliateLink] = useState(false);
   const [affiliateLinkActionStatus, setAffiliateLinkActionStatus] = useState<
-    "idle" | "copied" | "shared" | "error"
+    "idle" | "copied" | "shared" | "share-fallback" | "error"
   >("idle");
 
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
@@ -895,60 +923,78 @@ async function openNews(item: NewsItem) {
                           <Button
                             type="button"
                             onClick={async () => {
-                              try {
-                                await navigator.clipboard.writeText(affiliateLink);
-                                setAffiliateLinkActionStatus("copied");
+                              const copied = await copyAffiliateLink(affiliateLink);
+                              setAffiliateLinkActionStatus(copied ? "copied" : "error");
+                              if (copied) {
                                 window.setTimeout(
                                   () => setAffiliateLinkActionStatus("idle"),
                                   2200,
                                 );
-                              } catch {
-                                setAffiliateLinkActionStatus("error");
                               }
                             }}
                             className="h-9 rounded-xl bg-white px-2 text-xs font-bold text-zinc-900 hover:bg-white/90"
                           >
                             {affiliateLinkActionStatus === "copied"
-                              ? "Copiado!"
+                              ? "Link copiado!"
                               : "COPIAR LINK"}
                           </Button>
                           <Button
                             type="button"
                             variant="outline"
                             onClick={async () => {
-                              try {
-                                if (navigator.share) {
+                              if (typeof navigator.share === "function") {
+                                try {
                                   await navigator.share({
-                                    title: "Meu link de indicação",
                                     url: affiliateLink,
+                                    text: "Meu link de indicação do Voz do Povo",
                                   });
                                   setAffiliateLinkActionStatus("shared");
                                   window.setTimeout(
                                     () => setAffiliateLinkActionStatus("idle"),
                                     2200,
                                   );
-                                } else {
-                                  await navigator.clipboard.writeText(affiliateLink);
-                                  setAffiliateLinkActionStatus("copied");
-                                  window.setTimeout(
-                                    () => setAffiliateLinkActionStatus("idle"),
-                                    2200,
-                                  );
+                                  return;
+                                } catch (error) {
+                                  if (
+                                    error &&
+                                    typeof error === "object" &&
+                                    "name" in error &&
+                                    error.name === "AbortError"
+                                  ) {
+                                    setAffiliateLinkActionStatus("idle");
+                                    return;
+                                  }
                                 }
-                              } catch {
-                                setAffiliateLinkActionStatus("error");
+                              }
+
+                              const copied = await copyAffiliateLink(affiliateLink);
+                              setAffiliateLinkActionStatus(
+                                copied ? "share-fallback" : "error",
+                              );
+                              if (copied) {
+                                window.setTimeout(
+                                  () => setAffiliateLinkActionStatus("idle"),
+                                  4000,
+                                );
                               }
                             }}
                             className="h-9 rounded-xl border-white/60 bg-white/10 px-2 text-xs font-bold text-white hover:bg-white/20 hover:text-white"
                           >
                             {affiliateLinkActionStatus === "shared"
                               ? "Compartilhado!"
-                              : "COMPARTILHAR"}
+                              : affiliateLinkActionStatus === "share-fallback"
+                                ? "Link copiado!"
+                                : "COMPARTILHAR"}
                           </Button>
                         </div>
+                        {affiliateLinkActionStatus === "share-fallback" && (
+                          <p role="status" className="mt-2 text-xs text-white/90">
+                            Compartilhamento indisponível aqui — link copiado para você colar onde quiser!
+                          </p>
+                        )}
                         {affiliateLinkActionStatus === "error" && (
                           <p role="status" className="mt-2 text-xs text-white/90">
-                            Não foi possível concluir a ação. Tente copiar o link.
+                            Não foi possível copiar o link. Tente novamente.
                           </p>
                         )}
                         <Button
