@@ -125,7 +125,7 @@ export default function ComecePorAqui() {
   });
 
   useEffect(() => {
-    const phraseTimer = window.setInterval(() => {
+    const phraseTimer = window.setTimeout(() => {
       setIntroTitle((current) => {
         if (current.isSpecial) {
           return { phraseIndex: 0, completedCycles: 0, isSpecial: false };
@@ -136,16 +136,16 @@ export default function ComecePorAqui() {
         }
 
         const completedCycles = current.completedCycles + 1;
-        if (completedCycles === 8) {
+        if (completedCycles === 3) {
           return { ...current, completedCycles, isSpecial: true };
         }
 
         return { phraseIndex: 0, completedCycles, isSpecial: false };
       });
-    }, 3000);
+    }, introTitle.isSpecial ? 8000 : 3000);
 
-    return () => window.clearInterval(phraseTimer);
-  }, []);
+    return () => window.clearTimeout(phraseTimer);
+  }, [introTitle]);
 
   const [referralPeople, setReferralPeople] = useState(1);
   const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
