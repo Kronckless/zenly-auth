@@ -27,7 +27,7 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select("id, email, is_booster, is_mfo, display_name, link_afiliado")
     .eq("email", email)
     .eq("id", user.id)
     .maybeSingle();
