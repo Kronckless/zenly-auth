@@ -779,10 +779,22 @@ async function openNews(item: NewsItem) {
                 </div>
               )}
               {isAffiliateLinkOpen && (
-                <div className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-sm overflow-y-auto rounded-[32px] border border-white/30 bg-[linear-gradient(135deg,#833AB4_0%,#C13584_35%,#E1306C_58%,#F77737_78%,#FCAF45_100%)] p-0 text-white shadow-2xl sm:bottom-6">
+                <div
+                  className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border border-white/40 p-0 text-white shadow-[0_18px_48px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-2xl sm:bottom-6"
+                  style={{
+                    background:
+                      "linear-gradient(145deg, rgba(112,118,128,0.92) 0%, rgba(73,79,88,0.94) 48%, rgba(38,42,49,0.96) 100%)",
+                    backdropFilter: "blur(24px) saturate(160%)",
+                    WebkitBackdropFilter: "blur(24px) saturate(160%)",
+                  }}
+                >
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-0 opacity-[0.12]"
+                    className="pointer-events-none absolute inset-x-0 top-0 h-24 rounded-t-[26px] bg-gradient-to-b from-white/25 to-transparent"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 opacity-[0.10]"
                     style={{
                       backgroundImage:
                         "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E\")",
@@ -794,22 +806,22 @@ async function openNews(item: NewsItem) {
                     size="icon"
                     aria-label="Fechar pop-up"
                     onClick={() => setIsAffiliateLinkOpen(false)}
-                    className="absolute right-4 top-4 z-20 size-9 rounded-full text-white hover:bg-white/15 hover:text-white"
+                    className="absolute right-3 top-3 z-20 size-8 rounded-full text-white hover:bg-white/15 hover:text-white"
                   >
-                    <X className="size-5" />
+                    <X className="size-4" />
                   </Button>
 
-                  <div className="relative z-10 p-5 pt-12">
+                  <div className="relative z-10 p-4 pt-10">
                     <div className="text-left">
-                      <h2 className="text-2xl font-bold leading-tight text-white">
+                      <h2 className="text-lg font-bold leading-tight text-white">
                         Salve seu link de indicação
                       </h2>
-                      <p className="mt-2 text-sm leading-relaxed text-white/90">
+                      <p className="mt-1.5 text-xs leading-relaxed text-white/90">
                         Cole abaixo o seu link exclusivo da Cakto para deixá-lo salvo aqui no app.
                       </p>
                     </div>
 
-                    <div className="mt-6 space-y-3">
+                    <div className="mt-4 space-y-2">
                       <Input
                         type="url"
                         value={affiliateLink}
@@ -821,13 +833,13 @@ async function openNews(item: NewsItem) {
                         placeholder="https://cakto.app/..."
                         aria-label="Link de indicação da Cakto"
                         aria-invalid={Boolean(affiliateLinkError)}
-                        className="h-12 rounded-2xl border-white bg-white px-4 text-sm text-zinc-950 placeholder:text-zinc-500 focus-visible:ring-white/70"
+                        className="h-10 rounded-xl border-white bg-white px-3 text-sm text-zinc-950 placeholder:text-zinc-500 focus-visible:ring-white/70"
                       />
 
                       {affiliateLinkError && (
                         <p
                           role="alert"
-                          className="rounded-xl border border-red-200/50 bg-red-950/35 px-3 py-2 text-sm font-medium text-white"
+                          className="rounded-lg border border-red-200/50 bg-red-950/35 px-2.5 py-1.5 text-xs font-medium text-white"
                         >
                           {affiliateLinkError}
                         </p>
@@ -837,7 +849,7 @@ async function openNews(item: NewsItem) {
                         type="button"
                         onClick={saveAffiliateLink}
                         disabled={affiliateLinkSaving}
-                        className="h-12 w-full rounded-2xl bg-white font-bold tracking-wide text-[#C13584] shadow-lg hover:bg-white/90 disabled:opacity-75"
+                        className="h-10 w-full rounded-xl bg-white text-sm font-bold tracking-wide text-zinc-900 shadow-lg hover:bg-white/90 disabled:opacity-75"
                       >
                         {affiliateLinkSaving
                           ? "SALVANDO..."
