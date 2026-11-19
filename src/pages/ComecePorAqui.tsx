@@ -448,10 +448,11 @@ export default function ComecePorAqui() {
           aria-hidden="true"
           className="pointer-events-none absolute -right-12 -top-20 size-64 rounded-full border-[28px] border-white/20 blur-sm"
         />
-        <h2 className="absolute left-1/2 top-8 z-10 w-[calc(100%-2rem)] -translate-x-1/2 text-center font-serif text-3xl font-bold italic tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] sm:top-10 sm:text-4xl">
-          Convide e ganhe recompensas.
-        </h2>
-        <div className="relative z-10 flex flex-wrap justify-center gap-3">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-8 px-5">
+          <h2 className="w-full text-center font-serif text-3xl font-bold italic tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] sm:text-4xl">
+            Convide e ganhe recompensas.
+          </h2>
+          <div className="flex w-full flex-wrap justify-center gap-3">
           <Button
             type="button"
             variant="outline"
@@ -467,6 +468,7 @@ export default function ComecePorAqui() {
           >
             Continuar
           </Button>
+          </div>
         </div>
       </section>
     </main>
