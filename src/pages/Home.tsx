@@ -194,11 +194,11 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
 
 const AFFILIATE_WIDGET_MAX_AUTO_SHOWS = 3;
 
-function affiliateWidgetShowCountKey(userId?: string) {
-  return `affiliate-widget-auto-shows:${userId || "anonymous"}`;
+function affiliateWidgetShowCountKey(userId: string) {
+  return `affiliate-widget-auto-shows:${userId}`;
 }
 
-function getAffiliateWidgetShowCount(userId?: string) {
+function getAffiliateWidgetShowCount(userId: string) {
   try {
     const count = Number(
       window.localStorage.getItem(affiliateWidgetShowCountKey(userId)) || 0,
@@ -209,7 +209,7 @@ function getAffiliateWidgetShowCount(userId?: string) {
   }
 }
 
-function registerAffiliateWidgetAutoShow(userId?: string) {
+function registerAffiliateWidgetAutoShow(userId: string) {
   const count = getAffiliateWidgetShowCount(userId);
   if (count >= AFFILIATE_WIDGET_MAX_AUTO_SHOWS) return false;
 
@@ -296,6 +296,8 @@ export default function Home() {
   const [affiliateLinkActionStatus, setAffiliateLinkActionStatus] = useState<
     "idle" | "copied" | "shared" | "share-fallback" | "error"
   >("idle");
+  const affiliateUserIdRef = useRef<string | null>(null);
+  const [affiliateUserId, setAffiliateUserId] = useState<string | null>(null);
 
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
@@ -333,12 +335,40 @@ export default function Home() {
   }, [location.pathname, location.state, navigate]);
 
   useEffect(() => {
-    if (!supabase) return;
-
     let active = true;
 
+    const resetAffiliateCardState = () => {
+      setAffiliateLink("");
+      setAffiliateLinkError("");
+      setAffiliateLinkSaved(false);
+      setAffiliateLinkSaving(false);
+      setIsEditingAffiliateLink(false);
+      setAffiliateLinkActionStatus("idle");
+      setIsAffiliateLinkOpen(false);
+      setModalIndiqueEGanheAberto(false);
+      setFechouModalIndiqueEGanhe(false);
+    };
+
+    const setCurrentUser = (userId: string | null) => {
+      if (affiliateUserIdRef.current === userId) return;
+
+      affiliateUserIdRef.current = userId;
+      setAffiliateUserId(userId);
+      resetAffiliateCardState();
+      setIsBooster(false);
+      setIsSocio(false);
+    };
+
+    if (!supabase) {
+      setCurrentUser(null);
+      return;
+    }
+
     const loadBoosterStatus = async (userId?: string) => {
-      if (!userId) {
+      const currentUserId = userId ?? null;
+      setCurrentUser(currentUserId);
+
+      if (!currentUserId) {
         if (active) {
           setIsBooster(false);
           setIsSocio(false);
@@ -349,18 +379,18 @@ export default function Home() {
       const { data, error } = await supabase
         .from("profiles")
         .select("is_booster, is_socio, link_afiliado")
-        .eq("id", userId)
+        .eq("id", currentUserId)
         .maybeSingle();
 
-      if (active) {
-        setIsBooster(!error && data?.is_booster === true);
-        setIsSocio(!error && data?.is_socio === true);
-        const savedLink =
-          !error && typeof data?.link_afiliado === "string"
-            ? data.link_afiliado
-            : "";
-        setAffiliateLink(savedLink);
-      }
+      if (!active || affiliateUserIdRef.current !== currentUserId) return;
+
+      setIsBooster(!error && data?.is_booster === true);
+      setIsSocio(!error && data?.is_socio === true);
+      const savedLink =
+        !error && typeof data?.link_afiliado === "string"
+          ? data.link_afiliado
+          : "";
+      setAffiliateLink(savedLink);
     };
 
     void supabase.auth.getUser().then(({ data: { user } }) => {
@@ -370,8 +400,10 @@ export default function Home() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      const userId = session?.user.id ?? null;
+      setCurrentUser(userId);
       window.setTimeout(() => {
-        void loadBoosterStatus(session?.user.id);
+        void loadBoosterStatus(userId ?? undefined);
       }, 0);
     });
 
@@ -394,13 +426,8 @@ export default function Home() {
     setModalIndiqueEGanheAberto(false);
     setFechouModalIndiqueEGanhe(true);
 
-    if (!supabase) {
-      if (
-        !affiliateLink.trim() &&
-        registerAffiliateWidgetAutoShow()
-      ) {
-        setIsAffiliateLinkOpen(true);
-      }
+    if (!supabase || !isSocio) {
+      setIsAffiliateLinkOpen(false);
       return;
     }
 
@@ -408,13 +435,8 @@ export default function Home() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) {
-      if (
-        !affiliateLink.trim() &&
-        registerAffiliateWidgetAutoShow()
-      ) {
-        setIsAffiliateLinkOpen(true);
-      }
+    if (!user || user.id !== affiliateUserIdRef.current) {
+      setIsAffiliateLinkOpen(false);
       return;
     }
 
@@ -424,7 +446,7 @@ export default function Home() {
       .eq("id", user.id)
       .maybeSingle();
 
-    if (error) return;
+    if (error || affiliateUserIdRef.current !== user.id) return;
 
     const savedLink =
       typeof data?.link_afiliado === "string" ? data.link_afiliado : "";
@@ -434,6 +456,8 @@ export default function Home() {
       registerAffiliateWidgetAutoShow(user.id)
     ) {
       setIsAffiliateLinkOpen(true);
+    } else {
+      setIsAffiliateLinkOpen(false);
     }
   }
 
@@ -476,8 +500,13 @@ export default function Home() {
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (!user) {
+      if (!user || user.id !== affiliateUserIdRef.current) {
         setAffiliateLinkError("Entre na sua conta para salvar o link.");
+        return;
+      }
+
+      if (!isSocio) {
+        setAffiliateLinkError("Este recurso está disponível apenas para sócios com acesso ativo.");
         return;
       }
 
@@ -487,6 +516,8 @@ export default function Home() {
         .eq("id", user.id)
         .select("link_afiliado")
         .maybeSingle();
+
+      if (affiliateUserIdRef.current !== user.id) return;
 
       if (error || !data) {
         setAffiliateLinkError("Não foi possível salvar o link. Tente novamente.");
@@ -887,7 +918,9 @@ async function openNews(item: NewsItem) {
                 </div>
               )}
               {isAffiliateLinkOpen &&
-                fechouModalIndiqueEGanhe && (
+                fechouModalIndiqueEGanhe &&
+                affiliateUserId &&
+                isSocio && (
                 <div
                   className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border-2 p-0 text-white shadow-[0_14px_36px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-2xl sm:bottom-6"
                   style={{
