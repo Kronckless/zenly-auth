@@ -74,6 +74,13 @@ const questions = [
   },
 ];
 
+const introTitlePhrases = [
+  "É fácil, leia esse passo-a-passo:",
+  "É fácil, faça assim:",
+  "É fácil, entenda como fazer:",
+  "É fácil, siga abaixo:",
+];
+
 const referralTitlePhrases = [
   "Convide e ganhe recompensas.",
   "Indique e ganhe.",
@@ -110,6 +117,33 @@ export default function ComecePorAqui() {
       window.clearTimeout(swapTimer);
     };
   }, []);
+
+  const [introTitlePhraseIndex, setIntroTitlePhraseIndex] = useState(0);
+  const [isIntroTitleVisible, setIsIntroTitleVisible] = useState(true);
+
+  useEffect(() => {
+    let fadeTimer: number;
+    let swapTimer: number;
+
+    function scheduleNextPhrase() {
+      fadeTimer = window.setTimeout(() => {
+        setIsIntroTitleVisible(false);
+        swapTimer = window.setTimeout(() => {
+          setIntroTitlePhraseIndex((index) => (index + 1) % introTitlePhrases.length);
+          setIsIntroTitleVisible(true);
+          scheduleNextPhrase();
+        }, 300);
+      }, 2700);
+    }
+
+    scheduleNextPhrase();
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(swapTimer);
+    };
+  }, []);
+
   const [referralPeople, setReferralPeople] = useState(1);
   const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [isWhatsAppGuideOpen, setIsWhatsAppGuideOpen] = useState(false);
@@ -129,8 +163,18 @@ export default function ComecePorAqui() {
 
   return (
     <main className="min-h-screen bg-background px-4 pt-20 sm:px-8 sm:pt-24">
-      <h1 className="mx-auto max-w-4xl text-center font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
-        É fácil, leia esse passo-a-passo:
+      <h1 className="relative mx-auto max-w-4xl text-center font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
+        <span aria-hidden="true" className="invisible">
+          É fácil, leia esse passo-a-passo:
+        </span>
+        <span
+          aria-live="polite"
+          className={`absolute inset-0 flex items-center justify-center text-center transition-opacity duration-300 ${
+            isIntroTitleVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          {introTitlePhrases[introTitlePhraseIndex]}
+        </span>
       </h1>
 
       <section className="mx-auto mt-8 w-full max-w-4xl rounded-xl border border-border bg-[#F5F6F8] p-5 text-left sm:p-8">
