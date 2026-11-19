@@ -432,7 +432,7 @@ export default function ComecePorAqui() {
         </Accordion>
       </section>
 
-      <div aria-label="Ações finais" className="mt-8 flex justify-center gap-3 pb-8">
+      <div aria-label="Ações finais" className="mt-16 mb-16 flex justify-center gap-3">
         <Button
           type="button"
           variant="outline"
