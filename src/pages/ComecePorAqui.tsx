@@ -376,61 +376,55 @@ export default function ComecePorAqui() {
                 <div className="space-y-2">
                   <h3 className="font-bold text-foreground">Como criar uma conta na Cakto?</h3>
                   <p>
-                    A Cakto é uma plataforma usada para organizar vendas e pagamentos de produtos e serviços digitais. Se você pretende trabalhar com indicações e receber comissões, conhecer a plataforma e entender o cadastro é um passo importante.
+                    A Cakto é uma plataforma para organizar vendas e pagamentos de produtos e serviços digitais. Se você deseja receber comissões por indicações, pode ser necessário criar uma conta e configurar os recebimentos na própria plataforma.
                   </p>
                   <p>
-                    Para usar uma conta e receber valores, é preciso ter 18 anos ou mais e cumprir os requisitos da própria Cakto.
+                    A Cakto exige que a pessoa tenha 18 anos completos. A conta deve ser criada, verificada e usada pelo próprio titular, que também precisa atender às regras atuais da plataforma.
                   </p>
                 </div>
 
                 <section className="space-y-2">
-                  <h3 className="font-bold text-foreground">1. Acesse o site da Cakto</h3>
+                  <h3 className="font-bold text-foreground">1. Confira se você atende aos requisitos</h3>
                   <p>
-                    Comece pelo site oficial:{" "}
-                    <a
-                      href="https://cakto.com.br/"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-semibold text-[#5536B8] underline decoration-[#A78BFA] underline-offset-4 hover:text-[#392274]"
-                    >
-                      cakto.com.br
-                    </a>
-                    . É lá que você encontrará as opções de acesso e de cadastro oferecidas pela plataforma.
+                    Antes de começar, confirme que já completou 18 anos e que pode usar a plataforma conforme as regras da Cakto. Não crie uma conta usando os dados ou documentos de outra pessoa.
                   </p>
                 </section>
 
                 <section className="space-y-2">
-                  <h3 className="font-bold text-foreground">2. Procure a opção de cadastro</h3>
+                  <h3 className="font-bold text-foreground">2. Tenha seus dados e documentos em mãos</h3>
                   <p>
-                    No site, procure a opção para se cadastrar ou criar uma conta, caso esteja disponível. As páginas e os nomes usados podem mudar; siga o que aparecer no próprio site, sem se preocupar se a tela estiver diferente deste guia.
+                    Para identificar você, a Cakto pode pedir informações pessoais e um documento próprio. Os pedidos podem variar; confira as orientações atuais da plataforma e envie apenas o que ela solicitar pelos canais oficiais.
+                  </p>
+                  <p>
+                    Se for configurar recebimentos, a plataforma também pode pedir dados bancários. Use uma conta bancária sua e confira se os dados estão corretos e correspondem ao titular da conta Cakto.
                   </p>
                 </section>
 
                 <section className="space-y-2">
-                  <h3 className="font-bold text-foreground">3. Preencha seus dados com atenção</h3>
+                  <h3 className="font-bold text-foreground">3. Comece pelo canal oficial</h3>
                   <p>
-                    A plataforma poderá pedir informações pessoais para identificar você e configurar a conta. Use informações verdadeiras e seus próprios documentos. Antes de continuar, confira se atende à idade mínima e às demais condições da Cakto.
+                    Acesse a Cakto pelo site oficial e procure a opção de cadastro ou criação de conta que estiver disponível. Siga as instruções apresentadas pela própria plataforma; os nomes das opções e as telas podem mudar com o tempo.
                   </p>
                 </section>
 
                 <section className="space-y-2">
-                  <h3 className="font-bold text-foreground">4. Revise tudo antes de finalizar</h3>
+                  <h3 className="font-bold text-foreground">4. Preencha e confira seus dados</h3>
                   <p>
-                    Confira os dados preenchidos, especialmente o endereço de e-mail. Depois, siga as orientações que a plataforma mostrar. Se for solicitada uma confirmação ou verificação, faça-a somente pelos meios oficiais indicados pela Cakto.
+                    Informe dados verdadeiros e revise com calma seu nome e endereço de e-mail antes de continuar. Se a Cakto pedir uma confirmação ou verificação, siga as instruções exibidas nos canais oficiais. Não compartilhe sua senha nem códigos de confirmação com outras pessoas.
                   </p>
                 </section>
 
                 <section className="space-y-2">
-                  <h3 className="font-bold text-foreground">5. Conheça a área financeira</h3>
+                  <h3 className="font-bold text-foreground">5. Configure os recebimentos com cuidado</h3>
                   <p>
-                    A área financeira reúne as opções disponíveis para configurar e consultar informações sobre recebimentos. O que você poderá fazer ali depende dos recursos e das regras da plataforma. Use sempre seus próprios dados e siga as instruções apresentadas.
+                    A área financeira serve para consultar ou configurar os recebimentos, de acordo com as opções que a Cakto disponibiliza. Informe somente seus próprios dados bancários, confira tudo antes de confirmar e nunca use a conta de outra pessoa.
                   </p>
                 </section>
 
                 <section className="space-y-2">
-                  <h3 className="font-bold text-foreground">6. Consulte o suporte oficial se tiver dúvidas</h3>
+                  <h3 className="font-bold text-foreground">6. Procure a ajuda oficial se tiver dúvidas</h3>
                   <p>
-                    Se alguma tela for diferente ou algo não estiver claro, consulte a documentação e o suporte oficial da Cakto. Assim, você recebe orientações atualizadas diretamente da plataforma.
+                    Se algo não estiver claro ou as telas forem diferentes, consulte a documentação ou o suporte oficial da Cakto. Os passos e os requisitos podem ser atualizados, então siga sempre as instruções mais recentes da plataforma.
                   </p>
                 </section>
 
@@ -439,7 +433,7 @@ export default function ComecePorAqui() {
                     Antes de começar, confira os requisitos da plataforma.
                   </p>
                   <p>
-                    O cadastro e o uso da Cakto para recebimentos dependem das regras da plataforma, incluindo a idade mínima de 18 anos. Consulte sempre as condições oficiais antes de iniciar.
+                    Para criar, verificar e usar a conta, é preciso ter 18 anos completos, ser o próprio titular e atender às regras da Cakto. Consulte as orientações oficiais antes de iniciar.
                   </p>
                 </div>
               </div>
