@@ -191,8 +191,6 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
   );
 }
 
-const FORCE_SHOW_AFFILIATE_WIDGET = true;
-
 function shouldShowReferralInPreview() {
   if (typeof window === "undefined") return false;
 
@@ -226,10 +224,9 @@ export default function Home() {
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
-  const [isReferralOpen, setIsReferralOpen] = useState(false);
-  const [isAffiliateLinkOpen, setIsAffiliateLinkOpen] = useState(
-    FORCE_SHOW_AFFILIATE_WIDGET,
-  );
+  const [modalIndiqueEGanheAberto, setModalIndiqueEGanheAberto] = useState(false);
+  const [fechouModalIndiqueEGanhe, setFechouModalIndiqueEGanhe] = useState(false);
+  const [isAffiliateLinkOpen, setIsAffiliateLinkOpen] = useState(false);
   const [affiliateLink, setAffiliateLink] = useState("");
   const [affiliateLinkError, setAffiliateLinkError] = useState("");
   const [affiliateLinkSaved, setAffiliateLinkSaved] = useState(false);
@@ -286,7 +283,7 @@ export default function Home() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("is_booster, is_socio, affiliate_link")
+        .select("is_booster, is_socio, link_afiliado")
         .eq("id", userId)
         .maybeSingle();
 
@@ -294,18 +291,10 @@ export default function Home() {
         setIsBooster(!error && data?.is_booster === true);
         setIsSocio(!error && data?.is_socio === true);
         const savedLink =
-          !error && typeof data?.affiliate_link === "string"
-            ? data.affiliate_link
+          !error && typeof data?.link_afiliado === "string"
+            ? data.link_afiliado
             : "";
         setAffiliateLink(savedLink);
-        if (
-          !FORCE_SHOW_AFFILIATE_WIDGET &&
-          !error &&
-          data?.is_socio === true &&
-          !savedLink.trim()
-        ) {
-          setIsAffiliateLinkOpen(true);
-        }
       }
     };
 
@@ -328,24 +317,42 @@ export default function Home() {
   }, []);
 
   async function handleReferralOpenChange(open: boolean) {
-    setIsReferralOpen(open);
-    if (FORCE_SHOW_AFFILIATE_WIDGET || open || !isSocio || !supabase) return;
+    if (open) {
+      setModalIndiqueEGanheAberto(true);
+      setFechouModalIndiqueEGanhe(false);
+      setIsAffiliateLinkOpen(false);
+      return;
+    }
+
+    if (!modalIndiqueEGanheAberto) return;
+
+    setModalIndiqueEGanheAberto(false);
+    setFechouModalIndiqueEGanhe(true);
+
+    if (!supabase) {
+      if (!affiliateLink.trim()) setIsAffiliateLinkOpen(true);
+      return;
+    }
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user) return;
+
+    if (!user) {
+      if (!affiliateLink.trim()) setIsAffiliateLinkOpen(true);
+      return;
+    }
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("affiliate_link")
+      .select("link_afiliado")
       .eq("id", user.id)
       .maybeSingle();
 
     if (error) return;
 
     const savedLink =
-      typeof data?.affiliate_link === "string" ? data.affiliate_link : "";
+      typeof data?.link_afiliado === "string" ? data.link_afiliado : "";
     setAffiliateLink(savedLink);
     if (!savedLink.trim()) setIsAffiliateLinkOpen(true);
   }
@@ -378,9 +385,9 @@ export default function Home() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .update({ affiliate_link: link })
+        .update({ link_afiliado: link })
         .eq("id", user.id)
-        .select("affiliate_link")
+        .select("link_afiliado")
         .maybeSingle();
 
       if (error || !data) {
@@ -388,7 +395,7 @@ export default function Home() {
         return;
       }
 
-      setAffiliateLink(data.affiliate_link);
+      setAffiliateLink(data.link_afiliado);
       setAffiliateLinkSaved(true);
       window.setTimeout(() => setIsAffiliateLinkOpen(false), 900);
     } finally {
@@ -766,7 +773,9 @@ async function openNews(item: NewsItem) {
                       type="button"
                       onClick={() => {
                         setMenuOpen(false);
-                        setIsReferralOpen(true);
+                        setModalIndiqueEGanheAberto(true);
+                        setFechouModalIndiqueEGanhe(false);
+                        setIsAffiliateLinkOpen(false);
                       }}
                       className="mt-2 block w-full rounded-md border border-white/60 bg-white/95 px-3 py-3 text-left text-gray-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
@@ -778,7 +787,9 @@ async function openNews(item: NewsItem) {
                   )}
                 </div>
               )}
-              {isAffiliateLinkOpen && (
+              {isAffiliateLinkOpen &&
+                fechouModalIndiqueEGanhe &&
+                !affiliateLink.trim() && (
                 <div
                   className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border-2 p-0 text-white shadow-[0_14px_36px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-2xl sm:bottom-6"
                   style={{
@@ -864,7 +875,7 @@ async function openNews(item: NewsItem) {
               )}
 
               <Dialog
-                open={isReferralOpen}
+                open={modalIndiqueEGanheAberto}
                 onOpenChange={handleReferralOpenChange}
               >
                 <DialogContent
