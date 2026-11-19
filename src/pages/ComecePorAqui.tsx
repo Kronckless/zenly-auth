@@ -119,29 +119,13 @@ export default function ComecePorAqui() {
   }, []);
 
   const [introTitlePhraseIndex, setIntroTitlePhraseIndex] = useState(0);
-  const [isIntroTitleVisible, setIsIntroTitleVisible] = useState(true);
 
   useEffect(() => {
-    let fadeTimer: number;
-    let swapTimer: number;
+    const phraseTimer = window.setInterval(() => {
+      setIntroTitlePhraseIndex((index) => (index + 1) % introTitlePhrases.length);
+    }, 3000);
 
-    function scheduleNextPhrase() {
-      fadeTimer = window.setTimeout(() => {
-        setIsIntroTitleVisible(false);
-        swapTimer = window.setTimeout(() => {
-          setIntroTitlePhraseIndex((index) => (index + 1) % introTitlePhrases.length);
-          setIsIntroTitleVisible(true);
-          scheduleNextPhrase();
-        }, 300);
-      }, 2700);
-    }
-
-    scheduleNextPhrase();
-
-    return () => {
-      window.clearTimeout(fadeTimer);
-      window.clearTimeout(swapTimer);
-    };
+    return () => window.clearInterval(phraseTimer);
   }, []);
 
   const [referralPeople, setReferralPeople] = useState(1);
@@ -163,15 +147,20 @@ export default function ComecePorAqui() {
 
   return (
     <main className="min-h-screen bg-background px-4 pt-20 sm:px-8 sm:pt-24">
+      <style>{`
+        @keyframes intro-title-replace {
+          from { transform: translateY(0.18em) scale(0.99); }
+          to { transform: translateY(0) scale(1); }
+        }
+      `}</style>
       <h1 className="relative mx-auto max-w-4xl text-center font-display text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl md:text-5xl">
         <span aria-hidden="true" className="invisible">
           É fácil, leia esse passo-a-passo:
         </span>
         <span
+          key={introTitlePhraseIndex}
           aria-live="polite"
-          className={`absolute inset-0 flex items-center justify-center text-center transition-opacity duration-300 ${
-            isIntroTitleVisible ? "opacity-100" : "opacity-0"
-          }`}
+          className="absolute inset-0 flex items-center justify-center text-center motion-safe:animate-[intro-title-replace_220ms_cubic-bezier(0.22,1,0.36,1)]"
         >
           {introTitlePhrases[introTitlePhraseIndex]}
         </span>
