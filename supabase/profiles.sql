@@ -4,13 +4,15 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users (id) on delete cascade,
   display_name text not null default '',
   has_mfo boolean not null default false,
+  affiliate_link text not null default '',
   created_at timestamptz not null default now()
 );
 
 alter table public.profiles
   add column if not exists has_mfo boolean not null default false,
   add column if not exists is_booster boolean not null default false,
-  add column if not exists is_socio boolean not null default false;
+  add column if not exists is_socio boolean not null default false,
+  add column if not exists affiliate_link text not null default '';
 
 create table if not exists public.salas_comunidade (
   id uuid primary key default gen_random_uuid(),

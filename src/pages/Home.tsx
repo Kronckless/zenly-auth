@@ -25,6 +25,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -224,6 +225,11 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isReferralOpen, setIsReferralOpen] = useState(false);
+  const [isAffiliateLinkOpen, setIsAffiliateLinkOpen] = useState(false);
+  const [affiliateLink, setAffiliateLink] = useState("");
+  const [affiliateLinkError, setAffiliateLinkError] = useState("");
+  const [affiliateLinkSaved, setAffiliateLinkSaved] = useState(false);
+  const [affiliateLinkSaving, setAffiliateLinkSaving] = useState(false);
 
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
@@ -276,13 +282,18 @@ export default function Home() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("is_booster, is_socio")
+        .select("is_booster, is_socio, affiliate_link")
         .eq("id", userId)
         .maybeSingle();
 
       if (active) {
         setIsBooster(!error && data?.is_booster === true);
         setIsSocio(!error && data?.is_socio === true);
+        setAffiliateLink(
+          !error && typeof data?.affiliate_link === "string"
+            ? data.affiliate_link
+            : "",
+        );
       }
     };
 
@@ -303,6 +314,74 @@ export default function Home() {
       subscription.unsubscribe();
     };
   }, []);
+
+  async function handleReferralOpenChange(open: boolean) {
+    setIsReferralOpen(open);
+    if (open || !isSocio || !supabase) return;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("affiliate_link")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (error) return;
+
+    const savedLink =
+      typeof data?.affiliate_link === "string" ? data.affiliate_link : "";
+    setAffiliateLink(savedLink);
+    if (!savedLink.trim()) setIsAffiliateLinkOpen(true);
+  }
+
+  async function saveAffiliateLink() {
+    const link = affiliateLink.trim();
+    if (!link.startsWith("https://cakto.app")) {
+      setAffiliateLinkError("O link precisa começar com https://cakto.app");
+      setAffiliateLinkSaved(false);
+      return;
+    }
+
+    if (!supabase) {
+      setAffiliateLinkError("Não foi possível conectar ao serviço. Tente novamente.");
+      return;
+    }
+
+    setAffiliateLinkSaving(true);
+    setAffiliateLinkError("");
+
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setAffiliateLinkError("Entre na sua conta para salvar o link.");
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .update({ affiliate_link: link })
+        .eq("id", user.id)
+        .select("affiliate_link")
+        .maybeSingle();
+
+      if (error || !data) {
+        setAffiliateLinkError("Não foi possível salvar o link. Tente novamente.");
+        return;
+      }
+
+      setAffiliateLink(data.affiliate_link);
+      setAffiliateLinkSaved(true);
+    } finally {
+      setAffiliateLinkSaving(false);
+    }
+  }
 
   useEffect(() => {
     let destaqueTimeout: number | undefined;
@@ -686,7 +765,85 @@ async function openNews(item: NewsItem) {
                   )}
                 </div>
               )}
-              <Dialog open={isReferralOpen} onOpenChange={setIsReferralOpen}>
+              <Dialog
+                open={isAffiliateLinkOpen}
+                onOpenChange={setIsAffiliateLinkOpen}
+              >
+                <DialogContent
+                  showCloseButton={false}
+                  className="before:fixed before:inset-0 before:-z-10 before:bg-black/55 before:backdrop-blur-sm w-[calc(100vw-2rem)] max-w-md overflow-hidden rounded-[32px] border border-white/30 bg-[linear-gradient(135deg,#833AB4_0%,#C13584_35%,#E1306C_58%,#F77737_78%,#FCAF45_100%)] p-0 text-white shadow-2xl sm:rounded-[36px]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 opacity-[0.12] [background-image:repeating-linear-gradient(115deg,rgba(255,255,255,0.22)_0px,rgba(255,255,255,0.22)_1px,transparent_1px,transparent_4px)]"
+                  />
+                  <DialogClose asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Fechar pop-up"
+                      className="absolute right-4 top-4 z-20 size-9 rounded-full text-white hover:bg-white/15 hover:text-white"
+                    >
+                      <X className="size-5" />
+                    </Button>
+                  </DialogClose>
+
+                  <div className="relative z-10 p-6 pt-12 sm:p-8 sm:pt-14">
+                    <DialogHeader className="text-left">
+                      <DialogTitle className="text-2xl font-bold leading-tight text-white sm:text-3xl">
+                        Salve seu link de indicação
+                      </DialogTitle>
+                      <DialogDescription className="mt-2 text-sm leading-relaxed text-white/90">
+                        Cole abaixo o seu link exclusivo da Cakto para deixá-lo salvo aqui no app.
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="mt-6 space-y-3">
+                      <Input
+                        type="url"
+                        value={affiliateLink}
+                        onChange={(event) => {
+                          setAffiliateLink(event.target.value);
+                          setAffiliateLinkError("");
+                          setAffiliateLinkSaved(false);
+                        }}
+                        placeholder="https://cakto.app/..."
+                        aria-label="Link de indicação da Cakto"
+                        aria-invalid={Boolean(affiliateLinkError)}
+                        className="h-12 rounded-2xl border-white bg-white px-4 text-sm text-zinc-950 placeholder:text-zinc-500 focus-visible:ring-white/70"
+                      />
+
+                      {affiliateLinkError && (
+                        <p
+                          role="alert"
+                          className="rounded-xl border border-red-200/50 bg-red-950/35 px-3 py-2 text-sm font-medium text-white"
+                        >
+                          {affiliateLinkError}
+                        </p>
+                      )}
+
+                      <Button
+                        type="button"
+                        onClick={saveAffiliateLink}
+                        disabled={affiliateLinkSaving}
+                        className="h-12 w-full rounded-2xl bg-white font-bold tracking-wide text-[#C13584] shadow-lg hover:bg-white/90 disabled:opacity-75"
+                      >
+                        {affiliateLinkSaving
+                          ? "SALVANDO..."
+                          : affiliateLinkSaved
+                            ? "Link salvo!"
+                            : "SALVAR MEU LINK"}
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              <Dialog
+                open={isReferralOpen}
+                onOpenChange={handleReferralOpenChange}
+              >
                 <DialogContent
                   showCloseButton={false}
                   className="fixed inset-0 left-0 top-0 z-[60] isolate block h-dvh min-h-dvh w-screen max-w-none translate-x-0 translate-y-0 overflow-x-hidden overflow-y-auto overscroll-contain rounded-none border-0 bg-background p-0 opacity-100 shadow-2xl backdrop-blur-none sm:max-w-none"
@@ -1168,19 +1325,22 @@ async function openNews(item: NewsItem) {
                           <div
                             role="status"
                             aria-label="Link individual de indicação"
-                            className="flex min-h-12 flex-1 items-center rounded-lg border border-border bg-background px-3 text-sm leading-relaxed text-muted-foreground"
+                            className="flex min-h-12 min-w-0 flex-1 items-center break-all rounded-lg border border-border bg-background px-3 py-2 text-sm leading-relaxed text-muted-foreground"
                           >
-                            Seu link individual será exibido aqui quando o acesso de afiliado for liberado.
+                            {affiliateLink || "Seu link individual ainda não foi salvo."}
                           </div>
                           <Button
                             type="button"
                             variant="destructive"
-                            disabled
-                            className="w-full gap-2 rounded-lg px-5 font-semibold shadow-sm transition-all hover:shadow-md disabled:opacity-100 sm:w-auto"
-                            title="O link individual ainda não está disponível."
+                            onClick={() => {
+                              setAffiliateLinkError("");
+                              setAffiliateLinkSaved(false);
+                              setIsAffiliateLinkOpen(true);
+                            }}
+                            className="w-full shrink-0 gap-2 rounded-lg px-5 font-semibold shadow-sm transition-all hover:shadow-md sm:w-auto"
                           >
                             <Copy className="size-4" aria-hidden="true" />
-                            Copiar link
+                            Editar link
                           </Button>
                         </div>
                       </section>
