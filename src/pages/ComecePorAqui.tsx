@@ -118,11 +118,30 @@ export default function ComecePorAqui() {
     };
   }, []);
 
-  const [introTitlePhraseIndex, setIntroTitlePhraseIndex] = useState(0);
+  const [introTitle, setIntroTitle] = useState({
+    phraseIndex: 0,
+    completedCycles: 0,
+    isSpecial: false,
+  });
 
   useEffect(() => {
     const phraseTimer = window.setInterval(() => {
-      setIntroTitlePhraseIndex((index) => (index + 1) % introTitlePhrases.length);
+      setIntroTitle((current) => {
+        if (current.isSpecial) {
+          return { phraseIndex: 0, completedCycles: 0, isSpecial: false };
+        }
+
+        if (current.phraseIndex < introTitlePhrases.length - 1) {
+          return { ...current, phraseIndex: current.phraseIndex + 1 };
+        }
+
+        const completedCycles = current.completedCycles + 1;
+        if (completedCycles === 8) {
+          return { ...current, completedCycles, isSpecial: true };
+        }
+
+        return { phraseIndex: 0, completedCycles, isSpecial: false };
+      });
     }, 3000);
 
     return () => window.clearInterval(phraseTimer);
@@ -158,11 +177,13 @@ export default function ComecePorAqui() {
           É fácil, leia esse passo-a-passo:
         </span>
         <span
-          key={introTitlePhraseIndex}
+          key={introTitle.isSpecial ? "special" : introTitle.phraseIndex}
           aria-live="polite"
           className="absolute inset-0 flex items-center justify-center text-center motion-safe:animate-[intro-title-replace_220ms_cubic-bezier(0.22,1,0.36,1)]"
         >
-          {introTitlePhrases[introTitlePhraseIndex]}
+          {introTitle.isSpecial
+            ? "Ei! Seu amigo precisa ver isso..."
+            : introTitlePhrases[introTitle.phraseIndex]}
         </span>
       </h1>
 
