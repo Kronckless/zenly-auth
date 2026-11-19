@@ -432,7 +432,39 @@ export default function ComecePorAqui() {
         </Accordion>
       </section>
 
-      <div aria-label="Ações finais" className="mt-16 mb-16 flex justify-center gap-3">
+      <section
+        aria-label="Identidade visual do Instagram"
+        className="relative isolate mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-2xl border border-white/50 bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#FCAF45] p-7 text-white shadow-lg sm:p-9"
+      >
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_12%_100%,rgba(255,214,102,0.9),transparent_34%),radial-gradient(ellipse_at_88%_0%,rgba(131,58,180,0.9),transparent_40%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 opacity-35 bg-[repeating-linear-gradient(135deg,rgba(255,255,255,0.17)_0px,rgba(255,255,255,0.17)_1px,transparent_1px,transparent_13px)]"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute -right-12 -top-20 size-64 rounded-full border-[28px] border-white/15 blur-sm"
+        />
+        <div className="relative flex min-h-36 items-center justify-center gap-4 text-center">
+          <div
+            aria-hidden="true"
+            className="flex size-14 items-center justify-center rounded-[17px] border-2 border-white/90 bg-white/10 shadow-lg backdrop-blur-sm"
+          >
+            <span className="relative size-8 rounded-[10px] border-[2.5px] border-white">
+              <span className="absolute left-1/2 top-1/2 size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white" />
+              <span className="absolute right-1 top-1 size-1 rounded-full bg-white" />
+            </span>
+          </div>
+          <span className="font-display text-2xl font-extrabold tracking-wide drop-shadow sm:text-3xl">
+            Instagram
+          </span>
+        </div>
+      </section>
+
+      <div aria-label="Ações finais" className="mt-32 mb-32 flex justify-center gap-3">
         <Button
           type="button"
           variant="outline"
