@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Award, House, MessageSquare, Search, Shield } from "lucide-react";
+import { loadMembershipProfile, normalizeMembershipEmail } from "@/lib/membership";
 import { supabase } from "@/lib/supabase";
 
 const UNREAD_MESSAGES_KEY = "horizonte-unread-messages";
@@ -13,33 +14,7 @@ const tabs = [
   { label: "MFO", to: "/mfo", Icon: Award },
 ];
 
-function shouldShowMfoInPreview() {
-  if (typeof window === "undefined") return false;
 
-  const hostname = window.location.hostname.toLowerCase();
-  if (hostname === "poderdaconsciencia.zenly.cloud") return false;
-
-  if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname.endsWith(".localhost") ||
-    hostname.includes("stackblitz") ||
-    /preview|dev/.test(hostname)
-  ) {
-    return true;
-  }
-
-  if (window.self === window.top) return false;
-
-  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
-    try {
-      const ancestorHostname = new URL(origin).hostname.toLowerCase();
-      return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
-    } catch {
-      return false;
-    }
-  });
-}
 
 export default function AppNavigation() {
   const [unreadCount, setUnreadCount] = useState(0);
@@ -50,30 +25,35 @@ export default function AppNavigation() {
 
     let active = true;
 
-    const loadMfoAccess = async (userId?: string) => {
-      if (!userId) {
-        if (active) setHasMfo(false);
-        return;
+    const loadMfoAccess = async (user?: { id: string; email?: string | null } | null) => {
+      setHasMfo(false);
+      const email = normalizeMembershipEmail(user?.email);
+      if (!user?.id || !email) return;
+
+      const { isMfo } = await loadMembershipProfile(user);
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+
+      if (
+        active &&
+        currentUser?.id === user.id &&
+        normalizeMembershipEmail(currentUser.email) === email
+      ) {
+        setHasMfo(isMfo);
       }
-
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("has_mfo")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (active) setHasMfo(!error && data?.has_mfo === true);
     };
 
     void supabase.auth.getUser().then(({ data: { user } }) => {
-      void loadMfoAccess(user?.id);
+      void loadMfoAccess(user);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      setHasMfo(false);
       window.setTimeout(() => {
-        void loadMfoAccess(session?.user.id);
+        void loadMfoAccess(session?.user);
       }, 0);
     });
 
@@ -111,7 +91,7 @@ export default function AppNavigation() {
     tabs[3],
     tabs[0],
     tabs[1],
-    ...(hasMfo || shouldShowMfoInPreview() ? [tabs[4]] : []),
+    ...(hasMfo ? [tabs[4]] : []),
   ];
 
   return (

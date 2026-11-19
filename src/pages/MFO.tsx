@@ -15,6 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { supabase } from "@/lib/supabase";
+import { loadMembershipProfile } from "@/lib/membership";
 
 type CommunityMessage = {
   id: string;
@@ -53,31 +54,6 @@ function decodePortalNews(value: string | null): PortalNews | null {
   }
 }
 
-function isPreviewOrDevelopment() {
-  if (typeof window === "undefined") return false;
-
-  const hostname = window.location.hostname.toLowerCase();
-  if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname.endsWith(".localhost") ||
-    hostname.includes("stackblitz") ||
-    /preview|dev/.test(hostname)
-  ) {
-    return true;
-  }
-
-  if (window.self === window.top) return false;
-
-  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
-    try {
-      const ancestorHostname = new URL(origin).hostname.toLowerCase();
-      return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
-    } catch {
-      return false;
-    }
-  });
-}
 
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -101,8 +77,6 @@ export default function MFO() {
     let active = true;
 
     async function loadMfoFeed() {
-      const isPreview = isPreviewOrDevelopment();
-
       try {
         if (!supabase) {
           setMessages([]);
@@ -110,19 +84,33 @@ export default function MFO() {
           return;
         }
 
-        if (!isPreview) {
-          const {
-            data: { user },
-            error: userError,
-          } = await supabase.auth.getUser();
+        const {
+          data: { user },
+          error: userError,
+        } = await supabase.auth.getUser();
 
-          if (!active) return;
+        if (!active) return;
 
-          if (userError || !user) {
-            setMessages([]);
-            setLoading(false);
-            return;
-          }
+        if (userError || !user) {
+          setMessages([]);
+          setLoading(false);
+          return;
+        }
+
+        const { isMfo } = await loadMembershipProfile(user);
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
+
+        if (
+          !active ||
+          currentUser?.id !== user.id ||
+          currentUser.email?.trim().toLowerCase() !== user.email?.trim().toLowerCase() ||
+          !isMfo
+        ) {
+          setMessages([]);
+          setLoading(false);
+          return;
         }
 
         const { data, error: messagesError } = await supabase
@@ -197,64 +185,55 @@ export default function MFO() {
 
   async function publishPost() {
     const content = postText.trim();
-    const previewMode = isPreviewOrDevelopment();
-    if (posting || (!content && !selectedNews) || (!supabase && !previewMode)) return;
+    if (posting || (!content && !selectedNews) || !supabase) return;
 
     setPosting(true);
     let published = false;
 
     try {
-      let user = null;
-      if (supabase) {
-        const {
-          data: { user: currentUser },
-        } = await supabase.auth.getUser();
-        user = currentUser;
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+
+      if (userError || !user) return;
+
+      const { isMfo } = await loadMembershipProfile(user);
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+
+      if (
+        !isMfo ||
+        currentUser?.id !== user.id ||
+        currentUser.email?.trim().toLowerCase() !== user.email?.trim().toLowerCase()
+      ) {
+        return;
       }
 
       const messageContent = `${hasCategory ? "#Análise " : ""}${content || "Notícia vinculada."}`;
       const linkedNewsUrl = selectedNews ? encodePortalNews(selectedNews) : null;
 
-      if (!user && previewMode) {
-        setMessages((current) => [
-          {
-            id: `preview-${Date.now()}`,
-            user_id: "preview-user",
-            nome_usuario: "Você",
-            conteudo: messageContent,
-            created_at: new Date().toISOString(),
-            is_super_chat: false,
-            dossier_url: linkedNewsUrl,
-            dossier_name: selectedNews?.titulo ?? null,
-            dossier_size: null,
-            isExample: true,
-            isNew: true,
-          },
-          ...current,
-        ]);
-        published = true;
-      } else if (user && supabase) {
-        const { data, error: publishError } = await supabase
-          .from("mensagens_comunidade")
-          .insert({
-            user_id: user.id,
-            nome_usuario:
-              user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
-            conteudo: messageContent,
-            is_super_chat: false,
-            dossier_url: linkedNewsUrl,
-            dossier_name: selectedNews?.titulo ?? null,
-            dossier_size: null,
-          })
-          .select(
-            "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
-          )
-          .single();
+      const { data, error: publishError } = await supabase
+        .from("mensagens_comunidade")
+        .insert({
+          user_id: user.id,
+          nome_usuario:
+            user.user_metadata?.full_name || user.email?.split("@")[0] || "Usuário",
+          conteudo: messageContent,
+          is_super_chat: false,
+          dossier_url: linkedNewsUrl,
+          dossier_name: selectedNews?.titulo ?? null,
+          dossier_size: null,
+        })
+        .select(
+          "id, user_id, nome_usuario, conteudo, created_at, is_super_chat, dossier_url, dossier_name, dossier_size",
+        )
+        .single();
 
-        if (publishError || !data) return;
-        setMessages((current) => [{ ...(data as CommunityMessage), isNew: true }, ...current]);
-        published = true;
-      }
+      if (publishError || !data) return;
+      setMessages((current) => [{ ...(data as CommunityMessage), isNew: true }, ...current]);
+      published = true;
     } catch {
       // Mantém o texto e a notícia vinculada para que a publicação possa ser tentada novamente.
     } finally {

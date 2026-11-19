@@ -137,6 +137,66 @@ import QG from "./pages/QG";
 import Explore from "./pages/Explore";
 import MFO from "./pages/MFO";
 import ComecePorAqui from "./pages/ComecePorAqui";
+import { loadMembershipProfile } from "./lib/membership";
+
+function AddOnAccessRoute({
+  permission,
+  children,
+}: {
+  permission: "isSocio" | "isMfo";
+  children: ReactNode;
+}) {
+  const [allowed, setAllowed] = useState(false);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    let active = true;
+
+    const verifyAccess = async (user?: User | null) => {
+      setAllowed(false);
+      const email = user?.email?.trim().toLowerCase();
+      if (!user?.id || !email) return;
+
+      const membership = await loadMembershipProfile(user);
+      const {
+        data: { user: currentUser },
+      } = await supabase.auth.getUser();
+
+      if (
+        !active ||
+        currentUser?.id !== user.id ||
+        currentUser.email?.trim().toLowerCase() !== email
+      ) {
+        return;
+      }
+
+      setAllowed(
+        permission === "isMfo" ? membership.isMfo : membership.isSocio,
+      );
+    };
+
+    void supabase.auth.getUser().then(({ data: { user } }) => {
+      void verifyAccess(user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAllowed(false);
+      window.setTimeout(() => {
+        void verifyAccess(session?.user);
+      }, 0);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, [permission]);
+
+  return allowed ? children : null;
+}
 
 export default function App() {
   return (
@@ -149,14 +209,28 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/comeceporaqui" element={<ComecePorAqui />} />
+            <Route
+              path="/comeceporaqui"
+              element={
+                <AddOnAccessRoute permission="isSocio">
+                  <ComecePorAqui />
+                </AddOnAccessRoute>
+              }
+            />
             <Route path="/todas-noticias" element={<AllNews />} />
             <Route path="/comunidade" element={<Community />} />
             <Route path="/comunidade/geral" element={<Community />} />
             <Route path="/comunidade/salas/:roomId" element={<Community />} />
             <Route path="/qg" element={<QG />} />
             <Route path="/explorar" element={<Explore />} />
-            <Route path="/mfo" element={<MFO />} />
+            <Route
+              path="/mfo"
+              element={
+                <AddOnAccessRoute permission="isMfo">
+                  <MFO />
+                </AddOnAccessRoute>
+              }
+            />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

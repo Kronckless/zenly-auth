@@ -452,7 +452,7 @@ export default function Community() {
       const { data: mfoProfiles } = await supabase
         .from("profiles")
         .select("id")
-        .eq("has_mfo", true)
+        .eq("is_mfo", true)
         .in("id", authorIds);
 
       mfoUserIds = new Set((mfoProfiles ?? []).map((profile) => profile.id));
@@ -488,19 +488,32 @@ export default function Community() {
 
         const { profile, isSocio: membershipAccess } =
           await loadMembershipProfile(user);
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
 
-        if (active) {
+        if (
+          active &&
+          currentUser?.id === user.id &&
+          currentUser.email?.trim().toLowerCase() === user.email?.trim().toLowerCase()
+        ) {
           setProfileName(
             profile?.display_name?.trim() ||
               user.user_metadata?.full_name ||
               "Membro",
           );
-          setHasMfo(profile?.has_mfo === true);
+          setHasMfo(profile?.is_mfo === true);
           setIsSocio(membershipAccess);
+          if (profile?.is_mfo !== true) {
+            setMfoFilterEnabled(false);
+            setSuperChatEnabled(false);
+          }
         }
       } else if (active) {
         setHasMfo(false);
         setIsSocio(false);
+        setMfoFilterEnabled(false);
+        setSuperChatEnabled(false);
       }
 
       if (active) {
@@ -547,6 +560,57 @@ export default function Community() {
       void supabase.removeChannel(channel);
     };
   }, [loadMessages, loadCommunityRooms, isConversationOpen, roomId, userId]);
+
+  useEffect(() => {
+    if (!supabase) return;
+
+    let active = true;
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const user = session?.user ?? null;
+      setUserId(user?.id ?? null);
+      setHasMfo(false);
+      setIsSocio(false);
+      setMfoFilterEnabled(false);
+      setSuperChatEnabled(false);
+      setSelectedArticle(null);
+      setArticleDialogOpen(false);
+      setProfileName("");
+      setEmailDraft(user?.email ?? "");
+
+      if (!user) return;
+
+      window.setTimeout(async () => {
+        const { profile, isSocio: membershipAccess } =
+          await loadMembershipProfile(user);
+        const {
+          data: { user: currentUser },
+        } = await supabase.auth.getUser();
+
+        if (
+          !active ||
+          currentUser?.id !== user.id ||
+          currentUser.email?.trim().toLowerCase() !== user.email?.trim().toLowerCase()
+        ) {
+          return;
+        }
+
+        setProfileName(
+          profile?.display_name?.trim() ||
+            user.user_metadata?.full_name ||
+            "Membro",
+        );
+        setHasMfo(profile?.is_mfo === true);
+        setIsSocio(membershipAccess);
+      }, 0);
+    });
+
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const sendMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -898,40 +962,42 @@ export default function Community() {
               <Settings2 className="size-5" aria-hidden="true" />
             </Button>
           )}
-          <div
-            role="group"
-            aria-label="Modo de visualização do chat"
-            className="relative grid h-[52px] w-[104px] shrink-0 grid-cols-2 rounded-full border border-border bg-muted/70 p-1 shadow-inner"
-          >
-            <span
-              aria-hidden="true"
-              className={`pointer-events-none absolute left-1 top-1 size-11 rounded-full bg-primary shadow-[inset_0_1px_2px_hsl(var(--background)/0.35),0_1px_4px_hsl(var(--foreground)/0.12)] transition-transform duration-300 ease-out ${
-                mfoFilterEnabled ? "translate-x-11" : "translate-x-0"
-              }`}
-            />
-            <button
-              type="button"
-              aria-label="Chat geral"
-              aria-pressed={!mfoFilterEnabled}
-              onClick={() => setMfoFilterEnabled(false)}
-              className={`relative z-10 flex size-11 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                !mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
+          {hasMfo && (
+            <div
+              role="group"
+              aria-label="Modo de visualização do chat"
+              className="relative grid h-[52px] w-[104px] shrink-0 grid-cols-2 rounded-full border border-border bg-muted/70 p-1 shadow-inner"
             >
-              <MessageSquare className="size-4" aria-hidden="true" />
-            </button>
-            <button
-              type="button"
-              aria-label="Modo Foco MFO"
-              aria-pressed={mfoFilterEnabled}
-              onClick={() => setMfoFilterEnabled(true)}
-              className={`relative z-10 flex size-11 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Crosshair className="size-4" aria-hidden="true" />
-            </button>
-          </div>
+              <span
+                aria-hidden="true"
+                className={`pointer-events-none absolute left-1 top-1 size-11 rounded-full bg-primary shadow-[inset_0_1px_2px_hsl(var(--background)/0.35),0_1px_4px_hsl(var(--foreground)/0.12)] transition-transform duration-300 ease-out ${
+                  mfoFilterEnabled ? "translate-x-11" : "translate-x-0"
+                }`}
+              />
+              <button
+                type="button"
+                aria-label="Chat geral"
+                aria-pressed={!mfoFilterEnabled}
+                onClick={() => setMfoFilterEnabled(false)}
+                className={`relative z-10 flex size-11 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  !mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <MessageSquare className="size-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                aria-label="Modo Foco MFO"
+                aria-pressed={mfoFilterEnabled}
+                onClick={() => setMfoFilterEnabled(true)}
+                className={`relative z-10 flex size-11 items-center justify-center rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                  mfoFilterEnabled ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Crosshair className="size-4" aria-hidden="true" />
+              </button>
+            </div>
+          )}
         </header>
 
         <div
@@ -1077,43 +1143,28 @@ export default function Community() {
               : "bg-background"
           }`}
         >
-          <Button
-            type="button"
-            variant={superChatEnabled ? "default" : "outline"}
-            aria-pressed={hasMfo ? superChatEnabled : undefined}
-            aria-label={
-              hasMfo
-                ? "Ativar ou desativar Super Chat"
-                : "Super Chat exclusivo do Modo Formador de Opinião"
-            }
-            onClick={() => {
-              if (!hasMfo) {
-                setUpgradeFeature("super-chat");
-                setUpgradeDialogOpen(true);
-                return;
+          {hasMfo && (
+            <Button
+              type="button"
+              variant={superChatEnabled ? "default" : "outline"}
+              aria-pressed={superChatEnabled}
+              aria-label="Ativar ou desativar Super Chat"
+              onClick={() => setSuperChatEnabled((enabled) => !enabled)}
+              disabled={
+                sending ||
+                superChatCooldownSeconds > 0 ||
+                dailySuperChatCount >= SUPER_CHAT_DAILY_LIMIT
               }
-              setSuperChatEnabled((enabled) => !enabled);
-            }}
-            disabled={
-              sending ||
-              (hasMfo &&
-                (superChatCooldownSeconds > 0 ||
-                  dailySuperChatCount >= SUPER_CHAT_DAILY_LIMIT))
-            }
-            className="shrink-0 gap-1.5 rounded-full px-3"
-          >
-            <span className="relative inline-flex">
+              className="shrink-0 gap-1.5 rounded-full px-3"
+            >
               <Zap className="size-4" aria-hidden="true" />
-              {!hasMfo && (
-                <LockKeyhole className="absolute -bottom-1 -right-1 size-2.5 rounded-full bg-background" aria-hidden="true" />
-              )}
-            </span>
-            <span className="hidden text-xs sm:inline">
-              {superChatCooldownSeconds > 0
-                ? `Aguarde ${formatCooldown(superChatCooldownSeconds)}`
-                : "Super Chat"}
-            </span>
-          </Button>
+              <span className="hidden text-xs sm:inline">
+                {superChatCooldownSeconds > 0
+                  ? `Aguarde ${formatCooldown(superChatCooldownSeconds)}`
+                  : "Super Chat"}
+              </span>
+            </Button>
+          )}
           {emojiPickerOpen && (
             <div
               role="group"
@@ -1137,30 +1188,20 @@ export default function Community() {
             </div>
           )}
 
-          <Button
-            type="button"
-            variant={hasMfo ? "ghost" : "outline"}
-            size="icon"
-            aria-label={hasMfo ? "Selecionar matéria do portal" : "Envio de Dossiês exclusivo do Modo Formador de Opinião"}
-            title={hasMfo ? "Selecionar matéria do portal" : "Recurso exclusivo do Modo Formador de Opinião"}
-            disabled={sending}
-            onClick={() => {
-              if (!hasMfo) {
-                setUpgradeFeature("dossier");
-                setUpgradeDialogOpen(true);
-                return;
-              }
-              setArticleDialogOpen(true);
-            }}
-            className="shrink-0 rounded-full text-muted-foreground"
-          >
-            <span className="relative inline-flex">
+          {hasMfo && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Selecionar matéria do portal"
+              title="Selecionar matéria do portal"
+              disabled={sending}
+              onClick={() => setArticleDialogOpen(true)}
+              className="shrink-0 rounded-full text-muted-foreground"
+            >
               <Paperclip className="size-5" aria-hidden="true" />
-              {!hasMfo && (
-                <LockKeyhole className="absolute -bottom-1 -right-1 size-2.5 rounded-full bg-background" aria-hidden="true" />
-              )}
-            </span>
-          </Button>
+            </Button>
+          )}
           <Button
             type="button"
             variant="ghost"
@@ -1337,15 +1378,17 @@ export default function Community() {
             ))}
           </div>
         </section>
-        <Button
-          type="button"
-          size="icon"
-          aria-label="Criar sala"
-          onClick={() => void openRoomCreation()}
-          className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 text-white shadow-lg shadow-black/20 transition-all duration-150 active:scale-95"
-        >
-          <MessageSquarePlus className="size-6" strokeWidth={2.2} aria-hidden="true" />
-        </Button>
+        {isSocio && (
+          <Button
+            type="button"
+            size="icon"
+            aria-label="Criar sala"
+            onClick={() => void openRoomCreation()}
+            className="fixed bottom-24 right-5 z-30 size-14 rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-900 text-white shadow-lg shadow-black/20 transition-all duration-150 active:scale-95"
+          >
+            <MessageSquarePlus className="size-6" strokeWidth={2.2} aria-hidden="true" />
+          </Button>
+        )}
 
         <Dialog open={socioDialogOpen} onOpenChange={setSocioDialogOpen}>
           <DialogContent className="rounded-2xl p-8 shadow-2xl sm:max-w-md">

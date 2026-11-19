@@ -1,10 +1,17 @@
 import { supabase } from "@/lib/supabase";
 
-export const MODO_TESTE_SOCIO = true;
-
 type AuthenticatedIdentity = {
   id: string;
   email?: string | null;
+};
+
+type MembershipProfile = {
+  id: string;
+  email: string;
+  is_booster?: boolean | null;
+  is_mfo?: boolean | null;
+  display_name?: string | null;
+  link_afiliado?: string | null;
 };
 
 export function normalizeMembershipEmail(email?: string | null) {
@@ -14,17 +21,13 @@ export function normalizeMembershipEmail(email?: string | null) {
 export async function loadMembershipProfile(user: AuthenticatedIdentity | null) {
   const email = normalizeMembershipEmail(user?.email);
 
-  if (!user || !email) {
-    return { profile: null, isSocio: false };
-  }
-
-  if (!supabase) {
-    return { profile: null, isSocio: MODO_TESTE_SOCIO };
+  if (!user?.id || !email || !supabase) {
+    return { profile: null, isSocio: false, isMfo: false };
   }
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, email, is_booster, has_mfo, display_name, link_afiliado")
+    .select("*")
     .eq("email", email)
     .eq("id", user.id)
     .maybeSingle();
@@ -33,11 +36,12 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
     !error &&
     data?.id === user.id &&
     normalizeMembershipEmail(data?.email) === email
-      ? data
+      ? (data as MembershipProfile)
       : null;
 
   return {
     profile,
-    isSocio: MODO_TESTE_SOCIO || profile?.is_booster === true,
+    isSocio: profile?.is_booster === true,
+    isMfo: profile?.is_mfo === true,
   };
 }

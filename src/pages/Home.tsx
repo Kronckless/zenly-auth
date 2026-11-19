@@ -238,33 +238,7 @@ function registerAffiliateWidgetAutoShow(identity: AffiliateIdentity) {
   }
 }
 
-function shouldShowReferralInPreview() {
-  if (typeof window === "undefined") return false;
 
-  const hostname = window.location.hostname.toLowerCase();
-  if (hostname === "poderdaconsciencia.zenly.cloud") return false;
-
-  if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname.endsWith(".localhost") ||
-    hostname.includes("stackblitz") ||
-    /preview|dev/.test(hostname)
-  ) {
-    return true;
-  }
-
-  if (window.self === window.top) return false;
-
-  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
-    try {
-      const ancestorHostname = new URL(origin).hostname.toLowerCase();
-      return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
-    } catch {
-      return false;
-    }
-  });
-}
 
 export default function Home() {
   async function copyAffiliateLink(link: string): Promise<boolean> {
@@ -954,8 +928,7 @@ async function openNews(item: NewsItem) {
                       </span>
                     </button>
                   )}
-                  {/* Regra oficial de permissão: isSocio && ( */}
-                  {(isSocio || shouldShowReferralInPreview()) && (
+                  {isSocio && (
                     <button
                       type="button"
                       onClick={() => {
