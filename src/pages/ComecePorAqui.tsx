@@ -337,7 +337,7 @@ export default function ComecePorAqui() {
       <section className={`mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-xl border text-left shadow-sm transition-colors duration-300 ${
         isCaktoGuideOpen
           ? "border-[#6B4EFF]/30 bg-gradient-to-br from-[#F6F2FF] via-[#FBF9FF] to-[#F0EBFF]"
-          : "border-[#A78BFA]/40 bg-gradient-to-br from-[#21143D] via-[#493071] to-[#291941]"
+          : "border-[#25D366]/60 bg-gradient-to-br from-[#064D2B] via-[#079B50] to-[#25D366]"
       }`}>
         <Accordion
           type="single"
@@ -354,7 +354,7 @@ export default function ComecePorAqui() {
                 <span className={`mt-2 inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-xs font-bold shadow-md transition-all group-hover:scale-[1.03] group-hover:shadow-lg sm:text-sm ${
                   isCaktoGuideOpen
                     ? "border-[#6B4EFF]/30 bg-background text-[#5536B8]"
-                    : "border-white/80 bg-white text-[#493071]"
+                    : "border-white/90 bg-white text-[#087A43]"
                 }`}>
                   {isCaktoGuideOpen ? "Ocultar detalhes ↑" : "Mais detalhes ↓"}
                 </span>
@@ -367,7 +367,7 @@ export default function ComecePorAqui() {
                 <div className="h-1.5 w-full rounded-full bg-white/60" />
                 <div className="h-1.5 w-11/12 rounded-full bg-white/60" />
                 <div className="h-1.5 w-2/3 rounded-full bg-white/50" />
-                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#291941] to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#25D366] to-transparent" />
               </div>
             )}
 
