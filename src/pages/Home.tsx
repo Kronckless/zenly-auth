@@ -191,6 +191,8 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
   );
 }
 
+const FORCE_SHOW_AFFILIATE_WIDGET = true;
+
 function shouldShowReferralInPreview() {
   if (typeof window === "undefined") return false;
 
@@ -225,7 +227,9 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isSocioModalOpen, setIsSocioModalOpen] = useState(false);
   const [isReferralOpen, setIsReferralOpen] = useState(false);
-  const [isAffiliateLinkOpen, setIsAffiliateLinkOpen] = useState(false);
+  const [isAffiliateLinkOpen, setIsAffiliateLinkOpen] = useState(
+    FORCE_SHOW_AFFILIATE_WIDGET,
+  );
   const [affiliateLink, setAffiliateLink] = useState("");
   const [affiliateLinkError, setAffiliateLinkError] = useState("");
   const [affiliateLinkSaved, setAffiliateLinkSaved] = useState(false);
@@ -294,7 +298,12 @@ export default function Home() {
             ? data.affiliate_link
             : "";
         setAffiliateLink(savedLink);
-        if (!error && data?.is_socio === true && !savedLink.trim()) {
+        if (
+          !FORCE_SHOW_AFFILIATE_WIDGET &&
+          !error &&
+          data?.is_socio === true &&
+          !savedLink.trim()
+        ) {
           setIsAffiliateLinkOpen(true);
         }
       }
@@ -320,7 +329,7 @@ export default function Home() {
 
   async function handleReferralOpenChange(open: boolean) {
     setIsReferralOpen(open);
-    if (open || !isSocio || !supabase) return;
+    if (FORCE_SHOW_AFFILIATE_WIDGET || open || !isSocio || !supabase) return;
 
     const {
       data: { user },
