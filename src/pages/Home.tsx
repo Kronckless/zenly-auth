@@ -191,6 +191,38 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
   );
 }
 
+const AFFILIATE_WIDGET_MAX_AUTO_SHOWS = 3;
+
+function affiliateWidgetShowCountKey(userId?: string) {
+  return `affiliate-widget-auto-shows:${userId || "anonymous"}`;
+}
+
+function getAffiliateWidgetShowCount(userId?: string) {
+  try {
+    const count = Number(
+      window.localStorage.getItem(affiliateWidgetShowCountKey(userId)) || 0,
+    );
+    return Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function registerAffiliateWidgetAutoShow(userId?: string) {
+  const count = getAffiliateWidgetShowCount(userId);
+  if (count >= AFFILIATE_WIDGET_MAX_AUTO_SHOWS) return false;
+
+  try {
+    window.localStorage.setItem(
+      affiliateWidgetShowCountKey(userId),
+      String(count + 1),
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function shouldShowReferralInPreview() {
   if (typeof window === "undefined") return false;
 
@@ -330,7 +362,12 @@ export default function Home() {
     setFechouModalIndiqueEGanhe(true);
 
     if (!supabase) {
-      if (!affiliateLink.trim()) setIsAffiliateLinkOpen(true);
+      if (
+        !affiliateLink.trim() &&
+        registerAffiliateWidgetAutoShow()
+      ) {
+        setIsAffiliateLinkOpen(true);
+      }
       return;
     }
 
@@ -339,7 +376,12 @@ export default function Home() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      if (!affiliateLink.trim()) setIsAffiliateLinkOpen(true);
+      if (
+        !affiliateLink.trim() &&
+        registerAffiliateWidgetAutoShow()
+      ) {
+        setIsAffiliateLinkOpen(true);
+      }
       return;
     }
 
@@ -354,7 +396,12 @@ export default function Home() {
     const savedLink =
       typeof data?.link_afiliado === "string" ? data.link_afiliado : "";
     setAffiliateLink(savedLink);
-    if (!savedLink.trim()) setIsAffiliateLinkOpen(true);
+    if (
+      !savedLink.trim() &&
+      registerAffiliateWidgetAutoShow(user.id)
+    ) {
+      setIsAffiliateLinkOpen(true);
+    }
   }
 
   async function saveAffiliateLink() {
