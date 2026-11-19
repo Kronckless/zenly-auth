@@ -439,8 +439,26 @@ export default function Home() {
 
   async function saveAffiliateLink() {
     const link = affiliateLink.trim();
-    if (!link.startsWith("https://cakto.app")) {
-      setAffiliateLinkError("O link precisa começar com https://cakto.app");
+    const caktoLinkPattern = /^https:\/\/cakto\.app(?:\/[^\s]*)?$/i;
+    let isValidCaktoLink = caktoLinkPattern.test(link);
+
+    if (isValidCaktoLink) {
+      try {
+        const parsedLink = new URL(link);
+        isValidCaktoLink =
+          parsedLink.protocol === "https:" &&
+          parsedLink.hostname.toLowerCase() === "cakto.app" &&
+          !parsedLink.username &&
+          !parsedLink.password;
+      } catch {
+        isValidCaktoLink = false;
+      }
+    }
+
+    if (!isValidCaktoLink) {
+      setAffiliateLinkError(
+        "Insira um link válido começando com https://cakto.app/",
+      );
       setAffiliateLinkSaved(false);
       return;
     }
