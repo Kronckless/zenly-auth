@@ -210,7 +210,7 @@ create policy "Sócios criam até duas salas"
       select 1
       from public.profiles
       where id = (select auth.uid())
-        and is_socio = true
+        and is_booster = true
     )
     and (
       select count(*)
@@ -259,7 +259,7 @@ create policy "Apenas o dono cria sua sala"
       select 1
       from public.profiles
       where id = (select auth.uid())
-        and is_socio = true
+        and is_booster = true
     )
   );
 
@@ -310,7 +310,7 @@ begin
 
     if not exists (
       select 1 from public.profiles
-      where id = new.creator_id and is_socio = true
+      where id = new.creator_id and is_booster = true
     ) then
       raise exception 'Apenas sócios podem criar salas.';
     end if;

@@ -34,6 +34,7 @@ import {
   Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { loadMembershipProfile } from "@/lib/membership";
 
 type CommunityMessage = {
   id: string;
@@ -485,11 +486,8 @@ export default function Community() {
         setUserId(user.id);
         setEmailDraft(user.email ?? "");
 
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("display_name, has_mfo, is_socio")
-          .eq("id", user.id)
-          .maybeSingle();
+        const { profile, isSocio: membershipAccess } =
+          await loadMembershipProfile(user);
 
         if (active) {
           setProfileName(
@@ -498,7 +496,7 @@ export default function Community() {
               "Membro",
           );
           setHasMfo(profile?.has_mfo === true);
-          setIsSocio(profile?.is_socio === true);
+          setIsSocio(membershipAccess);
         }
       } else if (active) {
         setHasMfo(false);
@@ -686,7 +684,9 @@ export default function Community() {
   const roomDaysRemaining = roomEditableAt
     ? Math.max(0, Math.ceil((roomEditableAt.getTime() - Date.now()) / (24 * 60 * 60 * 1000)))
     : 0;
-  const canManageRoom = Boolean(activeRoom && activeRoom.creatorId === userId);
+  const canManageRoom = Boolean(
+    activeRoom && activeRoom.creatorId === userId && isSocio,
+  );
   const canEditRoom = Boolean(canManageRoom && roomDaysRemaining === 0);
   const conversationSearchTerm = conversationSearch.trim().toLocaleLowerCase();
   const showCommunityConversation = "chat da comunidade".includes(conversationSearchTerm);

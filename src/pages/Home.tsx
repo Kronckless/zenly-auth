@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/accordion";
 import AppNavigation from "@/components/AppNavigation";
 import { supabase } from "@/lib/supabase";
+import { loadMembershipProfile } from "@/lib/membership";
 import {
   Card,
   CardContent,
@@ -397,12 +398,8 @@ export default function Home() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("email, is_booster, is_socio, link_afiliado")
-        .eq("email", identity.email)
-        .eq("id", identity.id)
-        .maybeSingle();
+      const { profile, isSocio: membershipAccess } =
+        await loadMembershipProfile(identity);
 
       if (
         !active ||
@@ -413,15 +410,15 @@ export default function Home() {
       }
 
       const profileMatchesIdentity =
-        !error &&
-        typeof data?.email === "string" &&
-        data.email.trim().toLowerCase() === identity.email;
+        profile?.id === identity.id &&
+        typeof profile.email === "string" &&
+        profile.email.trim().toLowerCase() === identity.email;
 
-      setIsBooster(profileMatchesIdentity && data?.is_booster === true);
-      setIsSocio(profileMatchesIdentity && data?.is_socio === true);
+      setIsBooster(profileMatchesIdentity && profile.is_booster === true);
+      setIsSocio(membershipAccess);
       const savedLink =
-        profileMatchesIdentity && typeof data?.link_afiliado === "string"
-          ? data.link_afiliado
+        profileMatchesIdentity && typeof profile.link_afiliado === "string"
+          ? profile.link_afiliado
           : "";
       setAffiliateLink(savedLink);
     };
@@ -478,17 +475,14 @@ export default function Home() {
       return;
     }
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("email, link_afiliado")
-      .eq("email", identity.email)
-      .eq("id", identity.id)
-      .maybeSingle();
+    const { profile, isSocio: membershipAccess } =
+      await loadMembershipProfile(identity);
 
     if (
-      error ||
-      typeof data?.email !== "string" ||
-      data.email.trim().toLowerCase() !== identity.email ||
+      !membershipAccess ||
+      profile?.id !== identity.id ||
+      typeof profile.email !== "string" ||
+      profile.email.trim().toLowerCase() !== identity.email ||
       affiliateUserIdRef.current !== identity.id ||
       affiliateUserEmailRef.current !== identity.email
     ) {
@@ -496,7 +490,7 @@ export default function Home() {
     }
 
     const savedLink =
-      typeof data.link_afiliado === "string" ? data.link_afiliado : "";
+      typeof profile.link_afiliado === "string" ? profile.link_afiliado : "";
     setAffiliateLink(savedLink);
     if (
       !savedLink.trim() &&
