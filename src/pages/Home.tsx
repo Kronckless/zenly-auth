@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   Megaphone,
   Menu,
+  Share2,
   TrendingUp,
   UserPlus,
   X,
@@ -263,6 +264,10 @@ export default function Home() {
   const [affiliateLinkError, setAffiliateLinkError] = useState("");
   const [affiliateLinkSaved, setAffiliateLinkSaved] = useState(false);
   const [affiliateLinkSaving, setAffiliateLinkSaving] = useState(false);
+  const [isEditingAffiliateLink, setIsEditingAffiliateLink] = useState(false);
+  const [affiliateLinkActionStatus, setAffiliateLinkActionStatus] = useState<
+    "idle" | "copied" | "shared" | "error"
+  >("idle");
 
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
@@ -444,7 +449,8 @@ export default function Home() {
 
       setAffiliateLink(data.link_afiliado);
       setAffiliateLinkSaved(true);
-      window.setTimeout(() => setIsAffiliateLinkOpen(false), 900);
+      setIsEditingAffiliateLink(false);
+      setAffiliateLinkActionStatus("idle");
     } finally {
       setAffiliateLinkSaving(false);
     }
@@ -835,8 +841,7 @@ async function openNews(item: NewsItem) {
                 </div>
               )}
               {isAffiliateLinkOpen &&
-                fechouModalIndiqueEGanhe &&
-                !affiliateLink.trim() && (
+                fechouModalIndiqueEGanhe && (
                 <div
                   className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border-2 p-0 text-white shadow-[0_14px_36px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-2xl sm:bottom-6"
                   style={{
@@ -871,52 +876,163 @@ async function openNews(item: NewsItem) {
                   </Button>
 
                   <div className="relative z-10 p-4 pt-10">
-                    <div className="text-left">
-                      <h2 className="text-lg font-bold leading-tight text-white">
-                        Salve seu link de indicação
-                      </h2>
-                      <p className="mt-1.5 text-xs leading-relaxed text-white/90">
-                        Cole abaixo o seu link exclusivo da Cakto para deixá-lo salvo aqui no app.
-                      </p>
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                      <Input
-                        type="url"
-                        value={affiliateLink}
-                        onChange={(event) => {
-                          setAffiliateLink(event.target.value);
-                          setAffiliateLinkError("");
-                          setAffiliateLinkSaved(false);
-                        }}
-                        placeholder="https://cakto.app/..."
-                        aria-label="Link de indicação da Cakto"
-                        aria-invalid={Boolean(affiliateLinkError)}
-                        className="h-10 rounded-xl border-white bg-white px-3 text-sm text-zinc-950 placeholder:text-zinc-500 focus-visible:ring-white/70"
-                      />
-
-                      {affiliateLinkError && (
-                        <p
-                          role="alert"
-                          className="rounded-lg border border-red-200/50 bg-red-950/35 px-2.5 py-1.5 text-xs font-medium text-white"
-                        >
-                          {affiliateLinkError}
+                    {affiliateLink.trim() && !isEditingAffiliateLink ? (
+                      <div className="text-left">
+                        <h2 className="text-lg font-bold leading-tight text-white">
+                          Link salvo!
+                        </h2>
+                        <p className="mt-1 text-xs leading-relaxed text-white/90">
+                          Seu link de indicação está pronto para compartilhar.
                         </p>
-                      )}
+                        <div
+                          className="mt-3 max-h-16 overflow-y-auto break-all rounded-xl border border-white/35 bg-black/20 px-3 py-2 text-xs leading-relaxed text-white"
+                          role="status"
+                          aria-label="Link de indicação salvo"
+                        >
+                          {affiliateLink}
+                        </div>
+                        <div className="mt-3 grid grid-cols-2 gap-2">
+                          <Button
+                            type="button"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(affiliateLink);
+                                setAffiliateLinkActionStatus("copied");
+                                window.setTimeout(
+                                  () => setAffiliateLinkActionStatus("idle"),
+                                  2200,
+                                );
+                              } catch {
+                                setAffiliateLinkActionStatus("error");
+                              }
+                            }}
+                            className="h-9 rounded-xl bg-white px-2 text-xs font-bold text-zinc-900 hover:bg-white/90"
+                          >
+                            {affiliateLinkActionStatus === "copied"
+                              ? "Copiado!"
+                              : "COPIAR LINK"}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={async () => {
+                              try {
+                                if (navigator.share) {
+                                  await navigator.share({
+                                    title: "Meu link de indicação",
+                                    url: affiliateLink,
+                                  });
+                                  setAffiliateLinkActionStatus("shared");
+                                  window.setTimeout(
+                                    () => setAffiliateLinkActionStatus("idle"),
+                                    2200,
+                                  );
+                                } else {
+                                  await navigator.clipboard.writeText(affiliateLink);
+                                  setAffiliateLinkActionStatus("copied");
+                                  window.setTimeout(
+                                    () => setAffiliateLinkActionStatus("idle"),
+                                    2200,
+                                  );
+                                }
+                              } catch {
+                                setAffiliateLinkActionStatus("error");
+                              }
+                            }}
+                            className="h-9 rounded-xl border-white/60 bg-white/10 px-2 text-xs font-bold text-white hover:bg-white/20 hover:text-white"
+                          >
+                            {affiliateLinkActionStatus === "shared"
+                              ? "Compartilhado!"
+                              : "COMPARTILHAR"}
+                          </Button>
+                        </div>
+                        {affiliateLinkActionStatus === "error" && (
+                          <p role="status" className="mt-2 text-xs text-white/90">
+                            Não foi possível concluir a ação. Tente copiar o link.
+                          </p>
+                        )}
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={() => {
+                            setIsEditingAffiliateLink(true);
+                            setAffiliateLinkError("");
+                            setAffiliateLinkSaved(false);
+                            setAffiliateLinkActionStatus("idle");
+                          }}
+                          className="mt-2 h-8 w-full text-xs font-semibold text-white hover:bg-white/15 hover:text-white"
+                        >
+                          EDITAR LINK
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-left">
+                        <h2 className="text-lg font-bold leading-tight text-white">
+                          {isEditingAffiliateLink
+                            ? "Editar seu link de indicação"
+                            : "Salve seu link de indicação"}
+                        </h2>
+                        <p className="mt-1.5 text-xs leading-relaxed text-white/90">
+                          Cole abaixo o seu link exclusivo da Cakto para deixá-lo salvo aqui no app.
+                        </p>
+                        {!isEditingAffiliateLink && !affiliateLink.trim() && (
+                          <p className="mt-1 text-xs font-semibold leading-relaxed text-white">
+                            Garanta sua comissão em cada indicação concluída.
+                          </p>
+                        )}
 
-                      <Button
-                        type="button"
-                        onClick={saveAffiliateLink}
-                        disabled={affiliateLinkSaving}
-                        className="h-10 w-full rounded-xl bg-white text-sm font-bold tracking-wide text-zinc-900 shadow-lg hover:bg-white/90 disabled:opacity-75"
-                      >
-                        {affiliateLinkSaving
-                          ? "SALVANDO..."
-                          : affiliateLinkSaved
-                            ? "Link salvo!"
-                            : "SALVAR MEU LINK"}
-                      </Button>
-                    </div>
+                        <div className="mt-3 space-y-2">
+                          <Input
+                            type="url"
+                            value={affiliateLink}
+                            onChange={(event) => {
+                              setAffiliateLink(event.target.value);
+                              setAffiliateLinkError("");
+                              setAffiliateLinkSaved(false);
+                              setAffiliateLinkActionStatus("idle");
+                            }}
+                            placeholder="https://cakto.app/..."
+                            aria-label="Link de indicação da Cakto"
+                            aria-invalid={Boolean(affiliateLinkError)}
+                            className="h-10 rounded-xl border-white bg-white px-3 text-sm text-zinc-950 placeholder:text-zinc-500 focus-visible:ring-white/70"
+                          />
+
+                          {affiliateLinkError && (
+                            <p
+                              role="alert"
+                              className="rounded-lg border border-red-200/50 bg-red-950/35 px-2.5 py-1.5 text-xs font-medium text-white"
+                            >
+                              {affiliateLinkError}
+                            </p>
+                          )}
+
+                          <Button
+                            type="button"
+                            onClick={saveAffiliateLink}
+                            disabled={affiliateLinkSaving}
+                            className="h-10 w-full rounded-xl bg-white text-sm font-bold tracking-wide text-zinc-900 shadow-lg hover:bg-white/90 disabled:opacity-75"
+                          >
+                            {affiliateLinkSaving ? "SALVANDO..." : "SALVAR MEU LINK"}
+                          </Button>
+
+                          {isEditingAffiliateLink && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              onClick={() => {
+                                setIsEditingAffiliateLink(false);
+                                setAffiliateLinkError("");
+                                setAffiliateLinkSaved(false);
+                                setAffiliateLinkActionStatus("idle");
+                              }}
+                              className="h-8 w-full text-xs font-semibold text-white hover:bg-white/15 hover:text-white"
+                            >
+                              CANCELAR
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -1416,6 +1532,10 @@ async function openNews(item: NewsItem) {
                             onClick={() => {
                               setAffiliateLinkError("");
                               setAffiliateLinkSaved(false);
+                              setIsEditingAffiliateLink(true);
+                              setAffiliateLinkActionStatus("idle");
+                              setModalIndiqueEGanheAberto(false);
+                              setFechouModalIndiqueEGanhe(true);
                               setIsAffiliateLinkOpen(true);
                             }}
                             className="w-full shrink-0 gap-2 rounded-lg px-5 font-semibold shadow-sm transition-all hover:shadow-md sm:w-auto"
