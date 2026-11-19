@@ -9,10 +9,48 @@ create table if not exists public.profiles (
 );
 
 alter table public.profiles
+  add column if not exists email text not null default '',
   add column if not exists has_mfo boolean not null default false,
   add column if not exists is_booster boolean not null default false,
   add column if not exists is_socio boolean not null default false,
-  add column if not exists affiliate_link text not null default '';
+  add column if not exists affiliate_link text not null default '',
+  add column if not exists link_afiliado text not null default '';
+
+update public.profiles as profile
+set email = lower(btrim(auth_user.email))
+from auth.users as auth_user
+where auth_user.id = profile.id
+  and auth_user.email is not null
+  and profile.email is distinct from lower(btrim(auth_user.email));
+
+update public.profiles
+set link_afiliado = affiliate_link
+where link_afiliado = ''
+  and nullif(btrim(affiliate_link), '') is not null;
+
+create index if not exists profiles_email_idx
+  on public.profiles (email);
+
+create or replace function public.sync_profile_email_from_auth()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if new.email is distinct from old.email then
+    update public.profiles
+    set email = lower(btrim(coalesce(new.email, '')))
+    where id = new.id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists sync_profile_email on auth.users;
+create trigger sync_profile_email
+  after update of email on auth.users
+  for each row execute function public.sync_profile_email_from_auth();
 
 create table if not exists public.salas_comunidade (
   id uuid primary key default gen_random_uuid(),

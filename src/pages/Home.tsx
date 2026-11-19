@@ -399,7 +399,8 @@ export default function Home() {
 
       const { data, error } = await supabase
         .from("profiles")
-        .select("is_booster, is_socio, link_afiliado")
+        .select("email, is_booster, is_socio, link_afiliado")
+        .eq("email", identity.email)
         .eq("id", identity.id)
         .maybeSingle();
 
@@ -411,10 +412,15 @@ export default function Home() {
         return;
       }
 
-      setIsBooster(!error && data?.is_booster === true);
-      setIsSocio(!error && data?.is_socio === true);
+      const profileMatchesIdentity =
+        !error &&
+        typeof data?.email === "string" &&
+        data.email.trim().toLowerCase() === identity.email;
+
+      setIsBooster(profileMatchesIdentity && data?.is_booster === true);
+      setIsSocio(profileMatchesIdentity && data?.is_socio === true);
       const savedLink =
-        !error && typeof data?.link_afiliado === "string"
+        profileMatchesIdentity && typeof data?.link_afiliado === "string"
           ? data.link_afiliado
           : "";
       setAffiliateLink(savedLink);
@@ -474,12 +480,15 @@ export default function Home() {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("link_afiliado")
+      .select("email, link_afiliado")
+      .eq("email", identity.email)
       .eq("id", identity.id)
       .maybeSingle();
 
     if (
       error ||
+      typeof data?.email !== "string" ||
+      data.email.trim().toLowerCase() !== identity.email ||
       affiliateUserIdRef.current !== identity.id ||
       affiliateUserEmailRef.current !== identity.email
     ) {
@@ -487,7 +496,7 @@ export default function Home() {
     }
 
     const savedLink =
-      typeof data?.link_afiliado === "string" ? data.link_afiliado : "";
+      typeof data.link_afiliado === "string" ? data.link_afiliado : "";
     setAffiliateLink(savedLink);
     if (
       !savedLink.trim() &&
@@ -556,8 +565,9 @@ export default function Home() {
       const { data, error } = await supabase
         .from("profiles")
         .update({ link_afiliado: link })
+        .eq("email", identity.email)
         .eq("id", identity.id)
-        .select("link_afiliado")
+        .select("email, link_afiliado")
         .maybeSingle();
 
       if (
@@ -567,7 +577,12 @@ export default function Home() {
         return;
       }
 
-      if (error || !data) {
+      if (
+        error ||
+        !data ||
+        typeof data.email !== "string" ||
+        data.email.trim().toLowerCase() !== identity.email
+      ) {
         setAffiliateLinkError("Não foi possível salvar o link. Tente novamente.");
         return;
       }
