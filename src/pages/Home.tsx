@@ -780,12 +780,13 @@ async function openNews(item: NewsItem) {
               )}
               {isAffiliateLinkOpen && (
                 <div
-                  className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border border-white/40 p-0 text-white shadow-[0_18px_48px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] backdrop-blur-2xl sm:bottom-6"
+                  className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border-2 p-0 text-white shadow-[0_14px_36px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-2xl sm:bottom-6"
                   style={{
+                    borderColor: "rgba(185, 192, 202, 0.78)",
                     background:
-                      "linear-gradient(145deg, rgba(112,118,128,0.92) 0%, rgba(73,79,88,0.94) 48%, rgba(38,42,49,0.96) 100%)",
-                    backdropFilter: "blur(24px) saturate(160%)",
-                    WebkitBackdropFilter: "blur(24px) saturate(160%)",
+                      "linear-gradient(160deg, rgba(150,156,166,0.86) 0%, rgba(91,97,107,0.90) 48%, rgba(48,53,61,0.94) 100%)",
+                    backdropFilter: "blur(28px) saturate(180%)",
+                    WebkitBackdropFilter: "blur(28px) saturate(180%)",
                   }}
                 >
                   <span
