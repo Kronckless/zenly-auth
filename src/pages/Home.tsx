@@ -289,11 +289,14 @@ export default function Home() {
       if (active) {
         setIsBooster(!error && data?.is_booster === true);
         setIsSocio(!error && data?.is_socio === true);
-        setAffiliateLink(
+        const savedLink =
           !error && typeof data?.affiliate_link === "string"
             ? data.affiliate_link
-            : "",
-        );
+            : "";
+        setAffiliateLink(savedLink);
+        if (!error && data?.is_socio === true && !savedLink.trim()) {
+          setIsAffiliateLinkOpen(true);
+        }
       }
     };
 
@@ -378,6 +381,7 @@ export default function Home() {
 
       setAffiliateLink(data.affiliate_link);
       setAffiliateLinkSaved(true);
+      window.setTimeout(() => setIsAffiliateLinkOpen(false), 900);
     } finally {
       setAffiliateLinkSaving(false);
     }
@@ -765,14 +769,8 @@ async function openNews(item: NewsItem) {
                   )}
                 </div>
               )}
-              <Dialog
-                open={isAffiliateLinkOpen}
-                onOpenChange={setIsAffiliateLinkOpen}
-              >
-                <DialogContent
-                  showCloseButton={false}
-                  className="before:fixed before:inset-0 before:-z-10 before:bg-black/55 before:backdrop-blur-sm w-[calc(100vw-2rem)] max-w-md overflow-hidden rounded-[32px] border border-white/30 bg-[linear-gradient(135deg,#833AB4_0%,#C13584_35%,#E1306C_58%,#F77737_78%,#FCAF45_100%)] p-0 text-white shadow-2xl sm:rounded-[36px]"
-                >
+              {isAffiliateLinkOpen && (
+                <div className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-sm overflow-y-auto rounded-[32px] border border-white/30 bg-[linear-gradient(135deg,#833AB4_0%,#C13584_35%,#E1306C_58%,#F77737_78%,#FCAF45_100%)] p-0 text-white shadow-2xl sm:bottom-6">
                   <span
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 opacity-[0.12]"
@@ -781,27 +779,26 @@ async function openNews(item: NewsItem) {
                         "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.35'/%3E%3C/svg%3E\")",
                     }}
                   />
-                  <DialogClose asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      aria-label="Fechar pop-up"
-                      className="absolute right-4 top-4 z-20 size-9 rounded-full text-white hover:bg-white/15 hover:text-white"
-                    >
-                      <X className="size-5" />
-                    </Button>
-                  </DialogClose>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Fechar pop-up"
+                    onClick={() => setIsAffiliateLinkOpen(false)}
+                    className="absolute right-4 top-4 z-20 size-9 rounded-full text-white hover:bg-white/15 hover:text-white"
+                  >
+                    <X className="size-5" />
+                  </Button>
 
-                  <div className="relative z-10 p-6 pt-12 sm:p-8 sm:pt-14">
-                    <DialogHeader className="text-left">
-                      <DialogTitle className="text-2xl font-bold leading-tight text-white sm:text-3xl">
+                  <div className="relative z-10 p-5 pt-12">
+                    <div className="text-left">
+                      <h2 className="text-2xl font-bold leading-tight text-white">
                         Salve seu link de indicação
-                      </DialogTitle>
-                      <DialogDescription className="mt-2 text-sm leading-relaxed text-white/90">
+                      </h2>
+                      <p className="mt-2 text-sm leading-relaxed text-white/90">
                         Cole abaixo o seu link exclusivo da Cakto para deixá-lo salvo aqui no app.
-                      </DialogDescription>
-                    </DialogHeader>
+                      </p>
+                    </div>
 
                     <div className="mt-6 space-y-3">
                       <Input
@@ -841,8 +838,8 @@ async function openNews(item: NewsItem) {
                       </Button>
                     </div>
                   </div>
-                </DialogContent>
-              </Dialog>
+                </div>
+              )}
 
               <Dialog
                 open={isReferralOpen}
