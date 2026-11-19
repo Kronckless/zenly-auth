@@ -448,7 +448,7 @@ export default function ComecePorAqui() {
           aria-hidden="true"
           className="pointer-events-none absolute -right-12 -top-20 size-64 rounded-full border-[28px] border-white/20 blur-sm"
         />
-        <h2 className="absolute left-1/2 top-[calc(10rem-3.5rem)] z-10 w-[calc(100%-2rem)] -translate-x-1/2 text-center font-serif text-3xl font-bold italic tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] sm:top-[calc(13rem-3.5rem)] sm:text-4xl">
+        <h2 className="absolute left-1/2 top-8 z-10 w-[calc(100%-2rem)] -translate-x-1/2 text-center font-serif text-3xl font-bold italic tracking-wide text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.55)] sm:top-10 sm:text-4xl">
           Convide e ganhe recompensas.
         </h2>
         <div className="relative z-10 flex flex-wrap justify-center gap-3">
