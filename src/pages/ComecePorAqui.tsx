@@ -431,6 +431,24 @@ export default function ComecePorAqui() {
           </AccordionItem>
         </Accordion>
       </section>
+
+      <div aria-label="Ações finais" className="mt-8 flex justify-center gap-3 pb-8">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => navigate("/home")}
+          className="min-h-12 rounded-md px-6"
+        >
+          Fechar
+        </Button>
+        <Button
+          type="button"
+          onClick={() => window.location.assign(referralLink)}
+          className="min-h-12 rounded-md bg-[#5865F2] px-8 font-bold text-white hover:bg-[#4752C4]"
+        >
+          Continuar
+        </Button>
+      </div>
     </main>
   );
 
@@ -638,23 +656,6 @@ export default function ComecePorAqui() {
           </p>
         </section>
 
-        <div aria-label="Ações finais" className="mt-8 flex justify-center gap-3 pb-8">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate("/home")}
-            className="min-h-12 rounded-md px-6"
-          >
-            Fechar
-          </Button>
-          <Button
-            type="button"
-            onClick={() => window.location.assign(referralLink)}
-            className="min-h-12 rounded-md bg-[#5865F2] px-8 font-bold text-white hover:bg-[#4752C4]"
-          >
-            Continuar
-          </Button>
-        </div>
       </div>
     </main>
   );
