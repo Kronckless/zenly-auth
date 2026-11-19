@@ -194,14 +194,27 @@ function NewsThumbnail({ imageUrl, title }: { imageUrl?: string; title: string }
 
 const AFFILIATE_WIDGET_MAX_AUTO_SHOWS = 3;
 
-function affiliateWidgetShowCountKey(userId: string) {
-  return `affiliate-widget-auto-shows:${userId}`;
+type AffiliateIdentity = {
+  id: string;
+  email: string;
+};
+
+function affiliateIdentityFromUser(
+  user: { id: string; email?: string | null } | null | undefined,
+): AffiliateIdentity | null {
+  const email = user?.email?.trim().toLowerCase();
+  if (!user?.id || !email) return null;
+  return { id: user.id, email };
 }
 
-function getAffiliateWidgetShowCount(userId: string) {
+function affiliateWidgetShowCountKey({ id, email }: AffiliateIdentity) {
+  return `affiliate-widget-auto-shows:${id}:${encodeURIComponent(email)}`;
+}
+
+function getAffiliateWidgetShowCount(identity: AffiliateIdentity) {
   try {
     const count = Number(
-      window.localStorage.getItem(affiliateWidgetShowCountKey(userId)) || 0,
+      window.localStorage.getItem(affiliateWidgetShowCountKey(identity)) || 0,
     );
     return Number.isFinite(count) ? Math.max(0, Math.floor(count)) : 0;
   } catch {
@@ -209,13 +222,13 @@ function getAffiliateWidgetShowCount(userId: string) {
   }
 }
 
-function registerAffiliateWidgetAutoShow(userId: string) {
-  const count = getAffiliateWidgetShowCount(userId);
+function registerAffiliateWidgetAutoShow(identity: AffiliateIdentity) {
+  const count = getAffiliateWidgetShowCount(identity);
   if (count >= AFFILIATE_WIDGET_MAX_AUTO_SHOWS) return false;
 
   try {
     window.localStorage.setItem(
-      affiliateWidgetShowCountKey(userId),
+      affiliateWidgetShowCountKey(identity),
       String(count + 1),
     );
     return true;
@@ -297,7 +310,9 @@ export default function Home() {
     "idle" | "copied" | "shared" | "share-fallback" | "error"
   >("idle");
   const affiliateUserIdRef = useRef<string | null>(null);
+  const affiliateUserEmailRef = useRef<string | null>(null);
   const [affiliateUserId, setAffiliateUserId] = useState<string | null>(null);
+  const [affiliateUserEmail, setAffiliateUserEmail] = useState<string | null>(null);
 
   const [referralCopyStatus, setReferralCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [referralPeople, setReferralPeople] = useState(1);
@@ -349,11 +364,18 @@ export default function Home() {
       setFechouModalIndiqueEGanhe(false);
     };
 
-    const setCurrentUser = (userId: string | null) => {
-      if (affiliateUserIdRef.current === userId) return;
+    const setCurrentUser = (identity: AffiliateIdentity | null) => {
+      if (
+        affiliateUserIdRef.current === (identity?.id ?? null) &&
+        affiliateUserEmailRef.current === (identity?.email ?? null)
+      ) {
+        return;
+      }
 
-      affiliateUserIdRef.current = userId;
-      setAffiliateUserId(userId);
+      affiliateUserIdRef.current = identity?.id ?? null;
+      affiliateUserEmailRef.current = identity?.email ?? null;
+      setAffiliateUserId(identity?.id ?? null);
+      setAffiliateUserEmail(identity?.email ?? null);
       resetAffiliateCardState();
       setIsBooster(false);
       setIsSocio(false);
@@ -364,11 +386,10 @@ export default function Home() {
       return;
     }
 
-    const loadBoosterStatus = async (userId?: string) => {
-      const currentUserId = userId ?? null;
-      setCurrentUser(currentUserId);
+    const loadBoosterStatus = async (identity: AffiliateIdentity | null) => {
+      setCurrentUser(identity);
 
-      if (!currentUserId) {
+      if (!identity) {
         if (active) {
           setIsBooster(false);
           setIsSocio(false);
@@ -379,10 +400,16 @@ export default function Home() {
       const { data, error } = await supabase
         .from("profiles")
         .select("is_booster, is_socio, link_afiliado")
-        .eq("id", currentUserId)
+        .eq("id", identity.id)
         .maybeSingle();
 
-      if (!active || affiliateUserIdRef.current !== currentUserId) return;
+      if (
+        !active ||
+        affiliateUserIdRef.current !== identity.id ||
+        affiliateUserEmailRef.current !== identity.email
+      ) {
+        return;
+      }
 
       setIsBooster(!error && data?.is_booster === true);
       setIsSocio(!error && data?.is_socio === true);
@@ -394,16 +421,16 @@ export default function Home() {
     };
 
     void supabase.auth.getUser().then(({ data: { user } }) => {
-      void loadBoosterStatus(user?.id);
+      void loadBoosterStatus(affiliateIdentityFromUser(user));
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      const userId = session?.user.id ?? null;
-      setCurrentUser(userId);
+      const identity = affiliateIdentityFromUser(session?.user);
+      setCurrentUser(identity);
       window.setTimeout(() => {
-        void loadBoosterStatus(userId ?? undefined);
+        void loadBoosterStatus(identity);
       }, 0);
     });
 
@@ -434,8 +461,13 @@ export default function Home() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+    const identity = affiliateIdentityFromUser(user);
 
-    if (!user || user.id !== affiliateUserIdRef.current) {
+    if (
+      !identity ||
+      identity.id !== affiliateUserIdRef.current ||
+      identity.email !== affiliateUserEmailRef.current
+    ) {
       setIsAffiliateLinkOpen(false);
       return;
     }
@@ -443,17 +475,23 @@ export default function Home() {
     const { data, error } = await supabase
       .from("profiles")
       .select("link_afiliado")
-      .eq("id", user.id)
+      .eq("id", identity.id)
       .maybeSingle();
 
-    if (error || affiliateUserIdRef.current !== user.id) return;
+    if (
+      error ||
+      affiliateUserIdRef.current !== identity.id ||
+      affiliateUserEmailRef.current !== identity.email
+    ) {
+      return;
+    }
 
     const savedLink =
       typeof data?.link_afiliado === "string" ? data.link_afiliado : "";
     setAffiliateLink(savedLink);
     if (
       !savedLink.trim() &&
-      registerAffiliateWidgetAutoShow(user.id)
+      registerAffiliateWidgetAutoShow(identity)
     ) {
       setIsAffiliateLinkOpen(true);
     } else {
@@ -499,8 +537,13 @@ export default function Home() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      const identity = affiliateIdentityFromUser(user);
 
-      if (!user || user.id !== affiliateUserIdRef.current) {
+      if (
+        !identity ||
+        identity.id !== affiliateUserIdRef.current ||
+        identity.email !== affiliateUserEmailRef.current
+      ) {
         setAffiliateLinkError("Entre na sua conta para salvar o link.");
         return;
       }
@@ -513,11 +556,16 @@ export default function Home() {
       const { data, error } = await supabase
         .from("profiles")
         .update({ link_afiliado: link })
-        .eq("id", user.id)
+        .eq("id", identity.id)
         .select("link_afiliado")
         .maybeSingle();
 
-      if (affiliateUserIdRef.current !== user.id) return;
+      if (
+        affiliateUserIdRef.current !== identity.id ||
+        affiliateUserEmailRef.current !== identity.email
+      ) {
+        return;
+      }
 
       if (error || !data) {
         setAffiliateLinkError("Não foi possível salvar o link. Tente novamente.");
@@ -920,6 +968,7 @@ async function openNews(item: NewsItem) {
               {isAffiliateLinkOpen &&
                 fechouModalIndiqueEGanhe &&
                 affiliateUserId &&
+                affiliateUserEmail &&
                 isSocio && (
                 <div
                   className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-[70] max-h-[calc(100dvh-7.5rem)] w-[calc(100vw-2rem)] max-w-[320px] overflow-y-auto rounded-[26px] border-2 p-0 text-white shadow-[0_14px_36px_rgba(0,0,0,0.24),inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-2xl sm:bottom-6"
