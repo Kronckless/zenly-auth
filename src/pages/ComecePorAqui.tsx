@@ -80,6 +80,7 @@ export default function ComecePorAqui() {
   const [linkCopyStatus, setLinkCopyStatus] = useState<"idle" | "success" | "error">("idle");
   const [isWhatsAppGuideOpen, setIsWhatsAppGuideOpen] = useState(false);
   const [isInstagramGuideOpen, setIsInstagramGuideOpen] = useState(false);
+  const [isCaktoGuideOpen, setIsCaktoGuideOpen] = useState(false);
 
   async function copyReferralLink() {
     try {
@@ -327,6 +328,120 @@ export default function ComecePorAqui() {
                 <p className="rounded-lg border-l-2 border-primary bg-muted/40 px-4 py-3 font-semibold">
                   Uma boa indicação começa com uma apresentação relevante. O Instagram oferece diferentes maneiras de compartilhar informações e apresentar o Voz do Povo. Utilize cada espaço com bom senso, participe de conversas legítimas e permita que as pessoas conheçam o projeto por vontade própria.
                 </p>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </section>
+
+      <section className={`mx-auto mt-4 w-full max-w-4xl overflow-hidden rounded-xl border text-left shadow-sm transition-colors duration-300 ${
+        isCaktoGuideOpen
+          ? "border-[#6B4EFF]/30 bg-gradient-to-br from-[#F6F2FF] via-[#FBF9FF] to-[#F0EBFF]"
+          : "border-[#A78BFA]/40 bg-gradient-to-br from-[#21143D] via-[#493071] to-[#291941]"
+      }`}>
+        <Accordion
+          type="single"
+          collapsible
+          value={isCaktoGuideOpen ? "cakto-account-guide" : ""}
+          onValueChange={(value) => setIsCaktoGuideOpen(value === "cakto-account-guide")}
+        >
+          <AccordionItem value="cakto-account-guide" className="border-0">
+            <AccordionTrigger className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left hover:no-underline [&>svg]:hidden sm:px-8">
+              <span className="min-w-0">
+                <span className={`block text-base font-bold leading-snug sm:text-lg ${isCaktoGuideOpen ? "text-foreground" : "text-white"}`}>
+                  Como criar uma conta na Cakto?
+                </span>
+                <span className={`mt-2 inline-flex w-fit items-center rounded-full border px-3 py-1.5 text-xs font-bold shadow-md transition-all group-hover:scale-[1.03] group-hover:shadow-lg sm:text-sm ${
+                  isCaktoGuideOpen
+                    ? "border-[#6B4EFF]/30 bg-background text-[#5536B8]"
+                    : "border-white/80 bg-white text-[#493071]"
+                }`}>
+                  {isCaktoGuideOpen ? "Ocultar detalhes ↑" : "Mais detalhes ↓"}
+                </span>
+              </span>
+            </AccordionTrigger>
+
+            {!isCaktoGuideOpen && (
+              <div aria-hidden="true" className="relative mx-5 mb-4 space-y-1.5 overflow-hidden opacity-50 blur-[2px] sm:mx-8">
+                <div className="h-1.5 w-4/5 rounded-full bg-white/70" />
+                <div className="h-1.5 w-full rounded-full bg-white/60" />
+                <div className="h-1.5 w-11/12 rounded-full bg-white/60" />
+                <div className="h-1.5 w-2/3 rounded-full bg-white/50" />
+                <div className="absolute inset-x-0 bottom-0 h-4 bg-gradient-to-t from-[#291941] to-transparent" />
+              </div>
+            )}
+
+            <AccordionContent className="px-4 pb-4 sm:px-6 sm:pb-6">
+              <div className="space-y-5 rounded-lg border border-[#6B4EFF]/15 bg-background/95 p-5 text-sm leading-7 text-foreground sm:p-7 sm:text-base">
+                <div className="space-y-2">
+                  <h3 className="font-bold text-foreground">Como criar uma conta na Cakto?</h3>
+                  <p>
+                    A Cakto é uma plataforma usada para organizar vendas e pagamentos de produtos e serviços digitais. Se você pretende trabalhar com indicações e receber comissões, conhecer a plataforma e entender o cadastro é um passo importante.
+                  </p>
+                  <p>
+                    Para usar uma conta e receber valores, é preciso ter 18 anos ou mais e cumprir os requisitos da própria Cakto.
+                  </p>
+                </div>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">1. Acesse o site da Cakto</h3>
+                  <p>
+                    Comece pelo site oficial:{" "}
+                    <a
+                      href="https://cakto.com.br/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-semibold text-[#5536B8] underline decoration-[#A78BFA] underline-offset-4 hover:text-[#392274]"
+                    >
+                      cakto.com.br
+                    </a>
+                    . É lá que você encontrará as opções de acesso e de cadastro oferecidas pela plataforma.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">2. Procure a opção de cadastro</h3>
+                  <p>
+                    No site, procure a opção para se cadastrar ou criar uma conta, caso esteja disponível. As páginas e os nomes usados podem mudar; siga o que aparecer no próprio site, sem se preocupar se a tela estiver diferente deste guia.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">3. Preencha seus dados com atenção</h3>
+                  <p>
+                    A plataforma poderá pedir informações pessoais para identificar você e configurar a conta. Use informações verdadeiras e seus próprios documentos. Antes de continuar, confira se atende à idade mínima e às demais condições da Cakto.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">4. Revise tudo antes de finalizar</h3>
+                  <p>
+                    Confira os dados preenchidos, especialmente o endereço de e-mail. Depois, siga as orientações que a plataforma mostrar. Se for solicitada uma confirmação ou verificação, faça-a somente pelos meios oficiais indicados pela Cakto.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">5. Conheça a área financeira</h3>
+                  <p>
+                    A área financeira reúne as opções disponíveis para configurar e consultar informações sobre recebimentos. O que você poderá fazer ali depende dos recursos e das regras da plataforma. Use sempre seus próprios dados e siga as instruções apresentadas.
+                  </p>
+                </section>
+
+                <section className="space-y-2">
+                  <h3 className="font-bold text-foreground">6. Consulte o suporte oficial se tiver dúvidas</h3>
+                  <p>
+                    Se alguma tela for diferente ou algo não estiver claro, consulte a documentação e o suporte oficial da Cakto. Assim, você recebe orientações atualizadas diretamente da plataforma.
+                  </p>
+                </section>
+
+                <div className="space-y-2 rounded-lg border-l-2 border-[#6B4EFF] bg-[#F5F1FF] px-4 py-3">
+                  <p className="font-bold text-[#392274]">
+                    Antes de começar, confira os requisitos da plataforma.
+                  </p>
+                  <p>
+                    O cadastro e o uso da Cakto para recebimentos dependem das regras da plataforma, incluindo a idade mínima de 18 anos. Consulte sempre as condições oficiais antes de iniciar.
+                  </p>
+                </div>
               </div>
             </AccordionContent>
           </AccordionItem>
