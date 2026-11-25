@@ -17,6 +17,23 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
+  async function markPasswordDefined(userId: string, accountEmail: string) {
+    if (!supabase) return;
+
+    try {
+      await supabase.from("profiles").upsert(
+        {
+          id: userId,
+          email: accountEmail.trim().toLowerCase(),
+          senha_definida: true,
+        },
+        { onConflict: "id" }
+      );
+    } catch {
+      // O registro do indicador não deve impedir a autenticação.
+    }
+  }
+
   async function handleAuth(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFeedback("");
@@ -46,6 +63,7 @@ export default function Login() {
         }
 
         if (data.session) {
+          if (data.user) await markPasswordDefined(data.user.id, email);
           navigate("/home");
           return;
         }
@@ -55,12 +73,13 @@ export default function Login() {
         return;
       }
 
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        setFeedback("Não foi possível entrar. Confira os dados e tente novamente.");
+        setFeedback("E-mail ou senha incorretos. Confira os dados e tente novamente.");
         return;
       }
 
+      if (data.user) await markPasswordDefined(data.user.id, email);
       navigate("/home");
     } catch {
       setFeedback("Não foi possível concluir a solicitação. Tente novamente mais tarde.");

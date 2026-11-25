@@ -10,6 +10,7 @@ create table if not exists public.profiles (
 
 alter table public.profiles
   add column if not exists email text not null default '',
+  add column if not exists senha_definida boolean not null default false,
   add column if not exists has_mfo boolean not null default false,
   add column if not exists is_booster boolean not null default false,
   add column if not exists is_socio boolean not null default false,
