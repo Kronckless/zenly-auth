@@ -69,6 +69,61 @@ type CommunityRoom = {
   unreadCount: number;
 };
 
+const PREVIEW_ROOM_PREFIX = "preview-booster-";
+
+function previewRoomsStorageKey(userId: string) {
+  return `preview-booster-rooms:${userId}`;
+}
+
+function previewMessagesStorageKey(userId: string, roomId: string) {
+  return `preview-booster-messages:${userId}:${roomId}`;
+}
+
+function readPreviewRooms(userId: string): CommunityRoom[] {
+  try {
+    const stored: unknown = JSON.parse(
+      window.localStorage.getItem(previewRoomsStorageKey(userId)) || "[]",
+    );
+    return Array.isArray(stored) ? stored as CommunityRoom[] : [];
+  } catch {
+    return [];
+  }
+}
+
+function writePreviewRooms(userId: string, rooms: CommunityRoom[]) {
+  try {
+    window.localStorage.setItem(previewRoomsStorageKey(userId), JSON.stringify(rooms));
+  } catch {
+    // Mantém as salas disponíveis na sessão atual se o armazenamento estiver indisponível.
+  }
+}
+
+function readPreviewMessages(userId: string, roomId: string): CommunityMessage[] {
+  try {
+    const stored: unknown = JSON.parse(
+      window.localStorage.getItem(previewMessagesStorageKey(userId, roomId)) || "[]",
+    );
+    return Array.isArray(stored) ? stored as CommunityMessage[] : [];
+  } catch {
+    return [];
+  }
+}
+
+function writePreviewMessages(
+  userId: string,
+  roomId: string,
+  messages: CommunityMessage[],
+) {
+  try {
+    window.localStorage.setItem(
+      previewMessagesStorageKey(userId, roomId),
+      JSON.stringify(messages),
+    );
+  } catch {
+    // Mantém as mensagens disponíveis na sessão atual se o armazenamento estiver indisponível.
+  }
+}
+
 function formatFileSize(bytes: number) {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
@@ -312,13 +367,17 @@ export default function Community() {
       }),
     );
 
-    setCommunityRooms(roomsWithUnread);
+    const previewRooms =
+      hasPreviewBoosterAccess() && userId ? readPreviewRooms(userId) : [];
+    const allRooms = [...previewRooms, ...roomsWithUnread];
+
+    setCommunityRooms(allRooms);
     setOwnedRoomCount(
-      roomsWithUnread.filter((room) => room.creatorId === userId).length,
+      allRooms.filter((room) => room.creatorId === userId).length,
     );
     setUnreadCounts({
       general: generalUnreadCount,
-      ...Object.fromEntries(roomsWithUnread.map((room) => [room.id, room.unreadCount])),
+      ...Object.fromEntries(allRooms.map((room) => [room.id, room.unreadCount])),
     });
   }, [userId]);
 
@@ -419,6 +478,19 @@ export default function Community() {
   }, [messages, loading]);
 
   const loadMessages = useCallback(async () => {
+    if (
+      hasPreviewBoosterAccess() &&
+      roomId?.startsWith(PREVIEW_ROOM_PREFIX)
+    ) {
+      const localMessages = userId
+        ? readPreviewMessages(userId, roomId)
+        : [];
+      setMessages(localMessages);
+      setError("");
+      setLoading(false);
+      return;
+    }
+
     if (!supabase) return;
 
     const sevenDaysAgo = new Date(
@@ -466,7 +538,7 @@ export default function Community() {
     );
     setError("");
     setLoading(false);
-  }, [roomId]);
+  }, [roomId, userId]);
 
   useEffect(() => {
     if (!supabase) {
@@ -619,7 +691,12 @@ export default function Community() {
 
     if ((!content && !selectedArticle) || sending) return;
 
-    if (!supabase) {
+    const isPreviewRoom = Boolean(
+      hasPreviewBoosterAccess() &&
+      roomId?.startsWith(PREVIEW_ROOM_PREFIX),
+    );
+
+    if (!supabase && !isPreviewRoom) {
       setError("O serviço de mensagens não está configurado.");
       return;
     }
@@ -654,6 +731,76 @@ export default function Community() {
 
     setSending(true);
     setError("");
+
+    if (isPreviewRoom && userId && roomId) {
+      const previewMessage: CommunityMessage = {
+        id: crypto.randomUUID(),
+        user_id: userId,
+        nome_usuario: profileName || "Membro",
+        conteudo: content,
+        created_at: new Date().toISOString(),
+        is_super_chat: isSuperChatMessage,
+        dossier_url: null,
+        dossier_name: selectedArticle?.titulo ?? null,
+        dossier_size: null,
+        author_has_mfo: hasMfo,
+      };
+      const nextMessages = [
+        ...readPreviewMessages(userId, roomId),
+        previewMessage,
+      ];
+
+      writePreviewMessages(userId, roomId, nextMessages);
+      setMessages(nextMessages);
+
+      if (isSuperChatMessage && !mfoFilterEnabled) {
+        setPinnedSuperChatId(previewMessage.id);
+        setAnimatingSuperChatId(previewMessage.id);
+
+        if (pinTimeoutRef.current !== null) window.clearTimeout(pinTimeoutRef.current);
+        if (animationTimeoutRef.current !== null) window.clearTimeout(animationTimeoutRef.current);
+
+        animationTimeoutRef.current = window.setTimeout(() => {
+          setAnimatingSuperChatId(null);
+        }, 1500);
+        pinTimeoutRef.current = window.setTimeout(() => {
+          setPinnedSuperChatId(null);
+        }, 3500);
+      }
+
+      setMessageText("");
+      setSelectedArticle(null);
+      setSuperChatEnabled(false);
+
+      if (isSuperChatMessage) {
+        const previousUsage = readSuperChatUsage(userId);
+        const nextUsage: SuperChatUsage = {
+          day: getLocalDayKey(),
+          count: previousUsage.count + 1,
+          lastSentAt: Date.now(),
+        };
+
+        try {
+          window.localStorage.setItem(
+            getSuperChatStorageKey(userId),
+            JSON.stringify(nextUsage),
+          );
+        } catch {
+          // Mantém o chat utilizável se o armazenamento do navegador estiver indisponível.
+        }
+
+        setDailySuperChatCount(nextUsage.count);
+        setSuperChatCooldownSeconds(Math.ceil(SUPER_CHAT_COOLDOWN_MS / 1000));
+        setSuperChatLimitMessage(
+          nextUsage.count >= SUPER_CHAT_DAILY_LIMIT
+            ? "Limite diário de 10 Super Chats atingido. Volte amanhã!"
+            : "",
+        );
+      }
+
+      setSending(false);
+      return;
+    }
 
     const dossierUrl: string | null = null;
     const dossierName = selectedArticle?.titulo ?? null;
@@ -771,9 +918,26 @@ export default function Community() {
       return;
     }
 
-    if (!supabase || !userId) {
+    if ((!supabase && !hasPreviewBoosterAccess()) || !userId) {
       setCreateRoomError("Entre na sua conta para criar uma sala.");
       setRoomLimitDialogOpen(true);
+      return;
+    }
+
+    if (hasPreviewBoosterAccess()) {
+      const currentCount = readPreviewRooms(userId).length;
+      setOwnedRoomCount(currentCount);
+      setRoomName("");
+      setRoomIsPrivate(false);
+
+      if (currentCount >= 2) {
+        setCreateRoomError("Você já atingiu o limite de 2 salas de Preview.");
+        setCreateRoomDialogOpen(true);
+        return;
+      }
+
+      setCreateRoomError("");
+      setCreateRoomDialogOpen(true);
       return;
     }
 
@@ -806,7 +970,13 @@ export default function Community() {
   const createCommunityRoom = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const name = roomName.trim();
-    if (!name || !supabase || !userId || creatingRoom || ownedRoomCount >= 2) return;
+    if (
+      !name ||
+      (!supabase && !hasPreviewBoosterAccess()) ||
+      !userId ||
+      creatingRoom ||
+      ownedRoomCount >= 2
+    ) return;
 
     if (isReservedRoomName(name)) {
       setCreateRoomError("Este nome é reservado para a sala oficial do portal e não pode ser utilizado.");
@@ -815,6 +985,28 @@ export default function Community() {
 
     setCreatingRoom(true);
     setCreateRoomError("");
+
+    if (hasPreviewBoosterAccess() && userId) {
+      const previewRoom: CommunityRoom = {
+        id: `${PREVIEW_ROOM_PREFIX}${crypto.randomUUID()}`,
+        name,
+        creator: profileName || "Membro",
+        creatorId: userId,
+        isPrivate: roomIsPrivate,
+        createdAt: new Date(Date.now() - 31 * 24 * 60 * 60 * 1000).toISOString(),
+        lastMessage: "Nova sala de Preview",
+        lastMessageAt: null,
+        unreadCount: 0,
+      };
+      const previewRooms = [...readPreviewRooms(userId), previewRoom];
+
+      writePreviewRooms(userId, previewRooms);
+      setCommunityRooms((rooms) => [previewRoom, ...rooms]);
+      setOwnedRoomCount(previewRooms.length);
+      setCreateRoomDialogOpen(false);
+      setCreatingRoom(false);
+      return;
+    }
 
     const { data, error: insertError } = await supabase
       .from("salas_comunidade")
@@ -862,7 +1054,17 @@ export default function Community() {
   const updateCommunityRoom = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const name = roomEditName.trim();
-    if (!activeRoom || !canEditRoom || !name || !supabase || savingRoom) return;
+    const isPreviewRoom = Boolean(
+      hasPreviewBoosterAccess() &&
+      activeRoom?.id.startsWith(PREVIEW_ROOM_PREFIX),
+    );
+    if (
+      !activeRoom ||
+      !canEditRoom ||
+      !name ||
+      (!supabase && !isPreviewRoom) ||
+      savingRoom
+    ) return;
 
     if (isReservedRoomName(name)) {
       setRoomManagementError("Este nome é reservado para a sala oficial do portal e não pode ser utilizado.");
@@ -871,6 +1073,20 @@ export default function Community() {
 
     setSavingRoom(true);
     setRoomManagementError("");
+
+    if (isPreviewRoom && activeRoom && userId) {
+      const previewRooms = readPreviewRooms(userId).map((room) =>
+        room.id === activeRoom.id ? { ...room, name } : room,
+      );
+      writePreviewRooms(userId, previewRooms);
+      setCommunityRooms((rooms) =>
+        rooms.map((room) => room.id === activeRoom.id ? { ...room, name } : room),
+      );
+      setRoomSettingsDialogOpen(false);
+      setSavingRoom(false);
+      return;
+    }
+
     const { error: updateError } = await supabase
       .from("salas_comunidade")
       .update({ name })
@@ -891,11 +1107,36 @@ export default function Community() {
   };
 
   const deleteCommunityRoom = async () => {
-    if (!activeRoom || !canEditRoom || !supabase || savingRoom) return;
+    const isPreviewRoom = Boolean(
+      hasPreviewBoosterAccess() &&
+      activeRoom?.id.startsWith(PREVIEW_ROOM_PREFIX),
+    );
+    if (
+      !activeRoom ||
+      !canEditRoom ||
+      (!supabase && !isPreviewRoom) ||
+      savingRoom
+    ) return;
     if (!window.confirm(`Excluir a sala “${activeRoom.name}”? Essa ação não pode ser desfeita.`)) return;
 
     setSavingRoom(true);
     setRoomManagementError("");
+
+    if (isPreviewRoom && activeRoom && userId) {
+      const previewRooms = readPreviewRooms(userId).filter(
+        (room) => room.id !== activeRoom.id,
+      );
+      writePreviewRooms(userId, previewRooms);
+      setCommunityRooms((rooms) =>
+        rooms.filter((room) => room.id !== activeRoom.id),
+      );
+      setOwnedRoomCount(previewRooms.length);
+      setRoomSettingsDialogOpen(false);
+      setSavingRoom(false);
+      navigate("/comunidade");
+      return;
+    }
+
     const { error: deleteError } = await supabase
       .from("salas_comunidade")
       .delete()

@@ -212,6 +212,18 @@ function affiliateWidgetShowCountKey({ id, email }: AffiliateIdentity) {
   return `affiliate-widget-auto-shows:${id}:${encodeURIComponent(email)}`;
 }
 
+function previewAffiliateLinkKey({ id, email }: AffiliateIdentity) {
+  return `preview-booster-affiliate-link:${id}:${encodeURIComponent(email)}`;
+}
+
+function getPreviewAffiliateLink(identity: AffiliateIdentity) {
+  try {
+    return window.localStorage.getItem(previewAffiliateLinkKey(identity)) || "";
+  } catch {
+    return "";
+  }
+}
+
 function getAffiliateWidgetShowCount(identity: AffiliateIdentity) {
   try {
     const count = Number(
@@ -397,10 +409,13 @@ export default function Home() {
         (profileMatchesIdentity && profile.is_booster === true) || previewBoosterAccess,
       );
       setIsSocio(membershipAccess || previewBoosterAccess);
-      const savedLink =
+      const profileSavedLink =
         profileMatchesIdentity && typeof profile.link_afiliado === "string"
           ? profile.link_afiliado
           : "";
+      const savedLink = previewBoosterAccess
+        ? getPreviewAffiliateLink(identity) || profileSavedLink
+        : profileSavedLink;
       setAffiliateLink(savedLink);
     };
 
@@ -458,20 +473,27 @@ export default function Home() {
 
     const { profile, isSocio: membershipAccess } =
       await loadMembershipProfile(identity);
+    const previewBoosterAccess = hasPreviewBoosterAccess();
+    const profileMatchesIdentity =
+      profile?.id === identity.id &&
+      typeof profile.email === "string" &&
+      profile.email.trim().toLowerCase() === identity.email;
 
     if (
-      !membershipAccess ||
-      profile?.id !== identity.id ||
-      typeof profile.email !== "string" ||
-      profile.email.trim().toLowerCase() !== identity.email ||
+      (!membershipAccess && !previewBoosterAccess) ||
+      (!previewBoosterAccess && !profileMatchesIdentity) ||
       affiliateUserIdRef.current !== identity.id ||
       affiliateUserEmailRef.current !== identity.email
     ) {
       return;
     }
 
-    const savedLink =
-      typeof profile.link_afiliado === "string" ? profile.link_afiliado : "";
+    const savedLink = previewBoosterAccess
+      ? getPreviewAffiliateLink(identity) ||
+        (profileMatchesIdentity ? profile.link_afiliado || "" : "")
+      : profileMatchesIdentity
+        ? profile.link_afiliado || ""
+        : "";
     setAffiliateLink(savedLink);
     if (
       !savedLink.trim() &&
@@ -534,6 +556,21 @@ export default function Home() {
 
       if (!isSocio) {
         setAffiliateLinkError("Este recurso está disponível apenas para sócios com acesso ativo.");
+        return;
+      }
+
+      if (hasPreviewBoosterAccess()) {
+        try {
+          window.localStorage.setItem(previewAffiliateLinkKey(identity), link);
+        } catch {
+          setAffiliateLinkError("Não foi possível salvar o link neste navegador.");
+          return;
+        }
+
+        setAffiliateLink(link);
+        setAffiliateLinkSaved(true);
+        setIsEditingAffiliateLink(false);
+        setAffiliateLinkActionStatus("idle");
         return;
       }
 
