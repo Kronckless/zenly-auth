@@ -212,17 +212,6 @@ function affiliateWidgetShowCountKey({ id, email }: AffiliateIdentity) {
   return `affiliate-widget-auto-shows:${id}:${encodeURIComponent(email)}`;
 }
 
-function previewAffiliateLinkKey({ id, email }: AffiliateIdentity) {
-  return `preview-booster-affiliate-link:${id}:${encodeURIComponent(email)}`;
-}
-
-function getPreviewAffiliateLink(identity: AffiliateIdentity) {
-  try {
-    return window.localStorage.getItem(previewAffiliateLinkKey(identity)) || "";
-  } catch {
-    return "";
-  }
-}
 
 function getAffiliateWidgetShowCount(identity: AffiliateIdentity) {
   try {
@@ -370,9 +359,8 @@ export default function Home() {
 
     if (!supabase) {
       setCurrentUser(null);
-      const previewBoosterAccess = hasPreviewBoosterAccess();
-      setIsBooster(previewBoosterAccess);
-      setIsSocio(previewBoosterAccess);
+      setIsBooster(false);
+      setIsSocio(false);
       return;
     }
 
@@ -381,9 +369,8 @@ export default function Home() {
 
       if (!identity) {
         if (active) {
-          const previewBoosterAccess = hasPreviewBoosterAccess();
-          setIsBooster(previewBoosterAccess);
-          setIsSocio(previewBoosterAccess);
+          setIsBooster(false);
+          setIsSocio(false);
         }
         return;
       }
@@ -404,18 +391,12 @@ export default function Home() {
         typeof profile.email === "string" &&
         profile.email.trim().toLowerCase() === identity.email;
 
-      const previewBoosterAccess = hasPreviewBoosterAccess();
-      setIsBooster(
-        (profileMatchesIdentity && profile.is_booster === true) || previewBoosterAccess,
-      );
-      setIsSocio(membershipAccess || previewBoosterAccess);
-      const profileSavedLink =
+      setIsBooster(profileMatchesIdentity && profile.is_booster === true);
+      setIsSocio(membershipAccess);
+      const savedLink =
         profileMatchesIdentity && typeof profile.link_afiliado === "string"
           ? profile.link_afiliado
           : "";
-      const savedLink = previewBoosterAccess
-        ? getPreviewAffiliateLink(identity) || profileSavedLink
-        : profileSavedLink;
       setAffiliateLink(savedLink);
     };
 
@@ -473,27 +454,21 @@ export default function Home() {
 
     const { profile, isSocio: membershipAccess } =
       await loadMembershipProfile(identity);
-    const previewBoosterAccess = hasPreviewBoosterAccess();
     const profileMatchesIdentity =
       profile?.id === identity.id &&
       typeof profile.email === "string" &&
       profile.email.trim().toLowerCase() === identity.email;
 
     if (
-      (!membershipAccess && !previewBoosterAccess) ||
-      (!previewBoosterAccess && !profileMatchesIdentity) ||
+      !membershipAccess ||
+      !profileMatchesIdentity ||
       affiliateUserIdRef.current !== identity.id ||
       affiliateUserEmailRef.current !== identity.email
     ) {
       return;
     }
 
-    const savedLink = previewBoosterAccess
-      ? getPreviewAffiliateLink(identity) ||
-        (profileMatchesIdentity ? profile.link_afiliado || "" : "")
-      : profileMatchesIdentity
-        ? profile.link_afiliado || ""
-        : "";
+    const savedLink = profile.link_afiliado || "";
     setAffiliateLink(savedLink);
     if (
       !savedLink.trim() &&
@@ -559,20 +534,6 @@ export default function Home() {
         return;
       }
 
-      if (hasPreviewBoosterAccess()) {
-        try {
-          window.localStorage.setItem(previewAffiliateLinkKey(identity), link);
-        } catch {
-          setAffiliateLinkError("Não foi possível salvar o link neste navegador.");
-          return;
-        }
-
-        setAffiliateLink(link);
-        setAffiliateLinkSaved(true);
-        setIsEditingAffiliateLink(false);
-        setAffiliateLinkActionStatus("idle");
-        return;
-      }
 
       const { data, error } = await supabase
         .from("profiles")
@@ -953,7 +914,7 @@ async function openNews(item: NewsItem) {
 
               {menuOpen && (
                 <div className="absolute right-0 top-10 w-64 rounded-lg border border-white/30 bg-neutral-500/25 p-2 shadow-lg backdrop-blur-xl">
-                  {isBooster && !hasPreviewBoosterAccess() ? (
+                  {isBooster ? (
                     <div className="rounded-md border border-white/40 bg-white/95 px-3 py-3 text-sm font-medium text-gray-800">
                       Sócio Vitalício Ativo
                     </div>
@@ -972,7 +933,7 @@ async function openNews(item: NewsItem) {
                       </span>
                     </button>
                   )}
-                  {(isSocio || hasPreviewBoosterAccess()) && (
+                  {isSocio && (
                     <button
                       type="button"
                       onClick={() => {

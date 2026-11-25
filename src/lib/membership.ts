@@ -22,11 +22,7 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
   const email = normalizeMembershipEmail(user?.email);
 
   if (!user?.id || !email || !supabase) {
-    return {
-      profile: null,
-      isSocio: hasPreviewBoosterAccess(),
-      isMfo: false,
-    };
+    return { profile: null, isSocio: false, isMfo: false };
   }
 
   const { data, error } = await supabase
@@ -45,27 +41,11 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
 
   return {
     profile,
-    isSocio: profile?.is_booster === true || hasPreviewBoosterAccess(),
+    isSocio: profile?.is_booster === true,
     isMfo: profile?.is_mfo === true,
   };
 }
 
 export function hasPreviewBoosterAccess() {
-  if (typeof window === "undefined") return false;
-
-  const hostname = window.location.hostname.toLowerCase();
-  if (hostname === "poderdaconsciencia.zenly.cloud") return false;
-
-  // The Preview may open as its own page instead of inside the editor frame.
-  if (hostname === "zenly.cloud" || hostname.endsWith(".zenly.cloud")) return true;
-  if (window.self === window.top) return false;
-
-  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
-    try {
-      const ancestorHostname = new URL(origin).hostname.toLowerCase();
-      return ancestorHostname === "zenly.cloud" || ancestorHostname.endsWith(".zenly.cloud");
-    } catch {
-      return false;
-    }
-  });
+  return false;
 }
