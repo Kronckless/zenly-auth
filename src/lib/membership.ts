@@ -45,3 +45,18 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
     isMfo: profile?.is_mfo === true,
   };
 }
+
+export function hasPreviewBoosterAccess() {
+  if (typeof window === "undefined") return false;
+  if (window.location.hostname === "poderdaconsciencia.zenly.cloud") return false;
+  if (window.self === window.top) return false;
+
+  return Array.from(window.location.ancestorOrigins ?? []).some((origin) => {
+    try {
+      const hostname = new URL(origin).hostname;
+      return hostname === "zenly.cloud" || hostname.endsWith(".zenly.cloud");
+    } catch {
+      return false;
+    }
+  });
+}

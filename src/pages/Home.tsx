@@ -37,7 +37,7 @@ import {
 } from "@/components/ui/accordion";
 import AppNavigation from "@/components/AppNavigation";
 import { supabase } from "@/lib/supabase";
-import { loadMembershipProfile } from "@/lib/membership";
+import { hasPreviewBoosterAccess, loadMembershipProfile } from "@/lib/membership";
 import {
   Card,
   CardContent,
@@ -358,6 +358,9 @@ export default function Home() {
 
     if (!supabase) {
       setCurrentUser(null);
+      const previewBoosterAccess = hasPreviewBoosterAccess();
+      setIsBooster(previewBoosterAccess);
+      setIsSocio(previewBoosterAccess);
       return;
     }
 
@@ -366,8 +369,9 @@ export default function Home() {
 
       if (!identity) {
         if (active) {
-          setIsBooster(false);
-          setIsSocio(false);
+          const previewBoosterAccess = hasPreviewBoosterAccess();
+          setIsBooster(previewBoosterAccess);
+          setIsSocio(previewBoosterAccess);
         }
         return;
       }
@@ -388,8 +392,11 @@ export default function Home() {
         typeof profile.email === "string" &&
         profile.email.trim().toLowerCase() === identity.email;
 
-      setIsBooster(profileMatchesIdentity && profile.is_booster === true);
-      setIsSocio(membershipAccess);
+      const previewBoosterAccess = hasPreviewBoosterAccess();
+      setIsBooster(
+        (profileMatchesIdentity && profile.is_booster === true) || previewBoosterAccess,
+      );
+      setIsSocio(membershipAccess || previewBoosterAccess);
       const savedLink =
         profileMatchesIdentity && typeof profile.link_afiliado === "string"
           ? profile.link_afiliado

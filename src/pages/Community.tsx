@@ -34,7 +34,7 @@ import {
   Zap,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { loadMembershipProfile } from "@/lib/membership";
+import { hasPreviewBoosterAccess, loadMembershipProfile } from "@/lib/membership";
 
 type CommunityMessage = {
   id: string;
@@ -470,6 +470,7 @@ export default function Community() {
 
   useEffect(() => {
     if (!supabase) {
+      setIsSocio(hasPreviewBoosterAccess());
       setLoading(false);
       setError("O serviço de mensagens não está configurado.");
       return;
@@ -503,7 +504,7 @@ export default function Community() {
               "Membro",
           );
           setHasMfo(profile?.is_mfo === true);
-          setIsSocio(membershipAccess);
+          setIsSocio(membershipAccess || hasPreviewBoosterAccess());
           if (profile?.is_mfo !== true) {
             setMfoFilterEnabled(false);
             setSuperChatEnabled(false);
@@ -511,7 +512,7 @@ export default function Community() {
         }
       } else if (active) {
         setHasMfo(false);
-        setIsSocio(false);
+        setIsSocio(hasPreviewBoosterAccess());
         setMfoFilterEnabled(false);
         setSuperChatEnabled(false);
       }
@@ -602,7 +603,7 @@ export default function Community() {
             "Membro",
         );
         setHasMfo(profile?.is_mfo === true);
-        setIsSocio(membershipAccess);
+        setIsSocio(membershipAccess || hasPreviewBoosterAccess());
       }, 0);
     });
 
