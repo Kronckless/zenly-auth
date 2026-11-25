@@ -132,6 +132,7 @@ export default function Login() {
         </div>
 
         {mode === "login" ? (
+          <>
           <form className="mt-6 space-y-5 transition-all duration-300" onSubmit={handleAuth}>
           <div className="space-y-2">
             <Label htmlFor="email">E-mail</Label>
@@ -204,6 +205,13 @@ export default function Login() {
             {isSubmitting ? "Aguarde…" : "Entrar"}
           </Button>
           </form>
+          <a
+            href="mailto:thealliancecatalysts@gmail.com?subject=Suporte%20-%20Acesso%20%C3%A0%20conta"
+            className="mt-5 block text-center text-sm font-medium text-primary hover:underline"
+          >
+            Está com problemas? Chame o nosso suporte.
+          </a>
+          </>
         ) : (
           <form className="mt-6 space-y-5 transition-all duration-300" onSubmit={handleAuth}>
             <div className="space-y-2">
