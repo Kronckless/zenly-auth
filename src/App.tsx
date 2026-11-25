@@ -209,14 +209,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/home" element={<Home />} />
-            <Route
-              path="/comeceporaqui"
-              element={
-                <AddOnAccessRoute permission="isSocio">
-                  <ComecePorAqui />
-                </AddOnAccessRoute>
-              }
-            />
+            <Route path="/comeceporaqui" element={<ComecePorAqui />} />
             <Route path="/todas-noticias" element={<AllNews />} />
             <Route path="/comunidade" element={<Community />} />
             <Route path="/comunidade/geral" element={<Community />} />
