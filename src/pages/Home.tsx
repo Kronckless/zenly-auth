@@ -953,7 +953,7 @@ async function openNews(item: NewsItem) {
 
               {menuOpen && (
                 <div className="absolute right-0 top-10 w-64 rounded-lg border border-white/30 bg-neutral-500/25 p-2 shadow-lg backdrop-blur-xl">
-                  {isBooster ? (
+                  {isBooster && !hasPreviewBoosterAccess() ? (
                     <div className="rounded-md border border-white/40 bg-white/95 px-3 py-3 text-sm font-medium text-gray-800">
                       Sócio Vitalício Ativo
                     </div>
@@ -972,7 +972,7 @@ async function openNews(item: NewsItem) {
                       </span>
                     </button>
                   )}
-                  {isSocio && (
+                  {(isSocio || hasPreviewBoosterAccess()) && (
                     <button
                       type="button"
                       onClick={() => {
