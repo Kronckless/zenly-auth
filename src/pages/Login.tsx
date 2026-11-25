@@ -70,7 +70,7 @@ export default function Login() {
   }
 
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-[#F8F9FA] p-4 sm:p-6">
+    <main className="flex min-h-screen w-full flex-col items-center justify-center bg-[#F8F9FA] p-4 sm:p-6">
       <section className="w-full max-w-md rounded-3xl border border-white/20 bg-white p-6 shadow-2xl shadow-black/20 sm:p-8">
         <div className="mb-8 flex justify-center">
           <svg
@@ -205,12 +205,6 @@ export default function Login() {
             {isSubmitting ? "Aguarde…" : "Entrar"}
           </Button>
           </form>
-          <a
-            href="mailto:thealliancecatalysts@gmail.com?subject=Suporte%20-%20Acesso%20%C3%A0%20conta"
-            className="mt-5 block text-center text-sm font-medium text-primary hover:underline"
-          >
-            Está com problemas? Chame o nosso suporte.
-          </a>
           </>
         ) : (
           <form className="mt-6 space-y-5 transition-all duration-300" onSubmit={handleAuth}>
@@ -285,6 +279,14 @@ export default function Login() {
           </p>
         )}
       </section>
+      {mode === "login" && (
+        <a
+          href="mailto:thealliancecatalysts@gmail.com?subject=Suporte%20-%20Acesso%20%C3%A0%20conta"
+          className="mt-5 block w-full max-w-md text-center text-sm font-medium text-primary hover:underline"
+        >
+          Está com problemas? Chame o nosso suporte.
+        </a>
+      )}
     </main>
   );
 }
