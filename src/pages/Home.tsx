@@ -2693,10 +2693,7 @@ async function openNews(item: NewsItem) {
               </h3>
               <button
                 type="button"
-                onClick={() => {
-                  setIsSocioModalOpen(false);
-                  setIsCheckoutOpen(true);
-                }}
+                onClick={() => navigate("/comeceporaqui")}
                 className="relative my-6 inline-flex items-center justify-center overflow-hidden rounded-full bg-[#5865F2] px-10 py-4 text-base font-bold text-white shadow-xl transition-all duration-300 hover:scale-105 hover:bg-[#4752C4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:text-lg"
               >
                 <span
