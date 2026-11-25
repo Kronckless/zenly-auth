@@ -22,7 +22,11 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
   const email = normalizeMembershipEmail(user?.email);
 
   if (!user?.id || !email || !supabase) {
-    return { profile: null, isSocio: false, isMfo: false };
+    return {
+      profile: null,
+      isSocio: hasPreviewBoosterAccess(),
+      isMfo: false,
+    };
   }
 
   const { data, error } = await supabase
@@ -41,7 +45,7 @@ export async function loadMembershipProfile(user: AuthenticatedIdentity | null) 
 
   return {
     profile,
-    isSocio: profile?.is_booster === true,
+    isSocio: profile?.is_booster === true || hasPreviewBoosterAccess(),
     isMfo: profile?.is_mfo === true,
   };
 }
